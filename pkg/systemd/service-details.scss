@@ -1,0 +1,72 @@
+@use "ct-card";
+@use "../lib/journal.css";
+@use "_global-variables.scss";
+
+#service-details .pf-v5-c-card {
+  @extend .ct-card;
+}
+
+.comma-list {
+  display: inline;
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.comma-list li {
+  display: inline-block;
+}
+
+.comma-list li:not(:last-child)::after {
+  content: ",";
+  margin-inline-end: 0.5em;
+}
+
+/* Rely on flex for spacing only */
+.service-top-panel button.pf-v5-c-menu-toggle {
+  padding-inline-start: 0;
+}
+
+.service-thumbtack-icon {
+  color: var(--pf-v5-global--icon--Color--light);
+}
+
+.action-button {
+  margin-inline-start: 2rem;
+}
+
+.status-icon::before {
+  color: inherit;
+}
+
+.status-icon {
+  margin-inline-end: 0.5rem;
+  color: var(--pf-v5-global--icon--Color--light);
+}
+
+.status-running > .status-icon,
+.status-enabled > .status-icon {
+  /* mid-way between PF4 success-100 & 200; then rounded to AA contrast */
+  color: #6da000;
+}
+
+.status-failed > .status-icon,
+.status-failed > .status {
+  color: var(--pf-v5-global--danger-color--200);
+}
+
+.side-note {
+  color: var(--pf-v5-global--Color--300);
+  padding-inline-start: 1em;
+}
+
+.pf-v5-theme-dark .side-note {
+  color: var(--pf-v5-global--Color--200);
+}
+
+.font-xs {
+  font-size: var(--pf-v5-global--FontSize--xs);
+}
+
+.pf-v5-c-dropdown__menu-item.pf-m-danger {
+  color: var(--pf-v5-global--danger-color--200);
+}

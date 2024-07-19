@@ -1,0 +1,80 @@
+@use "../lib/console.css";
+@use "page";
+@import "global-variables";
+
+.console-ct-container {
+  block-size: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.console-ct-container .terminal-body,
+.console-ct-container .console-ct {
+  inset: 0;
+}
+
+.console-ct-container .terminal-group {
+  border-block-end: 1px solid var(--ct-color-border);
+}
+
+.xterm-accessibility {
+  /* Allow for scrollbar clicking */
+  /* (scrollbars are 18px or less across common OSes) */
+  inset-inline-end: 18px !important;
+}
+
+.console-ct-container .terminal-body {
+  padding: 0;
+  position: relative;
+}
+
+.console-ct-container .console-ct {
+  position: absolute;
+}
+
+.black-theme {
+  background-color: #000;
+}
+
+.dark-theme {
+  background-color: #002b36;
+}
+
+.light-theme {
+  background-color: #fdf6e3;
+}
+
+.white-theme {
+  background-color: #fff;
+}
+
+.terminal-group {
+  display: flex;
+  row-gap: 0.5rem;
+  justify-content: space-between;
+  align-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  /* Move the padding handling to the container element outside of the toolbar */
+  padding: var(--pf-v5-global--spacer--md);
+
+  > .pf-v5-c-toolbar {
+    padding: 0;
+
+    > .pf-v5-c-toolbar__content {
+      padding: 0;
+
+      select {
+        min-inline-size: 5rem;
+      }
+    }
+    padding: 0;
+  }
+}
+
+// HACK for https://forum.patternfly.org/t/read-only-number-input/422
+.font-size .pf-v5-c-form-control[readonly] {
+  cursor: default;
+}

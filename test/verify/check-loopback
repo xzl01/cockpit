@@ -1,0 +1,71 @@
+#!/usr/bin/python3 -cimport os, sys; os.execv(os.path.dirname(sys.argv[1]) + "/../common/pywrap", sys.argv)
+
+# This file is part of Cockpit.
+#
+# Copyright (C) 2013 Red Hat, Inc.
+#
+# Cockpit is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
+#
+# Cockpit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+
+import testlib
+
+
+@testlib.skipOstree("OSTree always uses loopback")
+@testlib.nondestructive
+class TestLoopback(testlib.MachineCase):
+
+    def testBasic(self):
+        b = self.browser
+        m = self.machine
+
+        # Start Cockpit with option to access SSH
+        m.stop_cockpit()
+        pid = m.spawn(f"{self.libexecdir}/cockpit-ws --local-ssh --no-tls", "cockpit-ws")
+        self.addCleanup(m.execute, "kill %i" % pid)
+        m.wait_for_cockpit_running()
+
+        b.login_and_go("/system", user="admin")
+        b.logout()
+        b.wait_visible("#login")
+
+        self.restore_file("/usr/bin/cockpit-bridge")
+        m.execute("rm /usr/bin/cockpit-bridge")
+
+        b.set_val('#login-user-input', "admin")
+        b.set_val('#login-password-input', "foobar")
+        b.click('#login-button')
+        b.wait_visible('#login-fatal')
+        self.assertIn("no-cockpit", b.text('#login-fatal'))
+
+        m.disconnect()
+        self.restore_dir("/etc/ssh", restart_unit=self.sshd_service)
+        m.execute("sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config $(ls /etc/ssh/sshd_config.d/* 2>/dev/null || true)")
+        m.execute(self.restart_sshd)
+        m.wait_execute()
+
+        b.reload()
+        b.wait_visible("#login")
+        b.set_val('#login-user-input', "admin")
+        b.set_val('#login-password-input', "foobar")
+        b.click('#login-button')
+        b.wait_visible('#login-fatal')
+        self.assertIn(
+            "The server refused to authenticate 'admin' using password authentication, and no other supported authentication methods are available.",
+            b.text('#login-fatal'))
+
+        self.allow_journal_messages("Cannot run program cockpit-bridge: No such file or directory",
+                                    ".*server offered unsupported authentication methods: public-key.*")
+
+
+if __name__ == '__main__':
+    testlib.test_main()

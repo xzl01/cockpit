@@ -1,0 +1,102 @@
+@use "./system-global.scss";
+@import "global-variables";
+
+// The service list lacks a top border.
+// However, the toolbar also lacks a border and is sticky, so add a bottom
+// border to the toolbar to separate the toolbar and list.
+.services-toolbar {
+  border-block-end: 1px solid var(--pf-v5-global--BorderColor--100);
+}
+
+// Magic pixie dust to make the list a bit faster and more furious
+.services-list tbody {
+  // Skip a lot of computations
+  contain: content;
+}
+
+.service-unit-failed {
+  background-color: var(--ct-color-list-critical-bg);
+
+  .service-unit-status {
+    color: var(--ct-color-list-critical-alert-text);
+  }
+}
+
+.service-unit-status {
+  white-space: nowrap;
+
+  &-failed {
+    color: red;
+  }
+}
+
+.service-unit-file-state {
+  display: inline-block;
+  font-size: var(--pf-v5-global--FontSize--sm);
+  min-inline-size: 5rem;
+  text-align: center;
+}
+
+.service-unit-file-state:not(.pf-v5-c-badge) {
+  text-align: center;
+  opacity: 0.8;
+}
+
+// Add some spacing between the tab label and the icon
+.pf-v5-c-nav__link > .ct-exclamation-circle {
+  margin-inline-start: 0.5rem;
+}
+
+.services-header.pf-v5-c-page__main-nav {
+  padding-block-end: 1rem;
+  padding-inline-end: 0;
+
+  > .pf-v5-l-flex {
+    // Add spacing between the tabs and the 'Create timer' button in mobile
+    row-gap: var(--pf-v5-global--spacer--sm);
+    // Align 'Create timer' button with the right side of the services list card
+    margin-inline-end: var(--pf-v5-c-page__main-section--PaddingRight);
+  }
+}
+
+// Add some spacing between the icon and the status string in the list
+.service-unit-status-failed > .ct-exclamation-circle {
+  margin-inline-end: 0.5rem;
+}
+
+.service-unit-first-column {
+  min-inline-size: 20rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 25rem));
+  grid-gap: var(--pf-v5-global--spacer--sm);
+
+  .service-unit-description {
+    font-weight: bold;
+  }
+}
+
+.service-thumbtack-icon-color {
+  color: var(--pf-v5-global--icon--Color--light);
+}
+
+.service-unit-triggers {
+  min-inline-size: 20ch;
+}
+
+.pf-v5-c-table .service-unit-second-column {
+  --pf-v5-c-table--cell--Width: 20%;
+}
+
+// Don't show labels from mobile mode
+.pf-v5-c-table [data-label]::before {
+  display: none;
+}
+
+.pf-v5-c-table [data-label] {
+  display: revert;
+}
+
+// FIXME: When porting the selects to the PF5 select implementation drop this
+.pf-v5-c-toolbar__item {
+  align-self: center;
+}

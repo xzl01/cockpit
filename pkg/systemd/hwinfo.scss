@@ -1,0 +1,30 @@
+@use "ct-card";
+@use "page";
+
+#hwinfo {
+  /* Style the list cards as ct-cards */
+  .pf-v5-c-page__main-section .pf-v5-c-card {
+    @extend .ct-card;
+  }
+
+  .pf-v5-l-gallery {
+    --pf-v5-l-gallery--GridTemplateColumns: 1fr;
+  }
+}
+
+#hwinfo-system-info-list {
+  /* When the flex wraps make have the same gap as description list items have between them */
+  row-gap: 1rem;
+}
+
+.nosmt-read-more-link {
+  display: block;
+}
+
+.nosmt-heading {
+  font-weight: var(--pf-v5-global--FontWeight--bold);
+}
+
+.cpu-mitigations-dialog-info {
+  margin-block-end: var(--pf-v5-global--spacer--md);
+}

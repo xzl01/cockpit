@@ -1,0 +1,395 @@
+#!/usr/bin/python3 -cimport os, sys; os.execv(os.path.dirname(sys.argv[1]) + "/../common/pywrap", sys.argv)
+
+# This file is part of Cockpit.
+#
+# Copyright (C) 2017 Red Hat, Inc.
+#
+# Cockpit is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
+#
+# Cockpit is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+import time
+
+import packagelib
+import testlib
+
+
+@testlib.skipImage("TODO: bug in refreshing removed/installed state on Arch Linux", "arch")
+@testlib.skipOstree("Not supported")
+@testlib.nondestructive
+class TestApps(packagelib.PackageCase):
+
+    def setUp(self):
+        super().setUp()
+        self.appstream_collection = set()
+        self.machine.upload(["verify/files/test.png"], "/var/tmp/")
+
+    def createAppStreamPackage(self, name, version, revision, install=False):
+        self.createPackage(name, version, revision, content={
+            f"/usr/share/metainfo/org.cockpit-project.{name}.metainfo.xml": f"""
+<component type="addon">
+  <extends>org.cockpit_project.cockpit</extends>
+  <id>org.cockpit-project.{name}</id>
+  <icon type="local">/usr/share/pixmaps/{name}.png</icon>
+  <name>{name}</name>
+  <summary>{name} application for testing</summary>
+  <launchable type="cockpit-manifest">{name}</launchable>
+</component>
+""",
+            f"/usr/share/pixmaps/{name}.png": {"path": "/var/tmp/test.png"}}, install=install)
+        self.appstream_collection.add(name)
+
+    def createAppStreamRepoPackage(self, subdir=None):
+        if subdir is None:
+            subdir = "swcatalog/xml"
+        body = ""
+        for p in self.appstream_collection:
+            body += f"""
+  <component type="addon">
+  <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.{p}</id>
+    <icon type="cached">test.png</icon>
+    <name>{p}</name>
+    <summary>An application for testing</summary>
+    <launchable type="cockpit-manifest">{p}</launchable>
+    <description>
+        <p>DESCRIPTION:none</p>
+    </description>
+    <url type="homepage">https://{p}.com</url>
+    <pkgname>{p}</pkgname>
+  </component>
+"""
+        self.machine.execute(f"mkdir -p /usr/share/{subdir}")
+        self.createPackage("appstream-data-test", "1.0", "1", content={
+            f"/usr/share/{subdir}/test.xml": f"""
+<components origin="test">
+{body}
+</components>
+            """,
+            f"/usr/share/{subdir.split('/')[0]}/icons/test/64x64/test.png": {"path": "/var/tmp/test.png"}})
+        self.enableRepo()
+        self.machine.execute("systemctl stop packagekit; pkcon refresh force")
+        # ignore the corresponding journal entry
+        self.allow_journal_messages("org.freedesktop.PackageKit.*org.freedesktop.DBus.Error.NoReply.*")
+
+    def testBasic(self, urlroot=""):
+        b = self.browser
+        m = self.machine
+
+        self.allow_journal_messages("can't remove watch: Invalid argument")
+
+        self.restore_dir("/usr/share/metainfo", reboot_safe=True)
+        self.restore_dir("/usr/share/swcatalog", reboot_safe=True)
+        self.restore_dir("/usr/share/app-info", reboot_safe=True)
+        self.restore_dir("/var/cache/app-info", reboot_safe=True)
+
+        # Make sure none of the appstream directories exist.  They
+        # will be created later and we need to cope with that.
+        m.execute("rm -rf /usr/share/metainfo /usr/share/swcatalog /usr/share/app-info /var/cache/app-info")
+
+        # instead of the actual distro packages, use our own fake repo data package
+        self.write_file("/etc/cockpit/apps.override.json",
+                        '{ "config": { "appstream_data_packages": [ "appstream-data-test" ] } }')
+
+        if urlroot != "":
+            m.write("/etc/cockpit/cockpit.conf", f"[WebService]\nUrlRoot={urlroot}")
+
+        self.login_and_go("/apps", urlroot=urlroot)
+        b.wait_in_text(".pf-v5-c-empty-state", "No applications installed or available")
+        b.wait_in_text(".pf-v5-c-empty-state", "Application information is missing")
+
+        # still no metadata, but already installed application
+        self.createAppStreamPackage("already", "1.0", "1", install=True)
+        b.wait_not_present(".pf-v5-c-empty-state")
+        b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('already') button:contains('Remove')")
+        b.wait_in_text(".pf-v5-c-alert", "Application information is missing")
+
+        self.createAppStreamPackage("app-1", "1.0", "1")
+        self.createAppStreamRepoPackage()
+
+        # Install package metadata
+        b.click(".pf-v5-c-alert button")
+
+        with b.wait_timeout(30):
+            b.wait_not_present(".pf-v5-c-alert")
+            b.click(".app-list #app-1")
+
+        b.wait_visible('a[href="https://app-1.com"]')
+        b.wait_visible(f'#app-page img[src^="{urlroot}/cockpit/channel/"]')
+        b.click(".pf-v5-c-breadcrumb a:contains('Applications')")
+
+        b.wait_visible("#list-page")
+        b.wait_not_present("#app-page")
+
+        b.click(".app-list .pf-v5-c-data-list__item-row:contains('app-1') button:contains('Install')")
+        b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('app-1') button:contains('Remove')")
+        b.wait_visible(f".app-list .pf-v5-c-data-list__item-row:contains('app-1') img[src^='{urlroot}/cockpit/channel/']")
+        m.execute("test -f /stamp-app-1-1.0-1")
+
+        b.click(".app-list .pf-v5-c-data-list__item-row:contains('app-1') button:contains('Remove')")
+        b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('app-1') button:contains('Install')")
+        b.wait_visible(f".app-list .pf-v5-c-data-list__item-row:contains('app-1') img[src^='{urlroot}/cockpit/channel/']")
+        m.execute("! test -f /stamp-app-1-1.0-1")
+
+    def testWithUrlRoot(self):
+        self.testBasic(urlroot="/webcon")
+
+    def testOsMap(self):
+        b = self.browser
+        m = self.machine
+
+        self.allow_journal_messages("can't remove watch: Invalid argument")
+
+        self.restore_dir("/usr/share/metainfo", reboot_safe=True)
+        self.restore_dir("/usr/share/swcatalog", reboot_safe=True)
+        self.restore_dir("/usr/share/app-info", reboot_safe=True)
+        self.restore_dir("/var/cache/app-info", reboot_safe=True)
+
+        # Make sure none of the appstream directories exist.  They
+        # will be created later and we need to cope with that.
+        m.execute("rm -rf /usr/share/metainfo /usr/share/swcatalog /usr/share/app-info /var/cache/app-info")
+
+        # use a fake distro map
+        self.write_file("/etc/cockpit/apps.override.json",
+                        '{ "config": { "appstream_data_packages":'
+                        '    {"testy": ["appstream-data-test"], "otheros": ["nosuchpackage"]},'
+                        '              "appstream_config_packages": []'
+                        '  }}')
+
+        self.createAppStreamPackage("app-1", "1.0", "1")
+        # old subdir until Fedora 39
+        self.createAppStreamRepoPackage(subdir="app-info/xmls")
+
+        self.login_and_go("/apps")
+        b.wait_visible(".pf-v5-c-empty-state")
+
+        # os-release is a symlink target, don't clobber that
+        self.restore_file("/etc/os-release")
+        m.execute("rm /etc/os-release")
+
+        # get along with absent os-release
+        b.click("#refresh")
+        # the progress bar is too fast to reliably catch it
+        time.sleep(1)
+        b.wait_not_present("#refresh-progress")
+        b.wait_visible(".pf-v5-c-empty-state")
+        # wait until check for installed metadata package finished
+        b.wait_attr("#list-page", "data-packages-checked", "true")
+        # no appstream metadata available, don't advertise it
+        b.wait_in_text(".pf-v5-c-empty-state", "No applications installed or available")
+        self.assertNotIn("Install application information", b.text(".pf-v5-c-empty-state"))
+        b.wait_not_present(".pf-v5-c-empty-state button")
+
+        # unknown OS: nothing gets installed
+        m.write("/etc/os-release", 'ID="unmapped"\nID_LIKE="mysterious"\nVERSION_ID="1"\n')
+        b.click("#refresh")
+        # the progress bar is too fast to reliably catch it
+        time.sleep(1)
+        b.wait_not_present("#refresh-progress")
+        b.wait_visible(".pf-v5-c-empty-state")
+
+        # known OS: appstream-data-test gets installed from the map
+        m.write("/etc/os-release", 'ID="derivative"\nID_LIKE="spicy testy"\nVERSION_ID="1"\n')
+        b.click("#refresh")
+        m.execute("until test -e /usr/share/app-info/xmls/test.xml; do sleep 1; done")
+        b.wait_visible(".app-list #app-1")
+
+    def testL10N(self):
+        b = self.browser
+        m = self.machine
+
+        # Switching to a language might produce these messages, which seem to be harmless.
+        self.allow_journal_messages("invalid or unusable locale.*",
+                                    "Error .* data: Connection reset by peer")
+
+        # Reset everything
+        m.execute("for d in /usr/share/metainfo /usr/share/app-info /var/cache/app-info; do mkdir -p $d; mount -t tmpfs tmpfs $d; done")
+        self.addCleanup(m.execute, "for d in /usr/share/metainfo /usr/share/app-info /var/cache/app-info; do umount $d; done")
+
+        self.login_and_go("/apps")
+        b.wait_visible(".pf-v5-c-empty-state")
+
+        m.write("/usr/share/app-info/xmls/test.xml", """
+<components origin="test">
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.foo</id>
+    <name>NAME:none</name>
+    <name xml:lang="de">NAME:de</name>
+    <summary>SUMMARY:none</summary>
+    <summary xml:lang="de">SUMMARY:de</summary>
+    <description>
+        <p>DESCRIPTION:none</p>
+        <p xml:lang="de">DESCRIPTION:de</p>
+    </description>
+    <launchable type="cockpit-manifest">foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+</components>""")
+
+        b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('SUMMARY:none') button:contains('Install')")
+        b.click(".app-list .pf-v5-c-data-list__item-row:contains('SUMMARY:none') .pf-m-inline")
+
+        b.wait_visible(".app-description:contains('DESCRIPTION:none')")
+
+        def set_lang(lang):
+            b.switch_to_top()
+            b.open_session_menu()
+            b.click("button.display-language-menu")
+            b.wait_visible('#display-language-modal')
+            b.click(f'#display-language-modal li[data-value={lang}] button')
+            b.click("#display-language-modal footer button.pf-m-primary")
+            b.wait_language(lang)
+            b.enter_page("/apps")
+
+        set_lang("de-de")
+        b.wait_visible(".app-description:contains('DESCRIPTION:de')")
+        b.wait_not_present(".app-description:contains('DESCRIPTION:none')")
+
+        set_lang("ja-jp")
+        b.wait_visible(".app-description:contains('DESCRIPTION:none')")
+        b.wait_not_present(".app-description:contains('DESCRIPTION:de')")
+
+        # like in the general whitelist, but translated
+        self.allow_journal_messages("xargs: basename: .*Signal 13.*")
+
+    def testBrokenXML(self):
+        b = self.browser
+        m = self.machine
+
+        # Reset everything
+        m.execute("for d in /usr/share/metainfo /usr/share/app-info /var/cache/app-info /usr/share/swcatalog; do mkdir -p $d; mount -t tmpfs tmpfs $d; done")
+        self.addCleanup(m.execute, "for d in /usr/share/metainfo /usr/share/app-info /var/cache/app-info /usr/share/swcatalog; do umount $d; done")
+
+        appstream_folder = "/usr/share/app-info/xmls"
+
+        self.login_and_go("/apps")
+        b.wait_visible(".pf-v5-c-empty-state")
+
+        self.allow_journal_messages(".*/usr/share/app-info/xmls/test.xml.*",
+                                    ".*xml.etree.ElementTree.ParseError.*")
+
+        def reset():
+            m.write(f"{appstream_folder}/test.xml", """
+<components origin="test">
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.test</id>
+    <name>Name</name>
+    <summary>Summary</summary>
+    <description>
+        <p>Description</p>
+    </description>
+    <launchable type="cockpit-manifest">foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+</components>""")
+            b.wait_not_present(".pf-v5-c-empty-state")
+            b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('Summary')")
+
+        # First lay down some good XML so that we can later detect the reaction to broken XML.
+        reset()
+
+        # Unparsable
+        m.write(f"{appstream_folder}/test.xml", """
+This <is <not XML.
+""")
+        b.wait_visible(".pf-v5-c-empty-state")
+        reset()
+
+        # Not really AppStream
+        m.write(f"{appstream_folder}/test.xml", """
+<foo></foo>
+""")
+        b.wait_visible(".pf-v5-c-empty-state")
+        reset()
+
+        # No origin
+        m.write(f"{appstream_folder}/test.xml", """
+<components>
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.test</id>
+    <name>Name</name>
+    <summary>Summary</summary>
+    <description>
+        <p>Description</p>
+    </description>
+    <launchable type="cockpit-manifest">foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+</components>""")
+        b.wait_visible(".pf-v5-c-empty-state")
+        reset()
+
+        # No package
+        m.write(f"{appstream_folder}/test.xml", """
+<components origin="test">
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.test</id>
+    <name>Name</name>
+    <summary>Summary</summary>
+    <description>
+        <p>Description</p>
+    </description>
+    <launchable type="cockpit-manifest">foo</launchable>
+  </component>
+</components>""")
+        b.wait_visible(".pf-v5-c-empty-state")
+        reset()
+
+        # No id
+        m.write(f"{appstream_folder}/test.xml", """
+<components origin="test">
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <name>Name</name>
+    <summary>No description</summary>
+    <launchable type="cockpit-manifest">foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+</components>""")
+        b.wait_visible(".pf-v5-c-empty-state")
+        reset()
+
+        # Error (launchable without type) in earlier entry, shouldn't affect the later entry
+        m.write(f"{appstream_folder}/test.xml", """
+<components origin="test">
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.test2</id>
+    <name>Name</name>
+    <summary>Summary</summary>
+    <description>
+        <p>Description 2</p>
+    </description>
+    <launchable>foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+  <component type="addon">
+    <extends>org.cockpit_project.cockpit</extends>
+    <id>org.cockpit-project.test</id>
+    <name>Name</name>
+    <summary>Summary 2</summary>
+    <description>
+        <p>Description</p>
+    </description>
+    <launchable type="cockpit-manifest">foo</launchable>
+    <pkgname>foo</pkgname>
+  </component>
+</components>""")
+        b.wait_not_present(".pf-v5-c-empty-state")
+        b.wait_visible(".app-list .pf-v5-c-data-list__item-row:contains('Summary 2')")
+
+
+if __name__ == '__main__':
+    testlib.test_main()
