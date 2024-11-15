@@ -15,11 +15,12 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import testlib
 
 
+@testlib.skipBeiboot("host switching disabled in beiboot mode")
 class TestShutdownRestart(testlib.MachineCase):
     provision = {
         "machine1": {"address": "10.111.113.1/20", "memory_mb": 512},
@@ -30,13 +31,14 @@ class TestShutdownRestart(testlib.MachineCase):
         super().setUp()
         self.setup_provisioned_hosts()
 
-    @testlib.todoPybridgeRHEL8()
     def testBasic(self):
         m = self.machine
         b = self.browser
 
         m2 = self.machines['machine2']
         b2 = self.new_browser(m2)
+
+        self.enable_multihost(m2)
 
         m.start_cockpit()
 
@@ -68,7 +70,7 @@ class TestShutdownRestart(testlib.MachineCase):
         b2.login_and_go("/system")
 
         # Add machine with static IP to m2
-        self.add_machine("10.111.113.1", browser=b2)
+        b2.add_machine("10.111.113.1")
         b2.wait_text("#system_information_hostname_text", "machine1")
 
         # Check auto reconnect on reboot
@@ -90,7 +92,7 @@ class TestShutdownRestart(testlib.MachineCase):
 
         with b2.wait_timeout(30):
             b2.wait_visible("#machine-troubleshoot")
-        self.start_machine_troubleshoot(password="foobar", browser=b2)
+        b2.start_machine_troubleshoot(password="foobar")
 
         b2.enter_page("/system", host="10.111.113.1", reconnect=False)
 

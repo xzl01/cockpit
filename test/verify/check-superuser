@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import time
 
@@ -124,6 +124,7 @@ class TestSuperuser(testlib.MachineCase):
         self.write_file("/etc/sudoers.d/admin", "admin ALL=(ALL) NOPASSWD:ALL")
         b.become_superuser(passwordless=True)
 
+    @testlib.skipBeiboot("no local PAM config in beiboot mode")
     def testTwoPasswds(self):
         b = self.browser
         m = self.machine
@@ -217,7 +218,8 @@ session include system-auth
         b.wait_in_text(".pf-v5-c-modal-box", "Password for admin")
         status = m.execute("loginctl --lines=0 user-status admin")
         self.assertIn("sudo", status)
-        self.assertIn("cockpit-askpass", status)
+        if not m.ws_container:
+            self.assertIn("cockpit-askpass", status)
 
         b.click(".pf-v5-c-modal-box button:contains('Cancel')")
         b.wait_not_present(".pf-v5-c-modal-box")
@@ -227,11 +229,15 @@ session include system-auth
         # logging out cleans up pending sudo auth; user should either go to "State: closing" or disappear completely
         b.open_superuser_dialog()
         b.wait_in_text(".pf-v5-c-modal-box", "Password for admin")
-        self.assertIn("cockpit-askpass", m.execute("loginctl --lines=0 user-status admin"))
+        if not m.ws_container:
+            self.assertIn("cockpit-askpass", m.execute("loginctl --lines=0 user-status admin"))
+        b.click(".pf-v5-c-modal-box button:contains('Cancel')")
+        b.wait_not_present(".pf-v5-c-modal-box")
         b.logout()
         testlib.wait(lambda: "sudo" not in m.execute("loginctl --lines=0 user-status admin || true"), tries=10)
         self.assertNotIn("cockpit", m.execute("loginctl --lines=0 user-status admin || true"))
 
+    @testlib.skipBeiboot("no local overrides/PAM config in beiboot mode")
     def testBrokenBridgeConfig(self):
         b = self.browser
         m = self.machine
@@ -266,6 +272,7 @@ session include system-auth
         b.wait_not_present(".pf-v5-c-modal-box:contains('Problem becoming administrator')")
         b.check_superuser_indicator("Limited access")
 
+    @testlib.skipBeiboot("no local overrides/PAM config in beiboot mode")
     def testRemoveBridgeConfig(self):
         m = self.machine
         b = self.browser
@@ -289,6 +296,13 @@ session include system-auth
         # superuser bridge goes away
         m.execute("while pgrep -u root -a cockpit-bridge; do sleep 1; done", timeout=5)
 
+        # no banner for "running in limited access mode", there are no bridge configs
+        b.go("/system")
+        b.enter_page("/system")
+        b.wait_visible("#system_information_os_text")
+        b.wait_not_present(".pf-v5-c-alert:contains('Web console is running in limited access mode')")
+
+    @testlib.skipBeiboot("no local overrides/PAM config in beiboot mode")
     def testSingleLabelBridgeConfig(self):
         b = self.browser
 
@@ -316,6 +330,7 @@ session include system-auth
         b.click(".pf-v5-c-modal-box button:contains('Close')")
         b.check_superuser_indicator("Limited access")
 
+    @testlib.skipBeiboot("no local overrides/PAM config in beiboot mode")
     def testMultipleBridgeConfig(self):
         b = self.browser
 
@@ -395,16 +410,17 @@ session include system-auth
         b.wait_not_present(".pf-v5-c-alert:contains('Web console is running in limited access mode.')")
 
 
+@testlib.skipBeiboot("host switching disabled in beiboot mode")
 class TestSuperuserDashboard(testlib.MachineCase):
     provision = {
         "machine1": {"address": "10.111.113.1/20", "memory_mb": 512},
         "machine2": {"address": "10.111.113.2/20", "memory_mb": 512},
     }
 
-    @testlib.todoPybridgeRHEL8()
     def test(self):
         b = self.browser
         self.setup_provisioned_hosts()
+        self.enable_multihost(self.machine)
 
         self.login_and_go()
         b.go("/@10.111.113.2")

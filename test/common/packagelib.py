@@ -13,7 +13,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import logging
 import os
@@ -436,8 +436,11 @@ Server = file://{self.repo_dir}
             self.machine.execute("pacman -Sy")
 
         else:
+            # HACK - https://bugzilla.redhat.com/show_bug.cgi?id=2306114
+            # We need to explicitly create /var/cache/libdnf5 to make "dnf clean" happy.
             self.machine.execute(f"""printf '[updates]\nname=cockpittest\nbaseurl=file://{self.repo_dir}\nenabled=1\ngpgcheck=0\n' > /etc/yum.repos.d/cockpittest.repo
                                      echo '{self.createYumUpdateInfo()}' > /tmp/updateinfo.xml
                                      createrepo_c {self.repo_dir}
                                      modifyrepo_c /tmp/updateinfo.xml {self.repo_dir}/repodata
+                                     mkdir -p /var/cache/libdnf5
                                      dnf clean all""")

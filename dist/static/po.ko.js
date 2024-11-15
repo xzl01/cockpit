@@ -96,9 +96,17 @@ window.cockpit_po = {
   null,
   "60 분"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "호환 가능한 Cockpit 버전이 {{#strong}}에 설치되어 있지 않습니다."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "보안, 안정성, 성능을 위해 최신 브라우저가 필요합니다."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "$0에서 신규 SSH 키는 $1에서($2에 대해) 생성되고 $3에서 $4에서($5에 대해) 파일에 추가됩니다."
  ],
  "Absent": [
   null,
@@ -140,17 +148,21 @@ window.cockpit_po = {
   null,
   "Ansible 역할 문서"
  ],
+ "Authentication": [
+  null,
+  "인증"
+ ],
  "Authentication failed": [
   null,
   "인증 실패"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "인증 실패: 서버 연결 끊김"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Cockpit 웹 콘솔의 권한 작업을 수행하려면 인증이 필요합니다"
+ ],
+ "Authorize SSH key": [
+  null,
+  "SSH 키 승인"
  ],
  "Automatically using NTP": [
   null,
@@ -240,6 +252,10 @@ window.cockpit_po = {
   null,
   "Cockpit은 시스템의 소프트웨어와 호환성이 없습니다."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit이 설치되어 있지 않습니다"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "시스템에 Cockpit이 설치되어 있지 않습니다."
@@ -264,6 +280,10 @@ window.cockpit_po = {
   null,
   "PCI 압축"
  ],
+ "Confirm key password": [
+  null,
+  "키 비밀빈호 확인"
+ ],
  "Connect to": [
   null,
   "연결 대상"
@@ -280,6 +300,10 @@ window.cockpit_po = {
   null,
   "변환 가능"
  ],
+ "Copied": [
+  null,
+  "복사됨"
+ ],
  "Copy": [
   null,
   "복사"
@@ -288,9 +312,13 @@ window.cockpit_po = {
   null,
   "클립보드로 복사"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "생성"
+  "$0 생성"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "신규 SSH 키를 생성하고 승인합니다"
  ],
  "Create new task file with this content.": [
   null,
@@ -368,13 +396,29 @@ window.cockpit_po = {
   null,
   "비밀번호 숨기기"
  ],
+ "Host is unknown": [
+  null,
+  "호스를 알 수 없습니다"
+ ],
  "Host key is incorrect": [
   null,
   "호스트 키가 잘못되었습니다"
  ],
+ "Hostkey does not match": [
+  null,
+  "호스트키가 일치하지 않습니다"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "호스트키를 알 수 없습니다"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "지문이 일치하면 \"키 수락 및 로그인\"을 눌러주세요. 일치 하지 않을 경우 로그인하지 않고 관리자에게 문의하십시오."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "만약 지문이 일치하면, '키 ' 호스트 신뢰 및 추가'를 눌러주세요. 그렇지 않다면, 연결하지 않고 관리자에게 문의하세요."
  ],
  "Install": [
   null,
@@ -383,6 +427,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "소프트웨어 설치"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "웹 콘솔 접근을 활성화 하도록 $0에 cockpit-system 꾸러미(및 선택적인 다른 cockpit 꾸러미)를 설치합니다."
  ],
  "Installing $0": [
   null,
@@ -395,6 +443,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "내부 오류: 잘못된 챌린지 헤더"
+ ],
+ "Internal protocol error": [
+  null,
+  "내부 통신규약 오류"
  ],
  "Invalid date format": [
   null,
@@ -424,6 +476,10 @@ window.cockpit_po = {
   null,
   "커널 덤프"
  ],
+ "Key password": [
+  null,
+  "키 비밀번호"
+ ],
  "Laptop": [
   null,
   "랩탑"
@@ -439,6 +495,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "로그인"
+ ],
+ "Log in to $0": [
+  null,
+  "$0에 로그인"
  ],
  "Log in with your server user account.": [
   null,
@@ -524,6 +584,10 @@ window.cockpit_po = {
   null,
   "지연 없음"
  ],
+ "No results found": [
+  null,
+  "결과를 찾을 수 없습니다"
+ ],
  "No such file or directory": [
   null,
   "이러한 파일 또는 디렉토리가 없습니다"
@@ -579,6 +643,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit가 충돌했습니다"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "꾸러미 없는 세션을 사용 할 수 없음"
  ],
  "Password": [
   null,
@@ -664,17 +732,9 @@ window.cockpit_po = {
   null,
   "최근 호스트"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "연결을 거부하고 있습니다. 알 수 없는 호스트입니다"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "연결을 거부하고 있습니다. 호스트 키가 일치하지 않습니다"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "연결을 거부하고 있습니다. 알 수 없는 호스트 키입니다"
+  "연결 하는데 거부 중"
  ],
  "Removals:": [
   null,
@@ -696,9 +756,21 @@ window.cockpit_po = {
   null,
   "행 선택"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "신뢰하는 네트워크 또는 원격 장비에서 물리적으로 이와 같은 명령을 실행합니다:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH 키"
+ ],
+ "SSH key login": [
+  null,
+  "SSH 키 로그인"
  ],
  "Sealed-case PC": [
   null,
@@ -711,6 +783,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "서버"
+ ],
+ "Server closed connection": [
+  null,
+  "서버 연결이 종료됨"
  ],
  "Server has closed the connection.": [
   null,
@@ -788,17 +864,49 @@ window.cockpit_po = {
   null,
   "테블릿"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "$1의 SSH 키 $0 ($2에서)는 $4의 $3 ($5에서)파일로 추가됩니다."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH 키 $0는 나머지 세션에서 사용 할 수 있고 다른 호스트에 로그인 할 때에도 사용 할 수 있습니다."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "$0에 로그인하기 위한 SSH 키가 비밀번호에 의해 보호되고 있으며, 그리고 호스트는 비밀번호로 로그인을 허용 하지 않습니다. $1에서 키의 비밀번호를 제공하세요."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "$0에 로그인하기 위해 SSH 키가 보호되고 있습니다. 당신은 $1에서 자신의 로그인 비밀번호에 의하거나 키의 비밀번호 제공을 통해 로그인 할 수 있습니다.."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "지문 표시가 일치해야 합니다:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "키 비밀번호를 비워둘 수 없습니다"
+ ],
+ "The key passwords do not match": [
+  null,
+  "키 비밀번호가 일치하지 않습니다"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "로그인한 사용자는 시스템 수정 사항을 볼 수 없습니다"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "비밀번호가 일치하지 않습니다."
+  "비밀번호를 비워둘 수 없습니다"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "최종 지문을 전자우편을 포함한 공개적인 방법을 통해 공유 할 수 있습니다."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "결과 지문은 전자우편을 포함하는 공개 방식을 통해 공유되어도 해도 좋습니다. 만약 누군가 당신을 위해 인증하도록 요청하는 경우, 어떤 방식을 사용하든 결과를 전송 할 수 있습니다."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -816,9 +924,9 @@ window.cockpit_po = {
   null,
   "이와 같은 도구는 SELinux 정책을 구성하고 정책 위반을 이해하고 해결하는데 도움을 줄 수 있습니다."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "이와 같은 도구는 커널 충돌 덤프를 디스크에 작성하도록 시스템을 구성합니다."
+  "이와 같은 도구는 커널 충돌 덤프를 작성하도록 시스템을 구성합니다. 이는 \"로컬\" (디스크), \"ssh\" 및 \"nfs\" 덤프 대상을 지원합니다."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -864,6 +972,14 @@ window.cockpit_po = {
   null,
   "타워"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "일시적으로 꾸러미 없는 세션은 호환성 원인으로 동일한 운영체제 및 버전이 필요합니다: $0."
+ ],
+ "Trust and add host": [
+  null,
+  "호스트 신뢰 및 추가"
+ ],
  "Try again": [
   null,
   "다시 시도"
@@ -876,9 +992,21 @@ window.cockpit_po = {
   null,
   "해당 주소에 연결 할 수 없음"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "SSH 키 인증을 사용하여 $0에 로그인 할 수 없습니다. 비밀번호를 입력하세요."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "$0에 로그인 할 수 없습니다. 호스트는 비밀번호 로그인 또는 자신의 SSH 키를 허용하지 않습니다."
+ ],
  "Unknown": [
   null,
   "알 수 없음"
+ ],
+ "Unknown host: $0": [
+  null,
+  "알 수 없는 호스트: $0"
  ],
  "Untrusted host": [
   null,
@@ -895,6 +1023,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "인증 토큰 확인"
+ ],
+ "Verify fingerprint": [
+  null,
+  "지문 검증"
  ],
  "View all logs": [
   null,

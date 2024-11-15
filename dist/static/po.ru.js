@@ -108,9 +108,17 @@ window.cockpit_po = {
   null,
   "60 минут"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Совместимая версия Cockpit не установлена на $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Для обеспечения безопасности, надёжности и производительности необходим современный браузер."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Будет создан новый ключ SSH в $0 для $1 на $2 и добавлен в файл $3 $4 на $5."
  ],
  "Absent": [
   null,
@@ -152,17 +160,21 @@ window.cockpit_po = {
   null,
   "Документация к ролям Ansible"
  ],
+ "Authentication": [
+  null,
+  "Проверка подлинности"
+ ],
  "Authentication failed": [
   null,
   "Ошибка проверки подлинности"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Не удалось выполнить проверку подлинности: сервер закрыл соединение"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Для выполнения привилегированных задач с помощью веб-консоли Cockpit необходима проверка подлинности"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Авторизовать SSH-ключ"
  ],
  "Automatically using NTP": [
   null,
@@ -252,6 +264,10 @@ window.cockpit_po = {
   null,
   "Cockpit не совместим с программным обеспечением в системе."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit не установлен"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit не установлен в системе."
@@ -276,6 +292,10 @@ window.cockpit_po = {
   null,
   "Компактный PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Подтвердите ключевой пароль"
+ ],
  "Connect to": [
   null,
   "Подключиться к"
@@ -292,6 +312,10 @@ window.cockpit_po = {
   null,
   "Компьютер-трансформер"
  ],
+ "Copied": [
+  null,
+  "Скопировано"
+ ],
  "Copy": [
   null,
   "Копировать"
@@ -300,9 +324,9 @@ window.cockpit_po = {
   null,
   "Копировать в буфер обмена"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Создать"
+  "Создать новый SSH-ключ и авторизовать его"
  ],
  "Create new task file with this content.": [
   null,
@@ -388,6 +412,10 @@ window.cockpit_po = {
   null,
   "При совпадении отпечатка нажмите кнопку «Принять ключ и войти в систему». В противном случае, не входите в систему и свяжитесь с администратором."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Если отпечаток совпадает, нажмите «Доверять и добавить хост». В противном случае не подключайтесь и свяжитесь с вашим администратором."
+ ],
  "Install": [
   null,
   "Установить"
@@ -395,6 +423,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Установка программного обеспечения"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -436,6 +468,10 @@ window.cockpit_po = {
   null,
   "Дамп ядра"
  ],
+ "Key password": [
+  null,
+  "Пароль ключа"
+ ],
  "Laptop": [
   null,
   "Полноразмерный ноутбук"
@@ -451,6 +487,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Войти"
+ ],
+ "Log in to $0": [
+  null,
+  "Вход на $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -536,6 +576,10 @@ window.cockpit_po = {
   null,
   "Без задержки"
  ],
+ "No results found": [
+  null,
+  "Нет результатов"
+ ],
  "No such file or directory": [
   null,
   "Нет такого файла или каталога"
@@ -591,6 +635,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "Сбой PackageKit"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -676,18 +724,6 @@ window.cockpit_po = {
   null,
   "Недавние узлы"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Отказано в подключении. Неизвестный узел"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Отказано в подключении. Неверный ключ узла"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Отказано в подключении. Неизвестный ключ узла"
- ],
  "Removals:": [
   null,
   "Для удаления:"
@@ -708,9 +744,17 @@ window.cockpit_po = {
   null,
   "Выбор строки"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Запустите эту команду через доверенную сеть или физически на удалённом компьютере:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-ключ"
  ],
  "Sealed-case PC": [
   null,
@@ -800,17 +844,49 @@ window.cockpit_po = {
   null,
   "Планшетный ПК"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "SSH-ключ $0 для $1 на $2 будет добавлен к файлу $3 для $4 на $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH-ключ $0 будет предоставлен на оставшееся время сеанса, а также будет доступен для входа на другие узлы."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "SSH-ключ для входа на $0 защищён паролем, а вход с паролем на узле запрещён. Введите пароль для ключа на $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "SSH-ключ для входа на $0 защищён. Вход возможен либо при указании пароля для входа, либо пароля ключа на $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Отпечаток должен соответствовать:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Пароль ключа не может быть пустым"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Пароли ключа не совпадают"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Текущему пользователю запрещено просматривать изменения системы"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Пароли не совпадают."
+  "Пароль не может быть пустым"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Полученный отпечаток можно распространять по общедоступным каналам связи, включая электронную почту."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Полученный отпечаток пальца можно передавать общедоступными способами, включая электронную почту. Если вы просите кого-то другого выполнить проверку за вас, они могут отправить результаты любым способом."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -827,10 +903,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Этот инструмент настраивает правила SELinux и может помочь в понимании и устранении нарушений правил."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Этот инструмент настраивает систему для записи аварийных дампов ядра на диск."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -876,6 +948,14 @@ window.cockpit_po = {
   null,
   "Компьютер в корпусе «башня»"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "Доверять и добавить хост"
+ ],
  "Try again": [
   null,
   "Повторить попытку"
@@ -887,6 +967,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "Не удалось подключиться к адресу"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Не удалось войти на $0. Узел не принимает вход ни по паролю, ни по одному из имеющихся SSH-ключей."
  ],
  "Unknown": [
   null,
@@ -907,6 +991,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Проверка маркера аутентификации"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Проверить отпечаток"
  ],
  "View all logs": [
   null,

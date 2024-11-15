@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -217,7 +217,7 @@ test_return_gerror_headers (TestCase *tc,
   g_hash_table_insert (headers, g_strdup ("Header1"), g_strdup ("value1"));
 
   error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED, "Reason here: %s", "booyah");
-  cockpit_web_response_gerror (tc->response, headers, error);
+  cockpit_web_response_gerror (tc->response, headers, NULL, error);
 
   g_error_free (error);
   g_hash_table_destroy (headers);

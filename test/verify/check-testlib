@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import os
 import re
@@ -278,6 +278,7 @@ class TestTestlib(testlib.MachineCase):
         self.assertNotIn("cockpittest", self.machine.execute("cat /etc/passwd"))
         self.machine.execute("test ! -e /home/cockpittest")
 
+    @testlib.skipBeiboot("no cockpit-system package installed in beiboot mode")
     def testMiscAPI(self):
         assert self.system_before(1000)
         assert not self.system_before(100)

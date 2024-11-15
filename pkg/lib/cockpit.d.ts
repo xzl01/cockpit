@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import '_internal/common'; // side-effecting import (`window` augmentations)
+
 declare module 'cockpit' {
     type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
     type JsonObject = Record<string, JsonValue>;
@@ -190,6 +192,10 @@ declare module 'cockpit' {
 
     export const location: Location;
 
+    /* === cockpit.jump ========================== */
+
+    function jump(path: string, host?: string): void;
+
     /* === cockpit page visibility =============== */
 
     export let hidden: boolean;
@@ -212,10 +218,17 @@ declare module 'cockpit' {
         track?: boolean;
     }
 
+    type DBusCallOptions = {
+        flags?: "" | "i",
+        type?: string,
+        timeout?: number,
+    };
+
     interface DBusClient {
         readonly unique_name: string;
         readonly options: DBusOptions;
         proxy(interface: string, path: string, options?: { watch?: boolean }): DBusProxy;
+        call(path: string, iface: string, method: string, args?: unknown[] | null, options?: DBusCallOptions): Promise<unknown[]>;
         close(): void;
     }
 
@@ -246,9 +259,9 @@ declare module 'cockpit' {
 
     interface FileHandle<T> {
         read(): Promise<T>;
-        replace(new_content: T, expected_tag?: FileTag): Promise<FileTag>;
+        replace(new_content: T | null, expected_tag?: FileTag): Promise<FileTag>;
         watch(callback: FileWatchCallback<T>, options?: { read?: boolean }): FileWatchHandle;
-        modify(callback: (data: T) => T, initial_content?: string, initial_tag?: FileTag): Promise<[T, FileTag]>;
+        modify(callback: (data: T | null) => T | null, initial_content?: string, initial_tag?: FileTag): Promise<[T, FileTag]>;
         close(): void;
         path: string;
     }
@@ -319,4 +332,7 @@ declare module 'cockpit' {
     /** @deprecated */ function format_bytes(n: MaybeNumber, factor: unknown, options?: object | boolean): string | string[];
     /** @deprecated */ function format_bytes_per_sec(n: MaybeNumber, factor: unknown, options?: object | boolean): string | string[];
     /** @deprecated */ function format_bits_per_sec(n: MaybeNumber, factor: unknown, options?: object | boolean): string | string[];
+
+    /* === Session ====================== */
+    function logout(reload: boolean, reason?: string): void;
 }

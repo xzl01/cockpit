@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -226,6 +226,16 @@ send_truncated_utf8 (gpointer data)
 }
 
 static gboolean
+send_binary_data (gpointer data)
+{
+  CockpitWebResponse *response = data;
+  g_autoptr(GBytes) bytes = g_bytes_new_static ("\xFF\x01\xFF\x02", 4);
+  cockpit_web_response_queue (response, bytes);
+  cockpit_web_response_complete (response);
+  return FALSE;
+}
+
+static gboolean
 mock_http_stream (CockpitWebResponse *response, GSourceFunc func)
 {
   cockpit_web_response_headers (response, 200, "OK", -1, NULL);
@@ -356,6 +366,8 @@ on_handle_mock (CockpitWebServer *server,
     return mock_http_stream (response, send_split_utf8);
   if (g_str_equal (path, "/truncated-utf8"))
     return mock_http_stream (response, send_truncated_utf8);
+  if (g_str_equal (path, "/binary-data"))
+    return mock_http_stream (response, send_binary_data);
   if (g_str_equal (path, "/headers"))
     return mock_http_headers (response, headers);
   if (g_str_equal (path, "/host"))
@@ -948,8 +960,8 @@ main (int argc,
   g_assert (g_mkdir_with_parents (machines_dir, 0755) == 0);
 
   cockpit_setenv_check ("PYTHONPATH", SRCDIR "/src", TRUE);
-  cockpit_setenv_check ("XDG_DATA_HOME", SRCDIR "/src/bridge/mock-resource/home", TRUE);
-  cockpit_setenv_check ("XDG_DATA_DIRS", SRCDIR "/src/bridge/mock-resource/system", TRUE);
+  cockpit_setenv_check ("XDG_DATA_HOME", SRCDIR "/test/data/mock-resource/home", TRUE);
+  cockpit_setenv_check ("XDG_DATA_DIRS", SRCDIR "/test/data/mock-resource/system", TRUE);
   cockpit_setenv_check ("XDG_CONFIG_DIRS", config_dir, TRUE);
 
   setup_path (argv[0]);
@@ -1005,9 +1017,6 @@ main (int argc,
     bridge_argv[i++] = "-m";
     bridge_argv[i++] = "cockpit.bridge";
   }
-
-  // Use a local ssh session command
-  cockpit_ws_ssh_program = BUILDDIR "/cockpit-ssh";
 
   loop = g_main_loop_new (NULL, FALSE);
 

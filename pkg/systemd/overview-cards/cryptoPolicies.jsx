@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -115,7 +115,7 @@ const CryptoPolicyDialog = ({
                     variant='link'
                     isInline
                     icon={<ExternalLinkSquareAltIcon />} iconPosition="right"
-                    href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/security_hardening/assembly_installing-the-system-in-fips-mode_security-hardening">
+                    href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/security_hardening/switching-rhel-to-fips-mode_security-hardening">
                 {_("Learn more")}
             </Button>
         </Flex>),
@@ -160,7 +160,7 @@ const CryptoPolicyDialog = ({
                         variant='link'
                         isInline
                         icon={<ExternalLinkSquareAltIcon />} iconPosition="right"
-                        href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening">
+                        href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening">
                     {_("Learn more")}
                 </Button>
             }

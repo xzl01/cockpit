@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import re
 
@@ -58,6 +58,7 @@ KEY_IDS_MD5 = [
 
 
 @testlib.skipImage("TODO: ssh key check fails on Arch Linux", "arch")
+@testlib.skipBeiboot("host switching disabled in beiboot mode")
 class TestMultiMachineKeyAuth(testlib.MachineCase):
     provision = {
         "machine1": {"address": "10.111.113.1/20", "memory_mb": 512},
@@ -102,10 +103,6 @@ class TestMultiMachineKeyAuth(testlib.MachineCase):
         self.machine2.execute("useradd user -c User", direct=True)
         self.machine2.execute(
             "sed -i 's/.*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config $(ls /etc/ssh/sshd_config.d/* 2>/dev/null || true)", direct=True)
-        # HACK - Increase MaxAuthTries because of
-        # https://bugs.libssh.org/T233 and because we have a lot of
-        # keys and cockpit-ssh tries them all, and many of them twice.
-        self.machine2.write("/etc/ssh/sshd_config", "MaxAuthTries 100", append=True)
         self.machine2.execute(self.restart_sshd, direct=True)
         self.machine2.wait_execute()
 
@@ -115,9 +112,11 @@ class TestMultiMachineKeyAuth(testlib.MachineCase):
         if self.is_devel_build():
             self.disable_preload("packagekit", "playground", "systemd", machine=self.machine2)
 
+        # enable multi-host
+        self.enable_multihost(self.machine)
+
     # Possible workaround - ssh as `admin` and just do `m.execute()`
     @testlib.skipBrowser("Firefox cannot do `cockpit.spawn`", "firefox")
-    @testlib.todoPybridgeRHEL8()
     def testBasic(self):
         b = self.browser
         m1 = self.machine
@@ -221,8 +220,6 @@ class TestMultiMachineKeyAuth(testlib.MachineCase):
                                     "sudo: a password is required")
 
     # Possible workaround - ssh as `admin` and just do `m.execute()`
-    @testlib.skipBrowser("Firefox cannot do `cockpit.spawn`", "firefox")
-    @testlib.todoPybridgeRHEL8()
     def testLockedIdentity(self):
         b = self.browser
         m1 = self.machine
@@ -259,7 +256,6 @@ Host 10.111.113.2
         b.wait_visible("a[href='/@10.111.113.2']")
         self.allow_hostkey_messages()
 
-    @testlib.todoPybridgeRHEL8()
     def testLockedDefaultIdentity(self):
         b = self.browser
         m1 = self.machine

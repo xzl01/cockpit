@@ -108,9 +108,17 @@ window.cockpit_po = {
   null,
   "60 minut"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Na $0 není nainstalovaná kompatibilní verze Cockpit."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Z důvodu zabezpečení, spolehlivosti a rychlosti je zapotřebí moderní prohlížeč."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Na $0 bude vytvořen nový SSH klíč pro $1 na $2 a bude přidán do souboru $3 od $4 na $5."
  ],
  "Absent": [
   null,
@@ -152,17 +160,21 @@ window.cockpit_po = {
   null,
   "Dokumentace k Ansible rolím"
  ],
+ "Authentication": [
+  null,
+  "Ověření se"
+ ],
  "Authentication failed": [
   null,
   "Ověření se nezdařilo"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Ověření se nezdařilo: Server přerušil spojení"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Pro provádění privilegovaných úloh pomocí webové konzole Cockpit je třeba ověřit se"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Pověřit SSH klíč"
  ],
  "Automatically using NTP": [
   null,
@@ -246,11 +258,15 @@ window.cockpit_po = {
  ],
  "Cockpit is a server manager that makes it easy to administer your Linux servers via a web browser. Jumping between the terminal and the web tool is no problem. A service started via Cockpit can be stopped via the terminal. Likewise, if an error occurs in the terminal, it can be seen in the Cockpit journal interface.": [
   null,
-  "Cockpit je správce serveru, který usnadňuje správu Linuxových serverů prostřednictvím webového prohlížeče. Není žádným problémem přecházet mezi terminálem a webovým nástrojem. Služba spuštěná přes Cockpit může být zastavena v terminálu. Podobně, pokud dojde k chybě v terminálu, je toto vidět v rozhraní žurnálu v Cockpit."
+  "Cockpit je nástroj, který usnadňuje správu linuxových serverů prostřednictvím webového prohlížeče. Není žádným problémem přecházet mezi terminálem a webovým nástrojem. Služba spuštěná přes Cockpit může být zastavena v terminálu. Podobně, pokud dojde k chybě v terminálu, je toto vidět v rozhraní žurnálu v Cockpit."
  ],
  "Cockpit is not compatible with the software on the system.": [
   null,
   "Cockpit není kompatibilní se softwarem v systému."
+ ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit není nainstalován"
  ],
  "Cockpit is not installed on the system.": [
   null,
@@ -258,7 +274,7 @@ window.cockpit_po = {
  ],
  "Cockpit is perfect for new sysadmins, allowing them to easily perform simple tasks such as storage administration, inspecting journals and starting and stopping services. You can monitor and administer several servers at the same time. Just add them with a single click and your machines will look after its buddies.": [
   null,
-  "Cockpit je ideální nástroj pro nové správce serverů, neboť jim umožňuje snadno provádět jednoduché úkoly, jako je správa úložišť, kontrola žurnálu či spouštění a zastavování služeb. Můžete současně sledovat a spravovat několik serverů najednou. Stačí je přidat jedním kliknutím a vaše stroje se budou starat o své kamarády."
+  "Cockpit je ideální nástroj pro nové správce systémů, neboť jim umožňuje snadno provádět jednoduché úkoly, jako je správa úložišť, kontrola žurnálu či spouštění a zastavování služeb. Je možné souběžně sledovat a spravovat několik serverů naráz. Stačí je jedním kliknutím přidat a vaše stroje se budou starat o své kamarády."
  ],
  "Cockpit might not render correctly in your browser": [
   null,
@@ -276,6 +292,10 @@ window.cockpit_po = {
   null,
   "Compact PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Potvrdit heslo ke klíči"
+ ],
  "Connect to": [
   null,
   "Připojit se k"
@@ -292,6 +312,10 @@ window.cockpit_po = {
   null,
   "Počítač 2v1"
  ],
+ "Copied": [
+  null,
+  "Zkopírováno"
+ ],
  "Copy": [
   null,
   "Zkopírovat"
@@ -300,13 +324,13 @@ window.cockpit_po = {
   null,
   "Zkopírovat do schránky"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Vytvořit"
+  "Vytvořit nový SSH klíč a pověřit ho"
  ],
  "Create new task file with this content.": [
   null,
-  "Vytvořit nový soubor s úlohou s tímto obsahem."
+  "Vytvořte nový soubor s úlohou s tímto obsahem."
  ],
  "Ctrl+Insert": [
   null,
@@ -380,13 +404,29 @@ window.cockpit_po = {
   null,
   "Skrýt heslo"
  ],
+ "Host is unknown": [
+  null,
+  "Hostitel je neznámý"
+ ],
  "Host key is incorrect": [
   null,
   "Klíč stroje není správný"
  ],
+ "Hostkey does not match": [
+  null,
+  "Klíč hostitele neodpovídá"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "Klíč hostitele je neznámý"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "Pokud se otisk shoduje, klikněte na „Přijmout klíč a přihlásit se“. V opačném případě se nepřipojujte a obraťte se na správce."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Pokud se otisk shoduje, klikněte na „Důvěřovat a přidat stroj“. V opačném případě se nepřipojujte a obraťte se na správce."
  ],
  "Install": [
   null,
@@ -395,6 +435,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Nainstalovat software"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "Pro zpřístupnění webové konzole nainstalujte na $0 balíček cockpit-system (a případně další cockpit balíčky)."
  ],
  "Installing $0": [
   null,
@@ -408,6 +452,10 @@ window.cockpit_po = {
   null,
   "Vnitřní chyba: neplatná hlavička výzvy"
  ],
+ "Internal protocol error": [
+  null,
+  "Vnitřní chyba protokolu"
+ ],
  "Invalid date format": [
   null,
   "Neplatný formát data"
@@ -418,7 +466,7 @@ window.cockpit_po = {
  ],
  "Invalid file permissions": [
   null,
-  "Neplatná souborová práva"
+  "Neplatná oprávnění k souboru"
  ],
  "Invalid time format": [
   null,
@@ -436,13 +484,17 @@ window.cockpit_po = {
   null,
   "Výpis paměti jádra"
  ],
+ "Key password": [
+  null,
+  "Heslo ke klíči"
+ ],
  "Laptop": [
   null,
   "Notebook"
  ],
  "Learn more": [
   null,
-  "Další informace naleznete"
+  "Zjistit více"
  ],
  "Loading system modifications...": [
   null,
@@ -451,6 +503,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Přihlásit se"
+ ],
+ "Log in to $0": [
+  null,
+  "Přihlásit se k $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -536,6 +592,10 @@ window.cockpit_po = {
   null,
   "Bez prodlevy"
  ],
+ "No results found": [
+  null,
+  "Nenalezeny žádné výsledky"
+ ],
  "No such file or directory": [
   null,
   "Žádný takový soubor nebo složka"
@@ -592,6 +652,10 @@ window.cockpit_po = {
   null,
   "PackageKit zhavaroval"
  ],
+ "Packageless session unavailable": [
+  null,
+  "Relace bez balíčků není k dispozici"
+ ],
  "Password": [
   null,
   "Heslo"
@@ -606,7 +670,7 @@ window.cockpit_po = {
  ],
  "Password not accepted": [
   null,
-  "Heslo nebylo přijato"
+  "Heslo nepřijato"
  ],
  "Paste": [
   null,
@@ -618,7 +682,7 @@ window.cockpit_po = {
  ],
  "Path to file": [
   null,
-  "Popis umístění serveru"
+  "Popis umístění souboru"
  ],
  "Peripheral chassis": [
   null,
@@ -676,17 +740,9 @@ window.cockpit_po = {
   null,
   "Nedávní hostitelé"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "Odmítá se připojit. Stroj není znám"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Odmítá se připojit. Klíč stroje neodpovídá"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Odmítá se připojit. Klíč stroje není znám"
+  "Odmítá se připojit"
  ],
  "Removals:": [
   null,
@@ -700,9 +756,29 @@ window.cockpit_po = {
   null,
   "Odebírá se $0"
  ],
+ "Row expansion": [
+  null,
+  "Rozbalení řádku"
+ ],
+ "Row select": [
+  null,
+  "Výběr řádku"
+ ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Na vzdáleném stroji spusťte – přes důvěryhodnou síť nebo fyzicky přímo na něm – tento příkaz:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH klíč"
+ ],
+ "SSH key login": [
+  null,
+  "Přihlášení SSH klíčem"
  ],
  "Sealed-case PC": [
   null,
@@ -715,6 +791,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "Server"
+ ],
+ "Server closed connection": [
+  null,
+  "Server zavřel spojení"
  ],
  "Server has closed the connection.": [
   null,
@@ -792,17 +872,49 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "SSH klíč $0 uživatele $1 na $2 bude přidán do souboru $3 uživatele $4 na $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH klíč $0 bude zpřístupněn po celou relaci a bude k dispozici také pro přihlašování se k ostatním strojům."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "SSH klíč pro přihlašování se k $0 je chráněn. Můžete se buď přihlásit svým přihlašovacím heslem nebo zadáním hesla ke klíči na $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "SSH klíč pro přihlašování se k $0 je chráněn. Můžete se buď přihlásit svým přihlašovacím heslem nebo zadáním hesla ke klíči na $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Otisk by se měl shodovat:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Heslo ke klíči je třeba vyplnit"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Zadání hesla ke klíči se neshodují"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Přihlášený uživatel není oprávněn zobrazovat modifikace systému"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Zadání hesla se neshodují."
+  "Heslo je třeba vyplnit"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Výsledný otisk je možné sdílet veřejnými způsoby, včetně e-mailu."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Výsledný otisk je možné bez problémů sdílet prostřednictvím veřejných metod, včetně e-mailu. Pokud někoho jiného požádáte, aby pro vás ověřil, může výsledky poslat libovolnou metodou."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -818,11 +930,11 @@ window.cockpit_po = {
  ],
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
-  "Tento nástroj nastavuje pravidla pro SELinux a může pomoci s porozuměním a řešením porušení pravidel."
+  "Tento nástroj nastavuje zásady pro SELinux a může pomoci s porozuměním a řešením jejich porušení."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "Tento nástroj nastavuje systém pro zapisování výpisů pádů jádra na disk."
+  "Tento nástroj nastavuje systém tak, aby byly zapisovány výpisy pádů jádra. Podporuje cíle výstupu „local“ (disk), „ssh“ a „nfs“."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -834,7 +946,7 @@ window.cockpit_po = {
  ],
  "This tool manages networking such as bonds, bridges, teams, VLANs and firewalls using NetworkManager and Firewalld. NetworkManager is incompatible with Ubuntu's default systemd-networkd and Debian's ifupdown scripts.": [
   null,
-  "Tento nástroj spravuje síťování jako například spřažení, mosty, spojení, VLAN sítě a brány firewall pomocí NetworkManager a Firewalld. NetworkManager není kompatibilní s Ubuntu ve výchozím stavu používaným systemd-networkd a skripty ifupdown v distribuci Debian."
+  "Tento nástroj spravuje síťování jako například spřažení linek (typu bond i tým), mosty, VLAN sítě a brány firewall pomocí NetworkManager a Firewalld. NetworkManager není kompatibilní s výchozím stavem v Ubuntu (to používá systemd-networkd) a skripty ifupdown v distribuci Debian."
  ],
  "This web browser is too old to run the Web Console (missing $0)": [
   null,
@@ -842,7 +954,7 @@ window.cockpit_po = {
  ],
  "Time zone": [
   null,
-  "Časová zóna"
+  "Časové pásmo"
  ],
  "To ensure that your connection is not intercepted by a malicious third-party, please verify the host key fingerprint:": [
   null,
@@ -868,6 +980,14 @@ window.cockpit_po = {
   null,
   "Věž"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "Přechodná bezbalíčkové relace vyžadují stejný operační systém a jeho verzi (z důvodů kompatibility): $0."
+ ],
+ "Trust and add host": [
+  null,
+  "Důvěřovat a přidat hostitele"
+ ],
  "Try again": [
   null,
   "Zkusit znovu"
@@ -880,9 +1000,21 @@ window.cockpit_po = {
   null,
   "K této adrese se nedaří připojit"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "Nepodařilo se přihlásit k $0 pomocí ověření se SSH klíčem. Prosím zadejte heslo."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Nedaří se přihlásit k $0. Hostitel nepřijímá přihlášení heslem nebo žádný z vašich SSH klíčů."
+ ],
  "Unknown": [
   null,
   "Neznámé"
+ ],
+ "Unknown host: $0": [
+  null,
+  "Neznámý hostitel: $0"
  ],
  "Untrusted host": [
   null,
@@ -899,6 +1031,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Kontroluje se ověřovací token"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Ověřit otisk"
  ],
  "View all logs": [
   null,
@@ -958,11 +1094,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "za méně než minutu"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "před méně než minutou"
  ],
  "password quality": [
   null,

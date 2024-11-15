@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minutes"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Une version compatible de Cockpit n’est pas installée sur $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Un navigateur moderne est nécessaire pour la sécurité, la fiabilité et la performance."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Une nouvelle clé SSH à $0 sera créée pour $1 sur $2 et elle sera ajoutée au fichier $3 de $4 sur $5."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Documentation des rôles Ansible"
  ],
+ "Authentication": [
+  null,
+  "Authentification"
+ ],
  "Authentication failed": [
   null,
   "Échec d’authentification"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Échec d’authentification : connexion close par le serveur"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Une authentification est nécessaire pour effectuer les tâches privilégiées dans la console web Cockpit"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Autoriser la clé SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -185,6 +197,10 @@ window.cockpit_po = {
  "Bus expansion chassis": [
   null,
   "Châssis d’extension de bus"
+ ],
+ "Bypass browser check": [
+  null,
+  "Contourner la vérification du navigateur"
  ],
  "Cancel": [
   null,
@@ -242,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit n’est pas compatible avec le logiciel sur le système."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit n’est pas installé"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit n’est pas installé sur le système."
@@ -266,6 +286,10 @@ window.cockpit_po = {
   null,
   "PCI compact"
  ],
+ "Confirm key password": [
+  null,
+  "Confirmer le mot de passe de la clé"
+ ],
  "Connect to": [
   null,
   "Se connecter à"
@@ -282,6 +306,10 @@ window.cockpit_po = {
   null,
   "Convertible"
  ],
+ "Copied": [
+  null,
+  "Copié"
+ ],
  "Copy": [
   null,
   "Copier"
@@ -290,9 +318,13 @@ window.cockpit_po = {
   null,
   "Copier dans le presse-papier"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "Créer"
+  "Créer $0"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "Créer une nouvelle clé SSH et l’autoriser"
  ],
  "Create new task file with this content.": [
   null,
@@ -328,7 +360,7 @@ window.cockpit_po = {
  ],
  "Downloading $0": [
   null,
-  "Téléchargement $0"
+  "Téléchargement de $0"
  ],
  "Dual rank": [
   null,
@@ -362,17 +394,37 @@ window.cockpit_po = {
   null,
   "Portable"
  ],
+ "Hide confirmation password": [
+  null,
+  "Masquer le mot de passe de confirmation"
+ ],
  "Hide password": [
   null,
   "Masquer le mot de passe."
+ ],
+ "Host is unknown": [
+  null,
+  "Hôte inconnu"
  ],
  "Host key is incorrect": [
   null,
   "La clé de l’hôte est incorrecte"
  ],
+ "Hostkey does not match": [
+  null,
+  "La clé de l'hôte ne correspond pas"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "La clé de l'hôte est inconnue"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "Si l’empreinte digitale correspond, cliquez sur « Accepter la clé et se connecter ». Sinon, ne vous connectez pas et contactez votre administrateur."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Si l’empreinte digitale correspond, cliquez sur « Accepter la clé et ajouter l'hôte ». Sinon, ne vous connectez pas et contactez votre administrateur."
  ],
  "Install": [
   null,
@@ -381,6 +433,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Installer le logiciel"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "Installez le paquet cockpit-system (ainsi que les paquets cockpit de votre choix) sur $0 pour activer l'accès à la console Web."
  ],
  "Installing $0": [
   null,
@@ -393,6 +449,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "Erreur interne : en-tête de la question de Challenge non valide"
+ ],
+ "Internal protocol error": [
+  null,
+  "Erreur interne de protocole"
  ],
  "Invalid date format": [
   null,
@@ -422,6 +482,10 @@ window.cockpit_po = {
   null,
   "Kernel Dump"
  ],
+ "Key password": [
+  null,
+  "Mot de passe clé"
+ ],
  "Laptop": [
   null,
   "Portable"
@@ -437,6 +501,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Connexion"
+ ],
+ "Log in to $0": [
+  null,
+  "Connectez-vous à $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -522,6 +590,10 @@ window.cockpit_po = {
   null,
   "Aucun délai"
  ],
+ "No results found": [
+  null,
+  "Aucun résultat trouvé"
+ ],
  "No such file or directory": [
   null,
   "Aucun fichier ou répertoire de ce nom"
@@ -577,6 +649,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "Plantage de « PackageKit »"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "Session packageless indisponible"
  ],
  "Password": [
   null,
@@ -662,17 +738,9 @@ window.cockpit_po = {
   null,
   "Hôtes récents"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "Connexion refusée. L’hôte est inconnu"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Connexion refusée. La clé hôte ne correspond pas"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Connexion refusée. La clé hôte est inconnu"
+  "Connexion refusée"
  ],
  "Removals:": [
   null,
@@ -686,9 +754,29 @@ window.cockpit_po = {
   null,
   "Suppression de $0"
  ],
+ "Row expansion": [
+  null,
+  "Agrandissement de ligne"
+ ],
+ "Row select": [
+  null,
+  "Sélection de ligne"
+ ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Exécutez cette commande sur un réseau de confiance ou en la tapant physiquement sur la machine distante :"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "Clé SSH"
+ ],
+ "SSH key login": [
+  null,
+  "Connexion par clé SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -702,6 +790,10 @@ window.cockpit_po = {
   null,
   "Serveur"
  ],
+ "Server closed connection": [
+  null,
+  "Connexion fermée par le serveur"
+ ],
  "Server has closed the connection.": [
   null,
   "Le serveur a fermé la connexion."
@@ -712,11 +804,15 @@ window.cockpit_po = {
  ],
  "Shell script": [
   null,
-  "Script d’interpréteur de commande"
+  "Script shell"
  ],
  "Shift+Insert": [
   null,
   "Maj+Inser"
+ ],
+ "Show confirmation password": [
+  null,
+  "Afficher le mot de passe de confirmation"
  ],
  "Show password": [
   null,
@@ -746,6 +842,10 @@ window.cockpit_po = {
   null,
   "Stockage"
  ],
+ "Strong password": [
+  null,
+  "Mot de passe fort"
+ ],
  "Sub-Chassis": [
   null,
   "Sous-châssis"
@@ -770,17 +870,49 @@ window.cockpit_po = {
   null,
   "Tablette"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "La clé SSH $0 de $1 sur $2 sera ajoutée au fichier $3 de $4 sur $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "La clé SSH $0 sera disponible pour le reste de la session et sera également disponible pour la connexion à d’autres hôtes."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "La clé SSH permettant de se connecter à $0 est protégée par un mot de passe, et l’hôte ne permet pas de se connecter avec un mot de passe. Veuillez fournir le mot de passe de la clé à $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "La clé SSH permettant de se connecter à $0 est protégée. Vous pouvez vous connecter avec votre mot de passe de connexion ou en fournissant le mot de passe de la clé à $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Les empreintes doivent correspondre :"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Le mot de passe de la clé ne peut pas être vide"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Les mots de passe sont différents"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "L’utilisateur actuellement connecté n’est pas autorisé à voir les modifications système"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Le mot de passe ne correspond pas."
+  "Le mot de passe ne peut pas être vide"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "L’empreinte digitale qui en résulte peut être partagée via des méthodes publiques, y compris par courrier électronique."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "L'empreinte qui en découle peut être partagée publiquement par e-mail ou autre sans risque. Si vous demandez à quelqu'un d'autre de faire la vérification pour vous, cette personne peut vous envoyer les résultats par n'importe quel biais."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -798,9 +930,9 @@ window.cockpit_po = {
   null,
   "Cet outil configure la politique SELinux et peut aider à comprendre et à résoudre les violations de la politique."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "Cet outil configure le système pour qu'il écrive les vidages de mémoire sur incidents du noyau sur le disque."
+  "Cet outil configure le système pour qu'il écrive les vidages de mémoire sur incidents du noyau. Il prend en charge les cibles \"local\" (disque), \"ssh\" et \"nfs\"."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -846,6 +978,14 @@ window.cockpit_po = {
   null,
   "Tower"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "Pour des raisons de compatibilité, les systèmes d'exploitation utilisés et leur version doivent correspondre afin de pouvoir utiliser les sessions packageless transitoires : $0."
+ ],
+ "Trust and add host": [
+  null,
+  "Faire confiance à l'hôte et l'ajouter"
+ ],
  "Try again": [
   null,
   "Réessayer"
@@ -858,9 +998,21 @@ window.cockpit_po = {
   null,
   "Impossible de se connecter à cette adresse"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "Impossible de se connecter à $0 en utilisant l'authentification par clé SSH. Veuillez fournir le mot de passe."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Impossible de se connecter à $0. L’hôte n’accepte pas le mot de passe de connexion ou l’une de vos clés SSH."
+ ],
  "Unknown": [
   null,
   "Inconnu"
+ ],
+ "Unknown host: $0": [
+  null,
+  "Hôte inconnu : $0"
  ],
  "Untrusted host": [
   null,
@@ -878,6 +1030,10 @@ window.cockpit_po = {
   null,
   "Validation du jeton d’authentification"
  ],
+ "Verify fingerprint": [
+  null,
+  "Vérifier l'empreinte digitale"
+ ],
  "View all logs": [
   null,
   "Voir tous les journaux"
@@ -893,6 +1049,10 @@ window.cockpit_po = {
  "Waiting for other software management operations to finish": [
   null,
   "Attente de la fin des autres opérations de gestion du logiciel"
+ ],
+ "Weak password": [
+  null,
+  "Mot de passe faible"
  ],
  "Web Console for Linux servers": [
   null,
@@ -932,11 +1092,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "dans moins d'une minute"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "il y a moins d'une minute"
  ],
  "password quality": [
   null,

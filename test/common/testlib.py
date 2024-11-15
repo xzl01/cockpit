@@ -13,11 +13,12 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 """Tools for writing Cockpit test cases."""
 
 import argparse
+import asyncio
 import base64
 import contextlib
 import errno
@@ -25,6 +26,7 @@ import fnmatch
 import glob
 import io
 import json
+import logging
 import os
 import re
 import shutil
@@ -32,13 +34,15 @@ import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import traceback
 import unittest
-from collections.abc import Collection, Container, Iterator, Mapping, Sequence
-from typing import Any, Callable, ClassVar, Literal, Never, TypedDict, TypeVar
+from collections.abc import Collection, Container, Coroutine, Iterator, Mapping, Sequence
+from pathlib import Path
+from typing import Any, Callable, ClassVar, Literal, TypedDict, TypeVar
 
-import cdp
+import webdriver_bidi
 from lcov import write_lcov
 from lib.constants import OSTREE_IMAGES
 from machine import testvm
@@ -46,6 +50,8 @@ from PIL import Image
 
 _T = TypeVar('_T')
 _FT = TypeVar("_FT", bound=Callable[..., Any])
+
+JsonObject = dict[str, Any]
 
 BASE_DIR = os.path.realpath(f'{__file__}/../../..')
 TEST_DIR = f'{BASE_DIR}/test'
@@ -65,6 +71,7 @@ __all__ = (
     'Error',
     'MachineCase',
     'arg_parser',
+    'destructive',
     'no_retry_when_changed',
     'nondestructive',
     'onlyImage',
@@ -76,7 +83,6 @@ __all__ = (
     'test_main',
     'timeout',
     'todo',
-    'todoPybridgeRHEL8',
     'wait',
 )
 
@@ -90,6 +96,27 @@ opts.address = None
 opts.jobs = 1
 opts.fetch = True
 opts.coverage = False
+
+
+# https://w3c.github.io/webdriver/#keyboard-actions for encoding key names
+WEBDRIVER_KEYS = {
+    "Backspace": "\uE003",
+    "Tab": "\uE004",
+    "Return": "\uE006",
+    "Enter": "\uE007",
+    "Shift": "\uE008",
+    "Control": "\uE009",
+    "Alt": "\uE00A",
+    "Escape": "\uE00C",
+    "ArrowLeft": "\uE012",
+    "ArrowUp": "\uE013",
+    "ArrowRight": "\uE014",
+    "ArrowDown": "\uE015",
+    "Insert": "\uE016",
+    "Delete": "\uE017",
+    "Meta": "\uE03D",
+    "F2": "\uE032",
+}
 
 
 # Browser layouts
@@ -185,6 +212,8 @@ def unique_filename(base: str, ext: str) -> str:
 
 
 class Browser:
+    driver: webdriver_bidi.WebdriverBidi
+    browser: str
     layouts: Sequence[BrowserLayout]
     current_layout: BrowserLayout | None
     port: str | int
@@ -211,34 +240,97 @@ class Browser:
         self.used_pixel_references = set[str]()
         self.coverage_label = coverage_label
         self.machine = machine
-        path = os.path.dirname(__file__)
-        sizzle_js = os.path.join(path, "../../node_modules/sizzle/dist/sizzle.js")
-        helpers = [os.path.join(path, "test-functions.js")]
-        if os.path.exists(sizzle_js):
-            helpers.append(sizzle_js)
-        self.cdp = cdp.CDP("C.utf8", verbose=opts.trace, trace=opts.trace,
-                           inject_helpers=helpers,
-                           start_profile=coverage_label is not None)
+
+        headless = os.environ.get("TEST_SHOW_BROWSER", '0') == '0'
+        self.browser = os.environ.get("TEST_BROWSER", "chromium")
+        if self.browser == "chromium":
+            self.driver = webdriver_bidi.ChromiumBidi(headless=headless)
+        elif self.browser == "firefox":
+            self.driver = webdriver_bidi.FirefoxBidi(headless=headless)
+        else:
+            raise ValueError(f"unknown browser {self.browser}")
+        self.loop = asyncio.new_event_loop()
+        self.bidi_thread = threading.Thread(target=self.asyncio_loop_thread, args=(self.loop,))
+        self.bidi_thread.start()
+
+        self.run_async(self.driver.start_session())
+
+        if opts.trace:
+            logging.basicConfig(level=logging.INFO)
+            webdriver_bidi.log_command.setLevel(logging.INFO if opts.trace else logging.WARNING)
+            # not appropriate for --trace, just enable for debugging low-level protocol with browser
+            # webdriver_bidi.log_proto.setLevel(logging.DEBUG)
+
+        test_functions = (Path(__file__).parent / "test-functions.js").read_text()
+        # Don't redefine globals, this confuses Firefox
+        test_functions = "if (window.ph_select) return; " + test_functions
+        self.bidi("script.addPreloadScript", quiet=True, functionDeclaration=f"() => {{ {test_functions} }}")
+
+        try:
+            sizzle_js = (Path(__file__).parent.parent.parent / "node_modules/sizzle/dist/sizzle.js").read_text()
+            # HACK: injecting sizzle fails on missing `document` in assert()
+            sizzle_js = sizzle_js.replace('function assert( fn ) {',
+                                          'function assert( fn ) { if (true) return true; else ')
+            # HACK: sizzle tracks document and when we switch frames, it sees the old document
+            # although we execute it in different context.
+            sizzle_js = sizzle_js.replace('context = context || document;', 'context = context || window.document;')
+            self.bidi("script.addPreloadScript", quiet=True, functionDeclaration=f"() => {{ {sizzle_js} }}")
+        except FileNotFoundError:
+            pass
+
+        if coverage_label:
+            self.cdp_command("Profiler.enable")
+            self.cdp_command("Profiler.startPreciseCoverage", callCount=False, detailed=True)
+
         self.password = "foobar"
         self.timeout_factor = int(os.getenv("TEST_TIMEOUT_FACTOR", "1"))
+        self.timeout = 15
         self.failed_pixel_tests = 0
         self.allow_oops = False
-        self.body_clip = None
         try:
             with open(f'{TEST_DIR}/browser-layouts.json') as fp:
                 self.layouts = json.load(fp)
         except FileNotFoundError:
             self.layouts = default_layouts
-        # Firefox CDP does not support setting EmulatedMedia
-        # https://bugzilla.mozilla.org/show_bug.cgi?id=1549434
-        if self.cdp.browser.name != "chromium":
-            self.layouts = [layout for layout in self.layouts if layout["theme"] != "dark"]
         self.current_layout = None
+        self.valid = True
 
-    def allow_download(self) -> None:
-        """Allow browser downloads"""
-        if self.cdp.browser.name == "chromium":
-            self.cdp.invoke("Page.setDownloadBehavior", behavior="allow", downloadPath=self.cdp.download_dir)
+    def run_async(self, coro: Coroutine[Any, Any, Any]) -> JsonObject:
+        """Run coro in main loop in our BiDi thread
+
+        Wait for the result and return it.
+        """
+        return asyncio.run_coroutine_threadsafe(coro, self.loop).result()
+
+    @staticmethod
+    def asyncio_loop_thread(loop: asyncio.AbstractEventLoop) -> None:
+        asyncio.set_event_loop(loop)
+        loop.run_forever()
+
+    def kill(self) -> None:
+        if not self.valid:
+            return
+        self.run_async(self.driver.close())
+        self.loop.call_soon_threadsafe(self.loop.stop)
+        self.bidi_thread.join()
+        self.valid = False
+
+    def bidi(self, method: str, **params: Any) -> webdriver_bidi.JsonObject:
+        """Send a Webdriver BiDi command and return the JSON response"""
+
+        try:
+            return self.run_async(self.driver.bidi(method, **params))
+        except webdriver_bidi.WebdriverError as e:
+            raise Error(str(e)) from None
+
+    def cdp_command(self, method: str, **params: Any) -> webdriver_bidi.JsonObject:
+        """Send a Chrome DevTools Protocol command and return the JSON response"""
+
+        if self.browser == "chromium":
+            assert isinstance(self.driver, webdriver_bidi.ChromiumBidi)
+            return self.run_async(self.driver.cdp(method, **params))
+        else:
+            raise webdriver_bidi.WebdriverError("CDP is only supported in Chromium")
 
     def open(self, href: str, cookie: Mapping[str, str] | None = None, tls: bool = False) -> None:
         """Load a page into the browser.
@@ -259,14 +351,15 @@ class Browser:
             size = self.current_layout["shell_size"]
             self._set_window_size(size[0], size[1])
         if cookie:
-            self.cdp.invoke("Network.setCookie", **cookie)
+            c = {**cookie, "value": {"type": "string", "value": cookie["value"]}}
+            self.bidi("storage.setCookie", cookie=c)
 
         self.switch_to_top()
         # Some browsers optimize this away if the current URL is already href
         # (e.g. in TestKeys.testAuthorizedKeys). Load the blank page first to always
         # force a load.
-        self.cdp.invoke("Page.navigate", url="about:blank")
-        self.cdp.invoke("Page.navigate", url=href)
+        self.bidi("browsingContext.navigate", context=self.driver.context, url="about:blank", wait="complete")
+        self.bidi("browsingContext.navigate", context=self.driver.context, url=href, wait="complete")
 
     def set_user_agent(self, ua: str) -> None:
         """Set the user agent of the browser
@@ -274,7 +367,10 @@ class Browser:
         :param ua: user agent string
         :type ua: str
         """
-        self.cdp.invoke("Emulation.setUserAgentOverride", userAgent=ua)
+        if self.browser == "chromium":
+            self.cdp_command("Emulation.setUserAgentOverride", userAgent=ua)
+        else:
+            raise NotImplementedError
 
     def reload(self, ignore_cache: bool = False) -> None:
         """Reload the current page
@@ -284,8 +380,15 @@ class Browser:
         """
 
         self.switch_to_top()
-        self.wait_js_cond("ph_select('iframe.container-frame').every(function (e) { return e.getAttribute('data-loaded'); })")
-        self.cdp.invoke("Page.reload", ignoreCache=ignore_cache)
+        self.wait_js_cond("ph_select('iframe.container-frame').every(e => e.getAttribute('data-loaded'))")
+        if self.browser == "firefox":
+            if ignore_cache:
+                webdriver_bidi.log_command.warning(
+                    "Browser.reload(): ignore_cache==True not yet supported with Firefox, ignoring")
+            self.bidi("browsingContext.reload", context=self.driver.context, wait="complete")
+        else:
+            self.bidi("browsingContext.reload", context=self.driver.context, ignoreCache=ignore_cache,
+                      wait="complete")
 
         self.machine.allow_restart_journal_messages()
 
@@ -297,14 +400,23 @@ class Browser:
 
         :param name: frame name
         """
-        self.cdp.set_frame(name)
+        if name is None:
+            self.switch_to_top()
+        else:
+            self.run_async(self.driver.switch_to_frame(name))
 
     def switch_to_top(self) -> None:
         """Switch to the main frame
 
         Switch to the main frame from for example an iframe.
         """
-        self.cdp.set_frame(None)
+        self.driver.switch_to_top()
+
+    def allow_download(self) -> None:
+        """Allow browser downloads"""
+        # this is only necessary for headless chromium
+        if self.browser == "chromium":
+            self.cdp_command("Browser.setDownloadBehavior", behavior="allow", downloadPath=str(self.driver.download_dir))
 
     def upload_files(self, selector: str, files: Sequence[str]) -> None:
         """Upload a local file to the browser
@@ -312,32 +424,8 @@ class Browser:
         The selector should select the <input type="file"/> element.
         Files is a list of absolute paths to files which should be uploaded.
         """
-        r = self.cdp.invoke("Runtime.evaluate", expression='document.querySelector(%s)' % jsquote(selector))
-        objectId = r["result"]["objectId"]
-        self.cdp.invoke("DOM.setFileInputFiles", files=files, objectId=objectId)
-
-    def raise_cdp_exception(
-        self, func: str, arg: str, details: Mapping[str, Any], trailer: str | None = None
-    ) -> Never:
-        # unwrap a typical error string
-        if details.get("exception", {}).get("type") == "string":
-            msg = details["exception"]["value"]
-        elif details.get("text", None):
-            msg = details.get("text", None)
-        else:
-            msg = str(details)
-        if trailer:
-            msg += "\n" + trailer
-        raise Error("%s(%s): %s" % (func, arg, msg))
-
-    def inject_js(self, code: str) -> None:
-        """Execute JS code that does not return anything
-
-        :param code: a string containing JavaScript code
-        :type code: str
-        """
-        self.cdp.invoke("Runtime.evaluate", expression=code, trace=code,
-                        silent=False, awaitPromise=True, returnByValue=False, no_trace=True)
+        element = self.eval_js(f"ph_find({jsquote(selector)})")
+        self.bidi("input.setFiles", context=self.driver.context, element=element, files=files)
 
     def eval_js(self, code: str, no_trace: bool = False) -> Any:
         """Execute JS code that returns something
@@ -345,21 +433,8 @@ class Browser:
         :param code: a string containing JavaScript code
         :param no_trace: do not print information about unknown return values (default False)
         """
-        result = self.cdp.invoke("Runtime.evaluate", expression=code, trace=code,
-                                 silent=False, awaitPromise=True, returnByValue=True, no_trace=no_trace)
-        if "exceptionDetails" in result:
-            self.raise_cdp_exception("eval_js", code, result["exceptionDetails"])
-        _type = result.get("result", {}).get("type")
-        if _type == 'object' and result["result"].get("subtype", "") == "error":
-            raise Error(result["result"]["description"])
-        if _type == "undefined":
-            return None
-        if _type and "value" in result["result"]:
-            return result["result"]["value"]
-
-        if opts.trace:
-            print("eval_js(%s): cannot interpret return value %s" % (code, result))
-        return None
+        return self.bidi("script.evaluate", expression=code, quiet=no_trace,
+                         awaitPromise=True, target={"context": self.driver.context})["result"]
 
     def call_js_func(self, func: str, *args: object) -> Any:
         """Call a JavaScript function
@@ -391,11 +466,13 @@ class Browser:
         :param name: the name of the cookie
         :type name: str
         """
-        cookies = self.cdp.invoke("Network.getCookies")
-        for c in cookies["cookies"]:
-            assert isinstance(c, Mapping)
-            if c["name"] == name:
-                return c
+        cookies = self.bidi("storage.getCookies", filter={"name": name})["cookies"]
+        if len(cookies) > 0:
+            c = cookies[0]
+            # if we ever need to handle "base64", add that
+            assert c["value"]["type"] == "string"
+            c["value"] = c["value"]["value"]
+            return c
         return None
 
     def go(self, url_hash: str) -> None:
@@ -427,14 +504,75 @@ class Browser:
         :param metaKey: press the meta key
         """
         self.wait_visible(selector)
-        self.call_js_func('ph_mouse', selector, event, x, y, btn, ctrlKey, shiftKey, altKey, metaKey)
+
+        # HACK: Chromium clicks don't work with iframes; use our old "synthesize MouseEvent" approach
+        # https://issues.chromium.org/issues/359616812
+        # TODO: x and y are not currently implemented: webdriver (0, 0) is the element's center, not top left corner
+        if self.browser == "chromium" or x != 0 or y != 0:
+            self.call_js_func('ph_mouse', selector, event, x, y, btn, ctrlKey, shiftKey, altKey, metaKey)
+            return
+
+        # For Firefox and regular clicks, use the BiDi API, which is more realistic -- it doesn't
+        # sidestep the browser
+        element = self.call_js_func('ph_find_scroll_into_view', selector)
+
+        # btn=2 for context menus doesn't work with ph_mouse(); so translate the old ph_mouse() API
+        if event == "contextmenu":
+            assert btn == 0, "contextmenu event can only be done with default 'btn' value"
+            btn = 2
+            event = "click"
+
+        actions = [{"type": "pointerMove", "x": 0, "y": 0, "origin": {"type": "element", "element": element}}]
+        down = {"type": "pointerDown", "button": btn}
+        up = {"type": "pointerUp", "button": btn}
+        if event == "click":
+            actions.extend([down, up])
+        elif event == "dblclick":
+            actions.extend([down, up, down, up])
+        elif event == "mouseenter":
+            actions.insert(0, {"type": "pointerMove", "x": 0, "y": 0, "origin": "viewport"})
+        elif event == "mouseleave":
+            actions.append({"type": "pointerMove", "x": 0, "y": 0, "origin": "viewport"})
+        else:
+            raise NotImplementedError(f"unknown event {event}")
+
+        # modifier keys
+        ev_id = f"pointer-{self.driver.last_id}"
+        keys_pre = []
+        keys_post = []
+
+        def key(type_: str, name: str) -> JsonObject:
+            return {"type": "key", "id": ev_id + type_, "actions": [{"type": type_, "value": WEBDRIVER_KEYS[name]}]}
+
+        if altKey:
+            keys_pre.append(key("keyDown", "Alt"))
+            keys_post.append(key("keyUp", "Alt"))
+        if ctrlKey:
+            keys_pre.append(key("keyDown", "Control"))
+            keys_post.append(key("keyUp", "Control"))
+        if shiftKey:
+            keys_pre.append(key("keyDown", "Shift"))
+            keys_post.append(key("keyUp", "Shift"))
+        if metaKey:
+            keys_pre.append(key("keyDown", "Meta"))
+            keys_post.append(key("keyUp", "Meta"))
+
+        # the actual mouse event
+        actions = [{
+            "id": ev_id,
+            "type": "pointer",
+            "parameters": {"pointerType": "mouse"},
+            "actions": actions,
+        }]
+
+        self.bidi("input.performActions", context=self.driver.context, actions=keys_pre + actions + keys_post)
 
     def click(self, selector: str) -> None:
         """Click on a ui element
 
         :param selector: the selector to click on
         """
-        self.mouse(selector + ":not([disabled]):not([aria-disabled=true])", "click", 0, 0, 0)
+        self.mouse(selector + ":not([disabled]):not([aria-disabled=true])", "click")
 
     def val(self, selector: str) -> Any:
         """Get the value attribute of a selector.
@@ -497,8 +635,10 @@ class Browser:
         :param selector: the selector
         :param val: boolean value to enable or disable checkbox
         """
-        self.wait_visible(selector + ':not([disabled]):not([aria-disabled=true])')
-        self.call_js_func('ph_set_checked', selector, val)
+        # avoid ph_set_checked, that doesn't use proper mouse emulation
+        checked = self.get_checked(selector)
+        if checked != val:
+            self.click(selector)
 
     def focus(self, selector: str) -> None:
         """Set focus on selected element.
@@ -517,68 +657,74 @@ class Browser:
         self.call_js_func('ph_blur', selector)
 
     def input_text(self, text: str) -> None:
-        for char in text:
-            self.cdp.invoke("Input.dispatchKeyEvent", type="keyDown", text=char, key=char)
-            self.cdp.invoke("Input.dispatchKeyEvent", type="keyUp", text=char, key=char)
+        actions = []
+        for c in text:
+            # quality-of-life special case
+            if c == '\n':
+                c = WEBDRIVER_KEYS["Enter"]
+            actions.append({"type": "keyDown", "value": c})
+            actions.append({"type": "keyUp", "value": c})
+        self.bidi("input.performActions", context=self.driver.context, actions=[
+            {"type": "key", "id": "key-0", "actions": actions}])
 
-    def key(self, name: str, repeat: int = 1, modifiers: int = 0) -> None:
+    def key(self, name: str, repeat: int = 1, modifiers: list[str] | None = None) -> None:
         """Press and release a named keyboard key.
 
         Use this function to input special characters or modifiers.
 
-        :param name: key name like "Enter", "Delete", or "ArrowLeft"
+        :param name: ASCII value or key name like "Enter", "Delete", or "ArrowLeft" (entry in WEBDRIVER_KEYS)
         :param repeat: number of times to repeat this key (default 1)
-        :param modifiers: bit field: Alt=1, Ctrl=2, Meta/Command=4, Shift=8
+        :param modifiers: "Shift", "Control", "Alt"
         """
-        args: dict[str, int | str] = {}
-        if self.cdp.browser.name == "chromium":
-            # HACK: chromium doesn't understand some key codes in some situations
-            win_keys = {
-                "Backspace": 8,
-                "Enter": 13,
-                "Escape": 27,
-                "ArrowDown": 40,
-                "Insert": 45,
-            }
-            if name in win_keys:
-                args["windowsVirtualKeyCode"] = win_keys[name]
-            if name == 'Enter':
-                args["text"] = '\r'
-            # HACK: chromium needs windowsVirtualKeyCode with modifiers
-            elif len(name) == 1 and name.isalnum() and modifiers != 0:
-                args["windowsVirtualKeyCode"] = ord(name.upper())
+        actions = []
+        actions_pre = []
+        actions_post = []
+        keycode = WEBDRIVER_KEYS.get(name, name)
+
+        for m in (modifiers or []):
+            actions_pre.append({"type": "keyDown", "value": WEBDRIVER_KEYS[m]})
+            actions_post.append({"type": "keyUp", "value": WEBDRIVER_KEYS[m]})
 
         for _ in range(repeat):
-            self.cdp.invoke("Input.dispatchKeyEvent", type="keyDown", key=name, modifiers=modifiers, **args)
-            self.cdp.invoke("Input.dispatchKeyEvent", type="keyUp", key=name, modifiers=modifiers, **args)
+            actions.append({"type": "keyDown", "value": keycode})
+            actions.append({"type": "keyUp", "value": keycode})
+
+        self.bidi("input.performActions", context=self.driver.context, actions=[
+            {"type": "key", "id": "key-0", "actions": actions_pre + actions + actions_post}])
 
     def select_from_dropdown(self, selector: str, value: object) -> None:
+        """For an actual <select> HTML component"""
+
         self.wait_visible(selector + ':not([disabled]):not([aria-disabled=true])')
         text_selector = f"{selector} option[value='{value}']"
         self._wait_present(text_selector)
         self.set_val(selector, value)
         self.wait_val(selector, value)
 
-    def select_PF4(self, selector: str, value: str) -> None:
-        self.click(f"{selector}:not([disabled]):not([aria-disabled=true])")
-        select_entry = f"{selector} + ul button:contains('{value}')"
-        self.click(select_entry)
-        if self.is_present(f"{selector}.pf-m-typeahead"):
-            self.wait_val(f"{selector} > div input[type=text]", value)
-        else:
-            self.wait_text(f"{selector} .pf-v5-c-select__toggle-text", value)
+    def select_PF(self, selector: str, value: str, menu_class: str = ".pf-v5-c-menu") -> None:
+        """For a PatternFly Select-like component
 
-    def select_PF5(self, selector_button: str, selector: str, value: object) -> None:
-        self.click(f"{selector_button}:not([disabled]):not([aria-disabled=true])")
-        select_entry = f"{selector} ul button:contains('{value}')"
-        self.click(select_entry)
+        For things like <Select> or <TimePicker>. Unfortunately none of them render as an actual <select>, but a
+        <button> or <div> with a detached menu div (which can even be in the parent).
+
+        For similar components like the deprecated <Select> you can specify a different menu class.
+        """
+        self.click(selector)
+        # SelectOption's value does not render to an actual "value" attribute, just a <li> text
+        self.click(f"{menu_class} button:contains('{value}')")
+        self.wait_not_present(menu_class)
+
+    def select_PF_deprecated(self, selector: str, value: str) -> None:
+        """For the deprecated PatternFly Select component"""
+
+        self.select_PF(selector, value, menu_class=".pf-v5-c-select__menu")
 
     def set_input_text(
         self, selector: str, val: str, append: bool = False, value_check: bool = True, blur: bool = True
     ) -> None:
         self.focus(selector)
         if not append:
-            self.key("a", modifiers=2)  # Ctrl + a
+            self.key("a", modifiers=["Control"])
         if val == "":
             self.key("Backspace")
         else:
@@ -590,20 +736,22 @@ class Browser:
             self.wait_val(selector, val)
 
     def set_file_autocomplete_val(self, group_identifier: str, location: str) -> None:
-        self.set_input_text(f"{group_identifier} .pf-v5-c-select__toggle-typeahead input", location)
-        # click away the selection list, to force a state update
-        self.click(f"{group_identifier} .pf-v5-c-select__toggle-typeahead")
-        self.wait_not_present(f"{group_identifier} .pf-v5-c-select__menu")
+        self.set_input_text(f"{group_identifier} .pf-v5-c-menu-toggle input", location)
+        # select the file
+        self.wait_text(f"{group_identifier} ul li:nth-child(1) button", location)
+        self.click(f"{group_identifier} ul li:nth-child(1) button")
+        self.wait_not_present(f"{group_identifier} .pf-v5-c-menu")
+        self.wait_val(f"{group_identifier} .pf-v5-c-menu-toggle input", location)
 
     @contextlib.contextmanager
     def wait_timeout(self, timeout: int) -> Iterator[None]:
-        old_timeout = self.cdp.timeout
-        self.cdp.timeout = timeout
+        old_timeout = self.timeout
+        self.timeout = timeout
         yield
-        self.cdp.timeout = old_timeout
+        self.timeout = old_timeout
 
     def wait(self, predicate: Callable[[], _T | None]) -> _T:
-        for _ in range(self.cdp.timeout * self.timeout_factor * 5):
+        for _ in range(self.timeout * self.timeout_factor * 5):
             val = predicate()
             if val:
                 return val
@@ -611,33 +759,43 @@ class Browser:
         raise Error('timed out waiting for predicate to become true')
 
     def wait_js_cond(self, cond: str, error_description: str = "null") -> None:
-        count = 0
-        timeout = self.cdp.timeout * self.timeout_factor
+        timeout = self.timeout * self.timeout_factor
         start = time.time()
-        while True:
-            count += 1
+        last_error = None
+        for _retry in range(5):
             try:
-                result = self.cdp.invoke("Runtime.evaluate",
-                                         expression="ph_wait_cond(() => %s, %i, %s)" % (cond, timeout * 1000, error_description),
-                                         silent=False, awaitPromise=True, trace="wait: " + cond)
-                if "exceptionDetails" in result:
-                    if self.cdp.browser.name == "firefox" and count < 20 and "ph_wait_cond is not defined" in result["exceptionDetails"].get("text", ""):
-                        time.sleep(0.1)
-                        continue
-                    trailer = "\n".join(self.cdp.get_js_log())
-                    self.raise_cdp_exception("timeout\nwait_js_cond", cond, result["exceptionDetails"], trailer)
-                if timeout > 0:
-                    duration = time.time() - start
-                    percent = int(duration / timeout * 100)
-                    if percent >= 50:
-                        print(f"WARNING: Waiting for {cond} took {duration:.1f} seconds, which is {percent}% of the timeout.")
+                self.bidi("script.evaluate",
+                          expression=f"ph_wait_cond(() => {cond}, {timeout * 1000}, {error_description})",
+                          awaitPromise=True, timeout=timeout + 5, target={"context": self.driver.context})
+
+                duration = time.time() - start
+                percent = int(duration / timeout * 100)
+                if percent >= 50:
+                    print(f"WARNING: Waiting for {cond} took {duration:.1f} seconds, which is {percent}% of the timeout.")
                 return
-            except RuntimeError as e:
-                data = e.args[0]
-                if count < 20 and isinstance(data, dict) and "response" in data and data["response"].get("message") in ["Execution context was destroyed.", "Cannot find context with specified id"]:
-                    time.sleep(1)
-                else:
-                    raise e
+            except Error as e:
+                last_error = e
+
+                # can happen when waiting across page reloads
+                if any(pattern in str(e) for pattern in [
+                    # during page loading
+                    "is not a function",
+                    # chromium
+                    "Execution context was destroyed",
+                    "Cannot find context",
+                    # firefox
+                    "MessageHandlerFrame' destroyed",
+                   ]):
+                    if time.time() - start < timeout:
+                        webdriver_bidi.log_command.info("wait_js_cond: Ignoring/retrying %r", e)
+                        time.sleep(1)
+                        continue
+
+                break
+
+        assert last_error
+        # rewrite exception to have more context, also for compatibility with existing naughties
+        raise Error(f"timeout\nwait_js_cond({cond}): {last_error.msg}") from None
 
     def wait_js_func(self, func: str, *args: object) -> None:
         self.wait_js_cond("%s(%s)" % (func, ','.join(map(jsquote, args))))
@@ -670,7 +828,7 @@ class Browser:
         self._wait_present(selector)
         self.wait_js_func('ph_has_attr', selector, attr, val)
 
-    def wait_attr_contains(self, selector: str, attr: str, val: object) -> None:
+    def wait_attr_contains(self, selector: str, attr: str, val: str) -> None:
         self._wait_present(selector)
         self.wait_js_func('ph_attr_contains', selector, attr, val)
 
@@ -748,10 +906,15 @@ class Browser:
 
         self.switch_to_top()
 
+        def wait_no_curtain() -> None:
+            # Older shells make the curtain invisible, newer shells
+            # remove it entirely. Let's cater to both.
+            self.wait_js_cond('!ph_is_present(".curtains-ct") || !ph_is_visible(".curtains-ct")')
+
         while True:
             try:
                 self._wait_present("iframe.container-frame[name='%s'][data-loaded]" % frame)
-                self.wait_not_visible(".curtains-ct")
+                wait_no_curtain()
                 self.wait_visible("iframe.container-frame[name='%s']" % frame)
                 break
             except Error as ex:
@@ -759,12 +922,11 @@ class Browser:
                     reconnect = False
                     if self.is_present("#machine-reconnect"):
                         self.click("#machine-reconnect")
-                        self.wait_not_visible(".curtains-ct")
+                        wait_no_curtain()
                         continue
                 raise
 
         self.switch_to_frame(frame)
-        self._wait_present("body")
         self.wait_visible("body")
 
     def leave_page(self) -> None:
@@ -842,7 +1004,6 @@ class Browser:
 
         self.try_login(user=user, password=password, superuser=superuser, legacy_authorized=legacy_authorized)
 
-        self._wait_present('#content')
         self.wait_visible('#content')
         if path:
             self.enter_page(path.split("#")[0], host=host)
@@ -879,9 +1040,8 @@ class Browser:
     ) -> None:
         self.logout()
         if wait_remote_session_machine:
-            wait_remote_session_machine.execute("while pgrep -a cockpit-ssh; do sleep 1; done")
+            wait_remote_session_machine.execute("while pgrep -af '[c]ockpit.beiboot'; do sleep 1; done")
         self.try_login(user=user, password=password, superuser=superuser)
-        self._wait_present('#content')
         self.wait_visible('#content')
         if path:
             if path.startswith("/@"):
@@ -921,38 +1081,37 @@ class Browser:
         password: str | None = None,
         passwordless: bool | None = False
     ) -> None:
-        cur_frame = self.cdp.cur_frame
-        self.switch_to_top()
+        with self.driver.restore_context():
+            self.switch_to_top()
+            self.open_superuser_dialog()
 
-        self.open_superuser_dialog()
+            # In (open)SUSE images, superuser access always requires the root password
+            if user is None:
+                user = "root" if "suse" in self.machine.image else "admin"
 
-        # In (open)SUSE images, superuser access always requires the root password
-        if user is None:
-            user = "root" if "suse" in self.machine.image else "admin"
+            if passwordless:
+                self.wait_in_text("div[role=dialog]", "Administrative access")
+                self.wait_in_text("div[role=dialog] .pf-v5-c-modal-box__body", "You now have administrative access.")
+                # there should be only one ("Close") button
+                self.click("div[role=dialog] .pf-v5-c-modal-box__footer button")
+            else:
+                self.wait_in_text("div[role=dialog]", "Switch to administrative access")
+                self.wait_in_text("div[role=dialog]", f"Password for {user}:")
+                self.set_input_text("div[role=dialog] input", password or "foobar")
+                self.click("div[role=dialog] button.pf-m-primary")
 
-        if passwordless:
-            self.wait_in_text("div[role=dialog]:contains('Administrative access')", "You now have administrative access.")
-            self.click("div[role=dialog] button:contains('Close')")
-            self.wait_not_present("div[role=dialog]:contains('You now have administrative access.')")
-        else:
-            self.wait_in_text("div[role=dialog]:contains('Switch to administrative access')", f"Password for {user}:")
-            self.set_input_text("div[role=dialog]:contains('Switch to administrative access') input", password or "foobar")
-            self.click("div[role=dialog] button:contains('Authenticate')")
-            self.wait_not_present("div[role=dialog]:contains('Switch to administrative access')")
+            self.wait_not_present("div[role=dialog]")
 
-        self.check_superuser_indicator("Administrative access")
-        self.switch_to_frame(cur_frame)
+            self.check_superuser_indicator("Administrative access")
 
     def drop_superuser(self) -> None:
-        cur_frame = self.cdp.cur_frame
-        self.switch_to_top()
-
-        self.open_superuser_dialog()
-        self.click("div[role=dialog]:contains('Switch to limited access') button:contains('Limit access')")
-        self.wait_not_present("div[role=dialog]:contains('Switch to limited access')")
-        self.check_superuser_indicator("Limited access")
-
-        self.switch_to_frame(cur_frame)
+        with self.driver.restore_context():
+            self.switch_to_top()
+            self.open_superuser_dialog()
+            self.wait_in_text("div[role=dialog]", "Switch to limited access")
+            self.click("div[role=dialog] button.pf-m-primary")
+            self.wait_not_present("div[role=dialog]")
+            self.check_superuser_indicator("Limited access")
 
     def click_system_menu(self, path: str, enter: bool = True) -> None:
         """Click on a "System" menu entry with given URL path
@@ -976,18 +1135,46 @@ class Browser:
         assert m is not None
         return int(m.group(1))
 
-    def ignore_ssl_certificate_errors(self, ignore: bool) -> None:
-        action = "continue" if ignore else "cancel"
-        if opts.trace:
-            print("-> Setting SSL certificate error policy to %s" % action)
-        self.cdp.command(f"setSSLBadCertificateAction('{action}')")
+    def start_machine_troubleshoot(
+        self,
+        new: bool = False,
+        known_host: bool = False,
+        password: str | None = None,
+        expect_closed_dialog: bool = True,
+    ) -> None:
+        self.click('#machine-troubleshoot')
+
+        self.wait_visible('#hosts_setup_server_dialog')
+        if new:
+            self.wait_text("#hosts_setup_server_dialog button.pf-m-primary", "Add")
+            self.click("#hosts_setup_server_dialog button.pf-m-primary")
+            if not known_host:
+                self.wait_in_text('#hosts_setup_server_dialog', "You are connecting to")
+                self.wait_in_text('#hosts_setup_server_dialog', "for the first time.")
+                self.wait_text("#hosts_setup_server_dialog button.pf-m-primary", "Trust and add host")
+                self.click("#hosts_setup_server_dialog button.pf-m-primary")
+        if password:
+            self.wait_in_text('#hosts_setup_server_dialog', "Unable to log in")
+            self.set_input_text('#login-custom-password', password)
+            self.wait_text("#hosts_setup_server_dialog button.pf-m-primary", "Log in")
+            self.click("#hosts_setup_server_dialog button.pf-m-primary")
+        if expect_closed_dialog:
+            self.wait_not_present('#hosts_setup_server_dialog')
+
+    def add_machine(self, address: str, known_host: bool = False, password: str = "foobar") -> None:
+        self.switch_to_top()
+        self.go(f"/@{address}")
+        self.start_machine_troubleshoot(new=True, known_host=known_host, password=password)
+        self.enter_page("/system", host=address)
 
     def grant_permissions(self, *args: str) -> None:
         """Grant permissions to the browser"""
-        # https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-grantPermissions
-        self.cdp.invoke("Browser.grantPermissions",
-                        origin="http://%s:%s" % (self.address, self.port),
-                        permissions=args)
+
+        # BiDi permission extension:
+        # https://www.w3.org/TR/permissions/#automation-webdriver-bidi
+        for perm in args:
+            self.bidi("permissions.setPermission", descriptor={"name": perm}, state="granted",
+                      origin=f"http://{self.address}:{self.port}")
 
     def snapshot(self, title: str, label: str | None = None) -> None:
         """Take a snapshot of the current screen and save it as a PNG and HTML.
@@ -995,46 +1182,42 @@ class Browser:
         Arguments:
             title: Used for the filename.
         """
-        if self.cdp and self.cdp.valid:
-            self.cdp.command("clearExceptions()")
-
+        if self.valid:
             filename = unique_filename(f"{label or self.label}-{title}", "png")
-            if self.body_clip:
-                ret = self.cdp.invoke("Page.captureScreenshot", clip=self.body_clip, no_trace=True)
-            else:
-                ret = self.cdp.invoke("Page.captureScreenshot", no_trace=True)
-            if "data" in ret:
+            try:
+                ret = self.bidi("browsingContext.captureScreenshot", quiet=True,
+                                context=self.driver.top_context, origin="document")
                 with open(filename, 'wb') as f:
                     f.write(base64.standard_b64decode(ret["data"]))
                 attach(filename, move=True)
                 print("Wrote screenshot to " + filename)
-            else:
-                print("Screenshot not available")
+            except Error as e:
+                print("Screenshot not available:", e)
 
             filename = unique_filename(f"{label or self.label}-{title}", "html")
-            html = self.cdp.invoke("Runtime.evaluate", expression="document.documentElement.outerHTML",
-                                   no_trace=True)["result"]["value"]
-            with open(filename, 'wb') as f:
-                f.write(html.encode())
-            attach(filename, move=True)
-            print("Wrote HTML dump to " + filename)
+            try:
+                html = self.eval_js("document.documentElement.outerHTML", no_trace=True)
+                with open(filename, 'wb') as f:
+                    f.write(html.encode())
+                attach(filename, move=True)
+                print("Wrote HTML dump to " + filename)
+            except Error as e:
+                print("HTML dump not available:", e)
 
     def _set_window_size(self, width: int, height: int) -> None:
-        self.cdp.invoke("Emulation.setDeviceMetricsOverride",
-                        width=width, height=height,
-                        deviceScaleFactor=0, mobile=False)
+        self.bidi("browsingContext.setViewport", context=self.driver.top_context,
+                  viewport={"width": width, "height": height})
 
     def _set_emulated_media_theme(self, name: str) -> None:
         # https://bugzilla.mozilla.org/show_bug.cgi?id=1549434
-        if self.cdp.browser.name == "chromium":
-            self.cdp.invoke("Emulation.setEmulatedMedia", features=[{'name': 'prefers-color-scheme', 'value': name}])
+        if self.browser == "chromium":
+            self.cdp_command("Emulation.setEmulatedMedia", features=[{'name': 'prefers-color-scheme', 'value': name}])
 
     def _set_direction(self, direction: str) -> None:
-        cur_frame = self.cdp.cur_frame
-        if self.is_present("#shell-page"):
-            self.switch_to_top()
-            self.set_attr("#shell-page", "dir", direction)
-        self.switch_to_frame(cur_frame)
+        with self.driver.restore_context():
+            if self.is_present("#shell-page"):
+                self.switch_to_top()
+                self.set_attr("#shell-page", "dir", direction)
         self.set_attr("html", "dir", direction)
 
     def set_layout(self, name: str) -> None:
@@ -1141,7 +1324,10 @@ class Browser:
         filename = base + "-pixels.png"
         ref_filename = os.path.join(reference_dir, filename)
         self.used_pixel_references.add(ref_filename)
-        ret = self.cdp.invoke("Page.captureScreenshot", clip=rect, no_trace=True)
+        rect["type"] = "box"
+        ret = self.bidi("browsingContext.captureScreenshot", quiet=True,
+                        context=self.driver.top_context,
+                        clip=rect)
         png_now = base64.standard_b64decode(ret["data"])
         png_ref = os.path.exists(ref_filename) and open(ref_filename, "rb").read()
         if not png_ref:
@@ -1257,7 +1443,6 @@ class Browser:
         # If the page overflows make sure to not show a scrollbar
         # Don't apply this hack for login and terminal and shell as they don't use PF Page
         if not self.is_present("#shell-page") and not self.is_present("#login-details") and not self.is_present("#system-terminal-page"):
-            self.switch_to_frame(self.cdp.cur_frame)
             classes = self.attr("main", "class")
             if "pf-v5-c-page__main" in classes:
                 self.set_attr("main.pf-v5-c-page__main", "class", f"{classes} pixel-test")
@@ -1292,14 +1477,14 @@ class Browser:
     def get_js_log(self) -> Sequence[str]:
         """Return the current javascript log"""
 
-        if self.cdp:
-            return self.cdp.get_js_log()
+        if self.valid:
+            return [str(log) for log in self.driver.logs]
         return []
 
     def copy_js_log(self, title: str, label: str | None = None) -> None:
         """Copy the current javascript log"""
 
-        logs = list(self.get_js_log())
+        logs = self.get_js_log()
         if logs:
             filename = unique_filename(f"{label or self.label}-{title}", "js.log")
             with open(filename, 'wb') as f:
@@ -1307,21 +1492,18 @@ class Browser:
             attach(filename, move=True)
             print("Wrote JS log to " + filename)
 
-    def kill(self) -> None:
-        self.cdp.kill()
-
     def write_coverage_data(self) -> None:
-        if self.coverage_label and self.cdp and self.cdp.valid:
-            coverage = self.cdp.invoke("Profiler.takePreciseCoverage")
+        if self.coverage_label and self.valid:
+            coverage = self.cdp_command("Profiler.takePreciseCoverage")["result"]
             write_lcov(coverage['result'], self.coverage_label)
 
     def assert_no_oops(self) -> None:
         if self.allow_oops:
             return
 
-        if self.cdp and self.cdp.valid:
+        if self.valid:
             self.switch_to_top()
-            if self.is_present("#navbar-oops"):
+            if self.eval_js("!!document.getElementById('navbar-oops')"):
                 assert not self.is_visible("#navbar-oops"), "Cockpit shows an Oops"
 
 
@@ -1392,8 +1574,9 @@ class MachineCase(unittest.TestCase):
                 self.network = network
             networking = self.network.host(restrict=restrict, forward=forward or {})
             machine = machine_class(verbose=opts.trace, networking=networking, image=image, **kwargs)
-            if opts.fetch and not os.path.exists(machine.image_file):
-                machine.pull(machine.image_file)
+            image_file = machine.image_file  # type: ignore[attr-defined]
+            if opts.fetch and not os.path.exists(image_file):
+                machine.pull(image_file)
             if cleanup:
                 self.addCleanup(machine.kill)
         return machine
@@ -1547,10 +1730,11 @@ class MachineCase(unittest.TestCase):
             if dhcp:
                 machine.dhcp_server()
 
-        self.journal_start = self.machine.journal_cursor()
+        m = self.machine
+        self.journal_start = m.journal_cursor()
         self.browser = self.new_browser(coverage=opts.coverage)
         # fail tests on criticals
-        self.machine.write("/etc/cockpit/cockpit.conf", "[Log]\nFatal = criticals\n")
+        m.write("/etc/cockpit/cockpit.conf", "[Log]\nFatal = criticals\n")
         if self.is_nondestructive():
             self.nonDestructiveSetup()
 
@@ -1559,7 +1743,7 @@ class MachineCase(unittest.TestCase):
         if self.is_devel_build():
             self.disable_preload("packagekit", "systemd")
 
-        image = self.machine.image
+        image = m.image
 
         if image.startswith(('debian', 'ubuntu')) or image == 'arch':
             self.libexecdir = '/usr/lib/cockpit'
@@ -1576,6 +1760,14 @@ class MachineCase(unittest.TestCase):
             else:
                 self.sshd_socket = 'sshd.socket'
         self.restart_sshd = f'systemctl try-restart {self.sshd_service}'
+
+        # only enabled by default on released OSes; see pkg/shell/manifest.json
+        self.multihost_enabled = image.startswith(("rhel-9", "centos-9")) or image in [
+                "ubuntu-2204", "ubuntu-2404", "debian-stable",
+                "fedora-39", "fedora-40", "fedora-coreos"]
+        # Transitional code while we move ubuntu-stable from 24.04 to 24.10
+        if image == "ubuntu-stable" and m.execute(". /etc/os-release; echo $VERSION_ID").strip() == "24.04":
+            self.multihost_enabled = True
 
     def nonDestructiveSetup(self) -> None:
         """generic setUp/tearDown for @nondestructive tests"""
@@ -1629,8 +1821,9 @@ class MachineCase(unittest.TestCase):
             self.restore_file("/etc/fstab")
             self.restore_file("/etc/crypttab")
 
-            # tests expect cockpit.service to not run at start; also, avoid log leakage into the next test
-            self.addCleanup(m.execute, "systemctl stop --quiet cockpit")
+            if not m.ws_container:
+                # tests expect cockpit.service to not run at start; also, avoid log leakage into the next test
+                self.addCleanup(m.execute, "systemctl stop --quiet cockpit")
 
         # The sssd daemon seems to get confused when we restore
         # backups of /etc/group etc and stops following updates to it.
@@ -1727,11 +1920,20 @@ class MachineCase(unittest.TestCase):
 
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+    def enable_multihost(self, machine: testvm.Machine) -> None:
+        if isBeibootLogin():
+            raise NotImplementedError("multi-host config change not currently implemented for beiboot scenario")
+        if not self.multihost_enabled:
+            machine.write("/etc/cockpit/cockpit.conf",
+                          '[WebService]\nAllowMultiHost=yes\n')
+            machine.restart_cockpit()
+
     def login_and_go(
         self,
         path: str | None = None,
         *,
         user: str | None = None,
+        password: str | None = None,
         host: str | None = None,
         superuser: bool = True,
         urlroot: str | None = None,
@@ -1743,42 +1945,8 @@ class MachineCase(unittest.TestCase):
         self.machine.start_cockpit(tls=tls)
         # first load after starting cockpit tends to take longer, due to on-demand service start
         with self.browser.wait_timeout(30):
-            self.browser.login_and_go(path, user=user, host=host, superuser=superuser, urlroot=urlroot, tls=tls)
-
-    def start_machine_troubleshoot(
-        self,
-        new: bool = False,
-        known_host: bool = False,
-        password: str | None = None,
-        expect_closed_dialog: bool = True,
-        browser: Browser | None = None
-    ) -> None:
-        b = browser or self.browser
-
-        b.click('#machine-troubleshoot')
-
-        b.wait_visible('#hosts_setup_server_dialog')
-        if new:
-            b.click('#hosts_setup_server_dialog button:contains(Add)')
-            if not known_host:
-                b.wait_in_text('#hosts_setup_server_dialog', "You are connecting to")
-                b.wait_in_text('#hosts_setup_server_dialog', "for the first time.")
-                b.click("#hosts_setup_server_dialog button:contains('Trust and add host')")
-        if password:
-            b.wait_in_text('#hosts_setup_server_dialog', "Unable to log in")
-            b.set_input_text('#login-custom-password', password)
-            b.click('#hosts_setup_server_dialog button:contains(Log in)')
-        if expect_closed_dialog:
-            b.wait_not_present('#hosts_setup_server_dialog')
-
-    def add_machine(
-        self, address: str, known_host: bool = False, password: str = "foobar", browser: Browser | None = None
-    ) -> None:
-        b = browser or self.browser
-        b.switch_to_top()
-        b.go(f"/@{address}")
-        self.start_machine_troubleshoot(new=True, known_host=known_host, password=password, browser=browser)
-        b.enter_page("/system", host=address)
+            self.browser.login_and_go(path, user=user, password=password, host=host, superuser=superuser,
+                                      urlroot=urlroot, tls=tls)
 
     # List of allowed journal messages during tests; these need to match the *entire* message
     default_allowed_messages = [
@@ -1858,6 +2026,9 @@ class MachineCase(unittest.TestCase):
         "(direct|pcp-archive): instance name lookup failed:.*",
         "(direct|pcp-archive): couldn't create pcp archive context for.*",
 
+        # PCP Python bridge
+        "cockpit.channels.pcp-ERROR: no such metric: .*",
+
         # timedatex.service shuts down after timeout, runs into race condition with property watching
         ".*org.freedesktop.timedate1: couldn't get all properties.*Error:org.freedesktop.DBus.Error.NoReply.*",
     ]
@@ -1883,10 +2054,6 @@ class MachineCase(unittest.TestCase):
         # PackageKit crashes a lot; let that not be the sole reason for failing a test
         "error: Could not determine kpatch packages:.*PackageKit crashed",
     ]
-
-    if testvm.DEFAULT_IMAGE.startswith('rhel-8'):
-        # old occasional bugs in tracer, don't happen in newer versions any more
-        default_allowed_console_errors.append('Tracer failed:.*Traceback')
 
     env_allow = os.environ.get("TEST_ALLOW_BROWSER_ERRORS")
     if env_allow:
@@ -1917,7 +2084,7 @@ class MachineCase(unittest.TestCase):
                                     ".*couldn't create polkit session subject: No session for pid.*",
                                     "We are no longer a registered authentication agent.",
                                     ".*: failed to retrieve resource: terminated",
-                                    ".*: external channel failed: (terminated|protocol-error)",
+                                    ".*: external channel failed:.*",
                                     ".*: truncated data in external channel",
                                     'audit:.*denied.*comm="systemd-user-se".*nologin.*',
                                     ".*No session for cookie",
@@ -1933,6 +2100,9 @@ class MachineCase(unittest.TestCase):
                                     # and this is the resulting message
                                     'which: no python in .*'
                                     )
+
+        # happens when logging out quickly while tracer is running
+        self.allow_browser_errors("Tracer failed:.*internal-error")
 
     def check_journal_messages(self, machine: testvm.Machine | None = None) -> None:
         """Check for unexpected journal entries."""
@@ -1953,8 +2123,6 @@ class MachineCase(unittest.TestCase):
             "_COMM=cockpit-ws",
             "GLIB_DOMAIN=cockpit-ws",
             "GLIB_DOMAIN=cockpit-bridge",
-            "GLIB_DOMAIN=cockpit-ssh",
-            "GLIB_DOMAIN=cockpit-pcp"
         ]
 
         if not self.allow_core_dumps:
@@ -2042,7 +2210,7 @@ class MachineCase(unittest.TestCase):
         if self.browser is not None:
             try:
                 self.browser.snapshot(title, label)
-            except RuntimeError:
+            except Error:
                 # this usually runs in exception handlers; raising an exception here skips cleanup handlers, so don't
                 sys.stderr.write("Unexpected exception in snapshot():\n")
                 sys.stderr.write(traceback.format_exc())
@@ -2225,9 +2393,8 @@ class MachineCase(unittest.TestCase):
         By default root login is disabled in cockpit, removing the root entry of /etc/cockpit/disallowed-users allows root to login.
         """
 
-        # fedora-coreos runs cockpit-ws in a containter so does not install cockpit-ws on the host
         disallowed_conf = '/etc/cockpit/disallowed-users'
-        if not self.machine.ostree_image and self.file_exists(disallowed_conf):
+        if not self.machine.ws_container and self.file_exists(disallowed_conf):
             self.sed_file('/root/d', disallowed_conf)
 
     def setup_provisioned_hosts(self, disable_preload: bool = False) -> None:
@@ -2329,12 +2496,39 @@ def skipOstree(reason: str) -> Callable[[_FT], _FT]:
     return lambda testEntity: testEntity
 
 
+def isBeibootLogin() -> bool:
+    return "ws-container" in os.getenv("TEST_SCENARIO", "")
+
+
+def skipWsContainer(reason: str) -> Callable[[_FT], _FT]:
+    """Decorator for skipping a test with cockpit/ws"""
+    if testvm.DEFAULT_IMAGE in OSTREE_IMAGES or isBeibootLogin():
+        return unittest.skip(f"{testvm.DEFAULT_IMAGE}: {reason}")
+    return lambda testEntity: testEntity
+
+
+def skipBeiboot(reason: str) -> Callable[[_FT], _FT]:
+    """Decorator for skipping a test with cockpit/ws in beiboot mode"""
+    if isBeibootLogin():
+        return unittest.skip(f"{testvm.DEFAULT_IMAGE}: {reason}")
+    return lambda testEntity: testEntity
+
+
 def nondestructive(testEntity: _T) -> _T:
     """Tests decorated as nondestructive will all run against the same VM
 
     Can be used on test classes and individual test methods.
     """
     setattr(testEntity, '_testlib__nondestructive', True)
+    return testEntity
+
+
+def destructive(testEntity: _T) -> _T:
+    """Tests decorated as destructive will get their own VM
+
+    Can be used on test classes and individual test methods.
+    """
+    setattr(testEntity, '_testlib__nondestructive', False)
     return testEntity
 
 
@@ -2359,12 +2553,6 @@ def todo(reason: str = '') -> Callable[[_T], _T]:
         setattr(testEntity, '_testlib__todo', reason)
         return testEntity
     return wrapper
-
-
-def todoPybridgeRHEL8(reason: str | None = None) -> Callable[[_T], _T]:
-    # We don't currently test this scenario but we probably want to bring it
-    # back some day.  We'll implement this again when we do that.
-    return lambda testEntity: testEntity
 
 
 def timeout(seconds: int) -> Callable[[_T], _T]:

@@ -96,9 +96,17 @@ window.cockpit_po = {
   null,
   "60 分"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Cockpit の互換バージョンが $0 にインストールされていません。"
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "セキュリティー、信頼性、およびパフォーマンスに対して最新のブラウザーが必要です。"
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "$0 で新しい SSH キーが $2 の $1 用に作成され、$5 上の $3 の $3 ファイルに追加されました。"
  ],
  "Absent": [
   null,
@@ -140,17 +148,21 @@ window.cockpit_po = {
   null,
   "Ansible ロールのドキュメント"
  ],
+ "Authentication": [
+  null,
+  "認証"
+ ],
  "Authentication failed": [
   null,
   "認証に失敗しました"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "認証に失敗しました: サーバーの接続が切断されました"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Cockpit Web コンソールでの特権タスクの実行には、認証が必要です"
+ ],
+ "Authorize SSH key": [
+  null,
+  "SSH キーの認証"
  ],
  "Automatically using NTP": [
   null,
@@ -240,6 +252,10 @@ window.cockpit_po = {
   null,
   "Cockpit にはシステム上のそのソフトウェアとの互換性がありません。"
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit はインストールされていません"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit はシステムにインストールされていません。"
@@ -264,6 +280,10 @@ window.cockpit_po = {
   null,
   "PCI の圧縮"
  ],
+ "Confirm key password": [
+  null,
+  "キーパスワードの確認"
+ ],
  "Connect to": [
   null,
   "接続先"
@@ -280,6 +300,10 @@ window.cockpit_po = {
   null,
   "変換可能"
  ],
+ "Copied": [
+  null,
+  "コピー済み"
+ ],
  "Copy": [
   null,
   "コピー"
@@ -288,9 +312,13 @@ window.cockpit_po = {
   null,
   "クリップボードにコピー"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "作成"
+  "$0 を作成"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "新しい SSH キーを作成して承認します"
  ],
  "Create new task file with this content.": [
   null,
@@ -368,13 +396,29 @@ window.cockpit_po = {
   null,
   "パスワードの非表示"
  ],
+ "Host is unknown": [
+  null,
+  "不明ホスト"
+ ],
  "Host key is incorrect": [
   null,
   "ホスト鍵が正しくありません"
  ],
+ "Hostkey does not match": [
+  null,
+  "ホストキーが一致しません"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "ホストキーが不明です"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "フィンガープリントが一致する場合は、Accept key and login をクリックします。一致しない場合は、ログインせずに、管理者にお問い合わせください。"
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "フィンガープリントが一致している場合は、'ホストを信頼して追加' をクリックします。一致していない場合は、接続せずに管理者にお問い合わせください。"
  ],
  "Install": [
   null,
@@ -383,6 +427,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "ソフトウェアをインストール"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "$0 に cockpit-system パッケージ（およびオプションで他の cockpit パッケージ）をインストールして、ウェブ コンソールへのアクセスを有効にしてください。"
  ],
  "Installing $0": [
   null,
@@ -395,6 +443,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "内部エラー: 無効なチャレンジヘッダー"
+ ],
+ "Internal protocol error": [
+  null,
+  "内部プロトコル エラー"
  ],
  "Invalid date format": [
   null,
@@ -424,6 +476,10 @@ window.cockpit_po = {
   null,
   "カーネルダンプ"
  ],
+ "Key password": [
+  null,
+  "キーパスワード"
+ ],
  "Laptop": [
   null,
   "ラップトップ"
@@ -439,6 +495,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "ログイン"
+ ],
+ "Log in to $0": [
+  null,
+  "$0 へのログイン"
  ],
  "Log in with your server user account.": [
   null,
@@ -524,6 +584,10 @@ window.cockpit_po = {
   null,
   "遅延なし"
  ],
+ "No results found": [
+  null,
+  "結果が見つかりません"
+ ],
  "No such file or directory": [
   null,
   "このようなファイルまたはディレクトリーがありません"
@@ -580,6 +644,10 @@ window.cockpit_po = {
   null,
   "PackageKit がクラッシュしました"
  ],
+ "Packageless session unavailable": [
+  null,
+  "パッケージレス セッションは利用できません"
+ ],
  "Password": [
   null,
   "パスワード"
@@ -622,7 +690,7 @@ window.cockpit_po = {
  ],
  "Pizza box": [
   null,
-  "Pizza box"
+  "ピザ箱"
  ],
  "Please enable JavaScript to use the Web Console.": [
   null,
@@ -664,17 +732,9 @@ window.cockpit_po = {
   null,
   "直近のホスト"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "接続を拒否しています。ホストが不明です"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "接続を拒否しています。ホストキーが一致しません"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "接続を拒否しています。ホストキーが不明です"
+  "接続拒否"
  ],
  "Removals:": [
   null,
@@ -688,9 +748,29 @@ window.cockpit_po = {
   null,
   "$0 を削除中"
  ],
+ "Row expansion": [
+  null,
+  "行の拡張"
+ ],
+ "Row select": [
+  null,
+  "行の選択"
+ ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "信頼できるネットワーク経由で、またはリモートマシンで直接、次のコマンドを実行します:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH キー"
+ ],
+ "SSH key login": [
+  null,
+  "SSH 鍵ログイン"
  ],
  "Sealed-case PC": [
   null,
@@ -703,6 +783,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "サーバー"
+ ],
+ "Server closed connection": [
+  null,
+  "サーバーが接続を終了しました"
  ],
  "Server has closed the connection.": [
   null,
@@ -780,17 +864,49 @@ window.cockpit_po = {
   null,
   "タブレット"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "$2 の $1 の SSH キー $0 は、$5 上の $4 の $3 ファイルに追加されます。"
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH キー $0 はセッションの残りの時間に利用できるようになり、他のホストにもログインできるようになります。"
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "$0 にログインするための SSH キーはパスワードで保護され、パスワードによるログインを許可しません。$1 にキーのパスワードを指定してください。"
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "$0 にログインするための SSH キーは保護されています。ログインパスワードでログインするか、$1 で鍵のパスワードを提供することでログインできます。"
+ ],
+ "The fingerprint should match:": [
+  null,
+  "フィンガープリントは次のものと一致する必要があります:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "キーのパスワードは空にすることはできません"
+ ],
+ "The key passwords do not match": [
+  null,
+  "キーのパスワードが一致しません"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "ログインしているユーザーには、システム変更を表示する権限がありません"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "パスワードが一致しません。"
+  "パスワードは空にできません"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "作成されたフィンガープリントは、電子メールを含むパブリックメソッドを介して共有すると問題ありません。"
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "生成されたフィンガープリントは、メールなどのパブリックな方法で共有しても問題ありません。他の人に検証を依頼した場合、その人は任意の方法で結果を送信できます。"
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -808,9 +924,9 @@ window.cockpit_po = {
   null,
   "このツールは、SELinux ポリシーを設定します。また、ポリシー違反の把握と解決に役立ちます。"
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "このツールは、カーネルクラッシュダンプをディスクに書き込むようにシステムを設定します。"
+  "このツールは、システムがカーネルクラッシュダンプを書き込むように設定します。\"local\"（ディスク）、\"ssh\"、および \"nfs\" をターゲットとしてサポートしています。"
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -856,6 +972,14 @@ window.cockpit_po = {
   null,
   "タワー"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "一時的なパッケージレス セッションは、互換性の理由で同じ OS とバージョンが必要です: $0。"
+ ],
+ "Trust and add host": [
+  null,
+  "ホストを信頼して追加"
+ ],
  "Try again": [
   null,
   "再試行します"
@@ -868,9 +992,21 @@ window.cockpit_po = {
   null,
   "そのアドレスに接続できません"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "SSH 鍵認証を使用して $0 にログインできません。パスワードを入力してください。"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "$0 にログインできません。ホストが、パスワードログインまたは SSH キーを受け付けていません。"
+ ],
  "Unknown": [
   null,
   "不明"
+ ],
+ "Unknown host: $0": [
+  null,
+  "不明なホスト: $0"
  ],
  "Untrusted host": [
   null,
@@ -887,6 +1023,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "認証トークンの検証"
+ ],
+ "Verify fingerprint": [
+  null,
+  "フィンガープリントの検証"
  ],
  "View all logs": [
   null,
@@ -946,11 +1086,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "一分以内"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "一分以内"
  ],
  "password quality": [
   null,

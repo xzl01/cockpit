@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 წთ"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "$0-ზე არ აყენია Cockpit-ის თავსებადი ვერსია."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "უსაფრთხოებისთვის, წარმადობისთვის და საიმედოობისთვის საჭიროა ახალი ბრაუზერი."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "ახალი SSH გასაღები $0-თვის შეიქნება $1-თვის $2-ზე და დაემატება $3 ფაილს $4-ის ფაილს $5-ზე."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Ansible-ის როლების დოკუმენტაცია"
  ],
+ "Authentication": [
+  null,
+  "ავთენტიკაცია"
+ ],
  "Authentication failed": [
   null,
   "ავთენტიკაციის შეცდომა"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "ავთენტიკაციის შეცდომა: სერვერმა კავშირი დახურა"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Cockpit ვებ კონსოლში პრივილეგირებული ამოცანების შესასრულებლად საჭიროა ავთენტიკაცია"
+ ],
+ "Authorize SSH key": [
+  null,
+  "SSH გასაღების ავტორიზაცია"
  ],
  "Automatically using NTP": [
   null,
@@ -246,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit-ი შეუთავსებელია თქვენს სერვერზე დაყენებულ პროგრამულ უზრუნველყოფასთან."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit-ი დაყენებული არაა"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit-ი ამ სისტემაზე დაყენებული არაა."
@@ -270,6 +286,10 @@ window.cockpit_po = {
   null,
   "კომპაქტური PCI"
  ],
+ "Confirm key password": [
+  null,
+  "მეორედ შეიყვანეთ გასაღების პაროლი"
+ ],
  "Connect to": [
   null,
   "დაკავშირება"
@@ -286,6 +306,10 @@ window.cockpit_po = {
   null,
   "გარდაქმნადი"
  ],
+ "Copied": [
+  null,
+  "დაკოპირებულია"
+ ],
  "Copy": [
   null,
   "კოპირება"
@@ -294,9 +318,13 @@ window.cockpit_po = {
   null,
   "ბაფერში კოპირება"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "შექმნა"
+  "$0-ის შექმნა"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "შექმენით SSH-ის ახალი გასაღები და გაატარეთ ავტორიზაცია"
  ],
  "Create new task file with this content.": [
   null,
@@ -374,13 +402,29 @@ window.cockpit_po = {
   null,
   "პაროლის დამალვა"
  ],
+ "Host is unknown": [
+  null,
+  "ჰოსტი უცნობია"
+ ],
  "Host key is incorrect": [
   null,
   "ჰოსტის გასაღები არასწორია"
  ],
+ "Hostkey does not match": [
+  null,
+  "ჰოსტის გასაღებები არ ემთხვევა"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "ჰოსტის გასაღები უცნობია"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "თუ ანაბეჭდი ემთხვევა, დააწექით \"გასაღების მიღება და შესვლა\"-ს. ან არ შეხვიდეთ და დაუკავშირდით ადმინისტრატორს."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "თუ ანაბეჭდი ემთხვევა, დააწექით \"ჰოსტის ნდობა და დამატებას\", ან არ შეხვიდეთ და დაუკავშირდით ადმინისტრატორს."
  ],
  "Install": [
   null,
@@ -389,6 +433,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "პროგრამების დაყენება"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "ვებ-კონსოლთან წვდომის ჩასართავად $0-ზე cockit-system პაკეტი (და არასავალდებულო cockpit-ის პაკეტები) დააყენეთ."
  ],
  "Installing $0": [
   null,
@@ -401,6 +449,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "შიდა შეცდომა: გამოწვევის არასწორი თავსართი"
+ ],
+ "Internal protocol error": [
+  null,
+  "შიდა პროტოკოლის შეცდომა"
  ],
  "Invalid date format": [
   null,
@@ -430,6 +482,10 @@ window.cockpit_po = {
   null,
   "ბირთვის დამპი"
  ],
+ "Key password": [
+  null,
+  "გასაღების პაროლი"
+ ],
  "Laptop": [
   null,
   "ლეპტოპი"
@@ -445,6 +501,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "შესვლა"
+ ],
+ "Log in to $0": [
+  null,
+  "$0-ში შესვლა"
  ],
  "Log in with your server user account.": [
   null,
@@ -530,6 +590,10 @@ window.cockpit_po = {
   null,
   "დაყოვნების გარეშე"
  ],
+ "No results found": [
+  null,
+  "შედეგები ნაპოვნი არაა"
+ ],
  "No such file or directory": [
   null,
   "ფაილი ან საქაღალდე არ არსებობს"
@@ -585,6 +649,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit-ის ავარია"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "უპაკეტო სესია ხელმიუწვდომელია"
  ],
  "Password": [
   null,
@@ -670,17 +738,9 @@ window.cockpit_po = {
   null,
   "ბოლო ჰოსტები"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "კავშირი უარყოფილია. ჰოსტი უცნობია"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "კავშირი უარყოფითია. ჰოსტის გასაღებები არ ემთხვევა"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "კავშირი უარყოფილია. ჰოსტის უცნობი გასაღები"
+  "კავშირი უარყოფილია"
  ],
  "Removals:": [
   null,
@@ -702,9 +762,21 @@ window.cockpit_po = {
   null,
   "მწკრივის არჩევა"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "გაუშვით ეს ბრძანება სანდო ქსელით ან ფიზიკურად, დაშორებულ მანქანაზე:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH გასაღები"
+ ],
+ "SSH key login": [
+  null,
+  "SSH გასაღებით შესვლა"
  ],
  "Sealed-case PC": [
   null,
@@ -717,6 +789,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "სერვერი"
+ ],
+ "Server closed connection": [
+  null,
+  "სერვერმა დახურა კავშირი"
  ],
  "Server has closed the connection.": [
   null,
@@ -794,17 +870,49 @@ window.cockpit_po = {
   null,
   "ტაბლეტი"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "SSH გასაღები $1-ის $0 $2-ზე დაემატება ფაილ $3-ს $5-ზე $4-ს."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH გასაღები $0 ხელმისაწვდომია სესიის ბოლომდე და ხელმისაწვდომი იქნება სხვა ჰოსტებზე შესასვლელადაც."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "$0-ზე შესასვლელი SSH გასაღები პაროლითაა დაცული და ჰოსტს პაროლით შესვლა გამორთული აქვს. შეიყვანეთ $1-ზე არსებული გასაღების პაროლი."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "$0-ზე შესასვლელი SSH გასაღები დაცულია. შეგიძლიათ შეხვიდეთ ან თქვენი პაროლით ან გასაღები $1-ის პაროლით."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "ანაბეჭდების უნდა ემთხვეოდეს:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "გასაღების პაროლი ცარიელი ვერ იქნება"
+ ],
+ "The key passwords do not match": [
+  null,
+  "გასაღების პაროლები არ ემთხვევა"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "შესულ მომხმარებელს არ აქვს სისტემური ცვლილებების ნახვს უფლება"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "პაროლები არ ემთხვევა."
+  "პაროლი არ შეიძლება ცარიელი იყოს"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "მიღებული ანაბეჭდების გაზიარება პრობლემა არაა."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "მიღებული ანაბეჭდის გაზიარება, ელფოსტის ჩათვლით, უსაფრთხოა. თუ თქვენ სხვას სთხოვთ, თქვენი სახელით გადაამოწმოს, მათ, შედეგების გამოგზავნა ნებისმიერი მეთოდით შეუძლიათ."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -822,9 +930,9 @@ window.cockpit_po = {
   null,
   "ეს პროგრამა როგორც SELinux-ის პოლიტიკის მორგებაში, ასევე მის ბოლომდე გაგებაში და პოლიტიკის დარღვევის გადაწყვეტაში დაგეხმარებათ."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "ეს პროგრამა სისტემას ბირთვის ავარიის შემთხვევაში დისკზე დამპის ჩაწერის მორგებაში დაგეხმარებათ."
+  "ეს პროგრამა სისტემას ბირთვის ავარიის შემთხვევაში დისკზე დამპის ჩაწერის მორგებაში დაგეხმარებათ. დამპის მხარდაჭერილი სამიზნეებია: \"local\" (დისკი), \"ssh\" და \"nfs\"."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -870,6 +978,14 @@ window.cockpit_po = {
   null,
   "კომპიუტერის კორპუსი"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "შუალედურ უპაკეტო სესიებს იგივე ოპერაციული სისტემა და ვერსია სჭირდება თავსებადობისთვის: $0."
+ ],
+ "Trust and add host": [
+  null,
+  "ჰოსტის ნდობა და დამატება"
+ ],
  "Try again": [
   null,
   "თავიდან სცადეთ"
@@ -882,9 +998,21 @@ window.cockpit_po = {
   null,
   "მისამართზე დაკავშირების შეცდომა"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "$0-ზე SSH გასაღებით ავთენტიკაციის შესვლის პრობლემა. შეიყვანეთ პაროლი."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "$0-ზე შესვლის პრობლემა. ჰოსტი არ იღებს პაროლით შესვლას ან არცერთ თქვენს SSH გასაღებს."
+ ],
  "Unknown": [
   null,
   "უცნობი"
+ ],
+ "Unknown host: $0": [
+  null,
+  "უცნობი ჰოსტი: $0"
  ],
  "Untrusted host": [
   null,
@@ -901,6 +1029,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "ავთენტიკაციის კოდის გადამოწმება"
+ ],
+ "Verify fingerprint": [
+  null,
+  "ანაბეჭდის გადამოწმება"
  ],
  "View all logs": [
   null,

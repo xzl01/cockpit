@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minuter"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Ingen kompatibel version av Cockpit är installerad på $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "En modern webbläsare krävs för säkerhet, pålitlighet och prestanda."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "En ny SSH-nyckel på $0 kommer att skapas för $1 på $2 och den kommer att läggas till $3-filen på $4 på $5."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Dokumentation för Ansibleroller"
  ],
+ "Authentication": [
+  null,
+  "Autentisering"
+ ],
  "Authentication failed": [
   null,
   "Autentisering misslyckades"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Autentiseringen misslyckades: servern stängde ner förbindelsen"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Autentisering krävs för att utföra privilegierade uppgifter med Cockpits webbkonsol"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Auktorisera SSH-nyckel"
  ],
  "Automatically using NTP": [
   null,
@@ -246,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit är inte kompatibelt med programvaran på systemet."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit är inte installerat"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit är inte installerat på systemet."
@@ -270,6 +286,10 @@ window.cockpit_po = {
   null,
   "Kompakt PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Bekräfta lösenord för nyckel"
+ ],
  "Connect to": [
   null,
   "Anslut till"
@@ -286,6 +306,10 @@ window.cockpit_po = {
   null,
   "Konvertibel"
  ],
+ "Copied": [
+  null,
+  "Kopierade"
+ ],
  "Copy": [
   null,
   "Kopiera"
@@ -294,9 +318,13 @@ window.cockpit_po = {
   null,
   "Kopiera till urklipp"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "Skapa"
+  "Skapa $0"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "Skapa en ny SSH-nyckel och auktorisera den"
  ],
  "Create new task file with this content.": [
   null,
@@ -374,13 +402,29 @@ window.cockpit_po = {
   null,
   "Dölj lösenord"
  ],
+ "Host is unknown": [
+  null,
+  "Värd är okänd"
+ ],
  "Host key is incorrect": [
   null,
   "Värdnyckeln är felaktig"
  ],
+ "Hostkey does not match": [
+  null,
+  "Värdnyckeln matchar inte"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "Värdnyckeln är okänd"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "Om fingeravtrycket stämmer, klicka på \"Acceptera nyckel och logga in\". Annars, logga inte in och kontakta din administratör."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Om fingeravtrycket stämmer, klicka på \"Lita på och lägg till värd\". Annars, anslut inte och kontakta din administratör."
  ],
  "Install": [
   null,
@@ -389,6 +433,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Installera programvara"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "Installera cockpit-systempaketet (och eventuellt andra cockpitpaket) på $0 för att aktivera webbkonsolåtkomst."
  ],
  "Installing $0": [
   null,
@@ -401,6 +449,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "Internt fel: felaktig utmaningshuvud"
+ ],
+ "Internal protocol error": [
+  null,
+  "Internt protokoll fel"
  ],
  "Invalid date format": [
   null,
@@ -430,6 +482,10 @@ window.cockpit_po = {
   null,
   "Kärndump"
  ],
+ "Key password": [
+  null,
+  "Nyckellösenord"
+ ],
  "Laptop": [
   null,
   "Bärbar dator"
@@ -445,6 +501,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Logga in"
+ ],
+ "Log in to $0": [
+  null,
+  "Logga in till $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -530,6 +590,10 @@ window.cockpit_po = {
   null,
   "Ingen fördröjning"
  ],
+ "No results found": [
+  null,
+  "Inga resultat funna"
+ ],
  "No such file or directory": [
   null,
   "Filen eller katalogen finns inte"
@@ -585,6 +649,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit kraschade"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "Paketlös session är inte tillgänglig"
  ],
  "Password": [
   null,
@@ -670,17 +738,9 @@ window.cockpit_po = {
   null,
   "Senaste värdar"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "Vägrar att ansluta. Värden är okänd"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Vägrar att ansluta. Värdnyckeln stämmer inte"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Vägrar att ansluta. Värdnyckeln är okänd"
+  "Vägrar att ansluta"
  ],
  "Removals:": [
   null,
@@ -702,9 +762,21 @@ window.cockpit_po = {
   null,
   "Radval"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Kör det här kommandot över ett pålitligt nätverk eller fysiskt på fjärrdatorn:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-nyckel"
+ ],
+ "SSH key login": [
+  null,
+  "SSH-nyckel inloggning"
  ],
  "Sealed-case PC": [
   null,
@@ -717,6 +789,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "Server"
+ ],
+ "Server closed connection": [
+  null,
+  "Servern stängde anslutningen"
  ],
  "Server has closed the connection.": [
   null,
@@ -794,17 +870,49 @@ window.cockpit_po = {
   null,
   "Platta"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "SSH-nyckeln $0 av $1 på $2 kommer att läggas till $3-filen på $4 på $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH-nyckeln $0 kommer att göras tillgänglig för resten av sessionen och kommer att vara tillgänglig för inloggning även för andra värdar."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "SSH-nyckeln för att logga in på $0 är skyddad av ett lösenord, och värden tillåter inte inloggning med ett lösenord. Vänligen ange lösenordet för nyckeln på $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "SSH-nyckeln för att logga in på $0 är skyddad. Du kan logga in med antingen ditt inloggningslösenord eller genom att ange lösenordet för nyckeln för $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Fingeravtrycket ska matcha:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Nyckellösenordet får inte vara tomt"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Nyckellösenorden stämmer inte överens"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Den inloggade användaren har inte tillåtelse att se systemändringar"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Lösenorden stämmer inte överens."
+  "Lösenordet får inte vara tomt"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Det resulterande fingeravtrycket går bra att dela via offentliga metoder, inklusive e-post."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Det resulterande fingeravtrycket är okej att dela via offentliga metoder, inklusive e-post. Om du ber någon annan att göra verifieringen åt dig kan de skicka resultaten med vilken metod som helst."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -822,9 +930,9 @@ window.cockpit_po = {
   null,
   "Det här verktyget konfigurerar SELinux-policyn och kan hjälpa till med att förstå och lösa policy överträdelser."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "Det här verktyget konfigurerar systemet till att kunna skriva kärnkraschdumpar till disken."
+  "Det här verktyget konfigurerar systemet till att kunna skriva kärnkraschdumpar till disken. Det stödjer \"lokala\" (disk), \"ssh\" och \"nfs\" dumpmål."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -870,6 +978,14 @@ window.cockpit_po = {
   null,
   "Torn"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "Transienta paketlösa sessioner kräver samma operativsystem och version av kompatibilitetsskäl: $0."
+ ],
+ "Trust and add host": [
+  null,
+  "Lita på och lägg till värd"
+ ],
  "Try again": [
   null,
   "Försök igen"
@@ -882,9 +998,21 @@ window.cockpit_po = {
   null,
   "Kan inte ansluta till den adressen"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "Det går inte att logga in på $0 med SSH-nyckelautentisering. Ange lösenordet."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Det går inte att logga in på $0. Värden accepterar inte lösenordsinloggning eller någon av dina SSH-nycklar."
+ ],
  "Unknown": [
   null,
   "Okänd"
+ ],
+ "Unknown host: $0": [
+  null,
+  "Okänd värd: $0"
  ],
  "Untrusted host": [
   null,
@@ -901,6 +1029,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Validerar autentiseringselementet"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Verifiera fingeravtryck"
  ],
  "View all logs": [
   null,
@@ -960,11 +1092,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "i mindre än en minut"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "mindre än en minut sedan"
  ],
  "password quality": [
   null,

@@ -15,8 +15,9 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
+import fnmatch
 import os
 import time
 from collections.abc import Collection
@@ -24,8 +25,8 @@ from collections.abc import Collection
 import packagelib
 import testlib
 
-OSesWithoutTracer = ["debian-stable", "debian-testing", "ubuntu-2204", "ubuntu-stable", "fedora-coreos", "rhel4edge"]
-OSesWithoutKpatch = ["debian-*", "ubuntu-*", "arch", "fedora-*", "rhel4edge", "centos-*"]
+OSesWithoutTracer = ["debian-*", "ubuntu-*", "fedora-coreos", "centos-10", "rhel-10*"]
+OSesWithoutKpatch = ["debian-*", "ubuntu-*", "arch", "fedora-*", "centos-*"]
 
 
 class NoSubManCase(packagelib.PackageCase):
@@ -51,7 +52,8 @@ class TestUpdates(NoSubManCase):
         super().setUp()
 
         # apt does not support severity enhancement metadata
-        self.supports_severity = self.backend != "apt"
+        # only PackageKit ≥ 1.2.4 dnf (https://github.com/PackageKit/PackageKit/issues/268) supports severity
+        self.supports_severity = (self.backend != "apt") and (not self.machine.image.startswith("rhel-8"))
 
         if self.supports_severity:
             self.enhancement_severity = "enhancement"
@@ -269,7 +271,7 @@ echo -e "Loaded patch modules:\nkpatch_3_10_0_1062_1_1 [enabled]\n\nInstalled pa
         m = self.machine
 
         def check_status():
-            if m.image in OSesWithoutTracer:
+            if any(fnmatch.fnmatch(m.image, img) for img in OSesWithoutTracer):
                 b.wait_in_text("#status p", "System is up to date")
                 # PK starts from a blank state, thus should force refresh and set the "time since" to 0
                 b.wait_in_text("#last-checked", "Last checked: less than a minute ago")
@@ -390,7 +392,7 @@ echo -e "Loaded patch modules:\nkpatch_3_10_0_1062_1_1 [enabled]\n\nInstalled pa
 
         b.wait_visible(".pf-v5-c-empty-state__title:contains('Update was successful')")
         # if tracer is not present, reboot is recommended
-        if m.image in OSesWithoutTracer:
+        if any(fnmatch.fnmatch(m.image, img) for img in OSesWithoutTracer):
             b.wait_in_text("#app .pf-v5-c-empty-state button.pf-m-primary", "Reboot system...")
         b.click("#ignore")
 
@@ -1045,7 +1047,9 @@ ExecStart=/usr/local/bin/{packageName}
                            mv /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service.disabled /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service
                            systemctl daemon-reload""")
 
-        self.assertNotIn("\nupdates", m.execute("cockpit-bridge --packages"))
+        # no bridge in beiboot mode
+        if not testlib.isBeibootLogin():
+            self.assertNotIn("\nupdates", m.execute("cockpit-bridge --packages"))
         # should not appear in the menu at all
         self.login_and_go(None)
         b.wait_in_text("#host-apps .pf-m-current", "Overview")
@@ -1096,7 +1100,7 @@ ExecStart=/usr/local/bin/{packageName}
 
 
 @testlib.skipImage("TODO: Arch Linux has no cockpit-ws package, it's in cockpit", "arch")
-@testlib.skipOstree("Image uses OSTree")
+@testlib.skipWsContainer("no cockpit-ws package with cockpit/ws container")
 class TestWsUpdate(NoSubManCase):
     def testBasic(self):
         # The main case for this is that cockpit-ws itself gets upgraded, which
@@ -1201,6 +1205,7 @@ class TestKpatchInstall(NoSubManCase):
 
 
 @testlib.onlyImage("No subscriptions", "rhel-*")
+@testlib.skipBeiboot("sub-man-cockpit not contained in cockpit/ws")
 class TestUpdatesSubscriptions(packagelib.PackageCase):
     provision = {
         "0": {"address": "10.111.112.1/20", "dns": "10.111.112.1", "memory_mb": 512},
@@ -1208,10 +1213,8 @@ class TestUpdatesSubscriptions(packagelib.PackageCase):
     }
 
     def register(self):
-        # this fails with "Unable to find available subscriptions for all your installed products", but works anyway
         self.machine.execute(
-            "LC_ALL=C.UTF-8 subscription-manager register --serverurl https://services.cockpit.lan:8443/candlepin --org=admin --activationkey=awesome_os_pool || true")
-        self.machine.execute("LC_ALL=C.UTF-8 subscription-manager attach --auto")
+            "LC_ALL=C.UTF-8 subscription-manager register --org=donaldduck --activationkey=awesome_os_pool")
 
     def setUp(self):
         super().setUp()
@@ -1229,8 +1232,8 @@ class TestUpdatesSubscriptions(packagelib.PackageCase):
         self.candlepin.download("/home/admin/candlepin/generated_certs/88888.pem", product_file)
 
         # # upload product info to the test machine
-        m.execute("mkdir -p /etc/pki/product")
-        m.upload([product_file], "/etc/pki/product")
+        m.execute("mkdir -p /etc/pki/product-default")
+        m.upload([product_file], "/etc/pki/product-default")
 
         # set up CA
         ca = self.candlepin.execute("cat /home/admin/candlepin/certs/candlepin-ca.crt")
@@ -1244,6 +1247,14 @@ class TestUpdatesSubscriptions(packagelib.PackageCase):
         self.update_icon = "#page_status_notification_updates svg"
         self.update_text = "#page_status_notification_updates"
         self.update_text_action = "#page_status_notification_updates a"
+
+        # setup the repositories properly using the candlepin RPM GPG key
+        m.execute("curl -o /etc/pki/rpm-gpg/RPM-GPG-KEY-candlepin http://services.cockpit.lan:8080/RPM-GPG-KEY-candlepin")
+        m.execute("subscription-manager config --rhsm.baseurl http://services.cockpit.lan:8080")
+
+        # perform the additional configuration of subscription-manager
+        m.execute(
+            "subscription-manager config --server.hostname services.cockpit.lan --server.port 8443 --server.prefix /candlepin")
 
     def testNoUpdates(self):
         b = self.browser
@@ -1632,7 +1643,7 @@ class TestAutoUpdates(NoSubManCase):
         b.wait_visible("#autoupdates-settings button:disabled")
 
 
-@testlib.skipImage("Image uses OSTree", "fedora-coreos", "rhel4edge")
+@testlib.skipImage("Image uses OSTree", "fedora-coreos")
 class TestAutoUpdatesInstall(NoSubManCase):
     def testUnsupported(self):
         b = self.browser

@@ -14,7 +14,7 @@ import sys
 import unittest.mock
 from collections import deque
 from pathlib import Path
-from typing import Dict, Iterable, Sequence
+from typing import Dict, Iterable, Iterator, Sequence
 
 import pytest
 
@@ -405,9 +405,14 @@ async def test_internal_metrics(transport: MockTransport) -> None:
     # cpu.core.user instances should be the same as meta sent instances
     assert instances == len(data[0][0])
     # all instances should be False, as this is a rate
-    assert not all(d for d in data[0][0])
+    assert all(d is False for d in data[0][0])
     # memory.used should be an integer
     assert isinstance(data[0][1], int)
+
+    # next data for rate should not be False
+    _, data = await transport.next_frame()
+    data = json.loads(data)
+    assert all(d is not False for d in data[0][0])
 
 
 @pytest.mark.asyncio
@@ -743,8 +748,10 @@ async def test_channel(bridge: Bridge, transport: MockTransport, channeltype, tm
             args = {'spawn': ['cat']}
         else:
             args = {'unix': srv}
-    elif payload == 'metrics1':
+    elif payload == 'metrics1' and channeltype.restrictions:
         args['metrics'] = [{'name': 'memory.free'}]
+    elif payload == 'metrics1':
+        pytest.skip('no PCP metric data')
     elif payload == 'dbus-json3':
         if not os.path.exists('/run/dbus/system_bus_socket'):
             pytest.skip('no dbus')
@@ -763,6 +770,9 @@ async def test_channel(bridge: Bridge, transport: MockTransport, channeltype, tm
             assert control['channel'] == ch
             command = control['command']
             if command == 'ready':
+                if 'spawn' in args:
+                    assert isinstance(control['pid'], int)
+                    assert os.readlink(f"/proc/{control['pid']}/exe").endswith("/cat")
                 # If we get ready, it's our turn to send data first.
                 # Hopefully we didn't receive any before.
                 assert not saw_data
@@ -928,7 +938,7 @@ async def test_flow_control(transport: MockTransport, tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_large_upload(event_loop: asyncio.AbstractEventLoop, transport: MockTransport, tmp_path: Path) -> None:
+async def test_large_upload(transport: MockTransport, tmp_path: Path) -> None:
     fifo = str(tmp_path / 'pipe')
     os.mkfifo(fifo)
 
@@ -947,7 +957,7 @@ async def test_large_upload(event_loop: asyncio.AbstractEventLoop, transport: Mo
 
     # start draining now, and make sure we get everything we sent.
     with open(fifo, 'rb') as receiver:
-        received = await event_loop.run_in_executor(None, receiver.read)
+        received = await asyncio.get_running_loop().run_in_executor(None, receiver.read)
         assert len(received) == loops * Channel.BLOCK_SIZE
 
     # and now our done and close messages should come
@@ -1010,7 +1020,7 @@ def fsinfo_err(err: int) -> JsonObject:
 
 
 @pytest.fixture
-def fsinfo_test_cases(tmp_path: Path) -> 'dict[Path, JsonObject]':
+def fsinfo_test_cases(tmp_path: Path) -> 'Iterator[dict[Path, JsonObject]]':
     # a normal directory
     normal_dir = tmp_path / 'dir'
     normal_dir.mkdir()
@@ -1081,7 +1091,15 @@ def fsinfo_test_cases(tmp_path: Path) -> 'dict[Path, JsonObject]':
         del expected_state[no_r_dir]
         del expected_state[no_r_file]
 
-    return expected_state
+    try:
+        yield expected_state
+
+    finally:
+        # restore writable permissions on directories.  pytest has trouble cleaning
+        # these up, otherwise...
+        for path in expected_state:
+            if not path.is_symlink() and path.is_dir():
+                path.chmod(0o700)
 
 
 @pytest.mark.asyncio

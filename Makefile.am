@@ -85,21 +85,17 @@ clean-local::
 	find $(builddir) -name '*.gc??' -delete
 	find $(srcdir) -name '*.pyc' -delete
 
-# required for running unit and integration tests; commander and ws are deps of chrome-remote-interface
+# required for running integration tests
 node_modules/%: $(srcdir)/package-lock.json
 	@true
 
 EXTRA_DIST += \
-	node_modules/chrome-remote-interface \
-	node_modules/commander \
 	node_modules/sizzle \
-	node_modules/ws \
 	$(NULL)
 
 check: export VERBOSE=1
 
-TEST_EXTENSIONS = .html .sh
-HTML_LOG_COMPILER = $(top_srcdir)/test/common/tap-cdp --strip=$(abs_top_srcdir)/ $(HTML_TEST_WRAPPER) ./test-server $(COCKPIT_BRIDGE)
+TEST_EXTENSIONS = .sh
 
 VALGRIND = valgrind --trace-children=yes --quiet --error-exitcode=33 --gen-suppressions=all \
 	$(foreach file,$(wildcard $(srcdir)/tools/*.supp),--suppressions=$(file)) \
@@ -108,12 +104,10 @@ VALGRIND = valgrind --trace-children=yes --quiet --error-exitcode=33 --gen-suppr
 
 check-memory:
 	$(MAKE) LOG_FLAGS="$(VALGRIND)" \
-	        HTML_TEST_WRAPPER="$(VALGRIND)" \
 		COCKPIT_SKIP_SLOW_TESTS=1 \
 		$(AM_MAKEFLAGS) check TESTS="$(filter-out test/% bots/%,$(TESTS))"
 recheck-memory:
 	$(MAKE) LOG_FLAGS="$(VALGRIND_ARGS)" \
-	        HTML_TEST_WRAPPER="$(VALGRIND)" \
 		$(AM_MAKEFLAGS) recheck
 
 # checkout Cockpit's bots for standard test VM images and API to launch them
@@ -171,18 +165,14 @@ include src/branding/centos/Makefile.am
 include src/branding/debian/Makefile.am
 include src/branding/default/Makefile.am
 include src/branding/fedora/Makefile.am
-include src/branding/kubernetes/Makefile.am
 include src/branding/opensuse/Makefile.am
-include src/branding/registry/Makefile.am
 include src/branding/rhel/Makefile.am
 include src/branding/scientific/Makefile.am
 include src/branding/ubuntu/Makefile.am
-include src/bridge/Makefile.am
 include src/client/Makefile.am
 include src/common/Makefile-common.am
 include src/pam-ssh-add/Makefile.am
 include src/session/Makefile-session.am
-include src/ssh/Makefile-ssh.am
 include src/systemd/Makefile.am
 include src/tls/Makefile-tls.am
 include src/websocket/Makefile-websocket.am

@@ -13,7 +13,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import json
 import os.path
@@ -186,8 +186,8 @@ class StorageHelpers:
                 self.browser.set_checked(sel + " input[type=checkbox]", val=True)
                 self.browser.set_input_text(sel + " [type=text]", val)
         elif ftype == "combobox":
-            self.browser.click(sel + " button.pf-v5-c-select__toggle-button")
-            self.browser.click(sel + f" .pf-v5-c-select__menu li:contains('{val}') button")
+            self.browser.click(sel + " button.pf-v5-c-menu-toggle__button")
+            self.browser.click(sel + f" .pf-v5-c-menu li:contains('{val}') button")
         else:
             self.browser.set_val(sel, val)
 
@@ -214,6 +214,8 @@ class StorageHelpers:
             self.browser.wait_val(sel + " .size-text input", str(val))
         elif ftype == "select":
             self.browser.wait_attr(sel, "data-value", val)
+        elif ftype == "checkbox":
+            self.browser.wait_visible(sel + (":checked" if val else ":not(:checked)"))
         else:
             self.browser.wait_val(sel, val)
 
@@ -241,7 +243,7 @@ class StorageHelpers:
 
     def dialog_wait_close(self):
         # file system operations often take longer than 10s
-        with self.browser.wait_timeout(max(self.browser.cdp.timeout, 60)):
+        with self.browser.wait_timeout(max(self.browser.timeout, 60)):
             self.browser.wait_not_present('#dialog')
 
     def dialog_check(self, expect):
@@ -648,7 +650,7 @@ class StorageCase(MachineCase, StorageHelpers):
 
     def setUp(self):
 
-        if self.image in ["fedora-coreos", "rhel4edge"]:
+        if self.image == "fedora-coreos":
             self.skipTest("No udisks/cockpit-storaged on OSTree images")
 
         super().setUp()

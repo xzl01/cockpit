@@ -12,7 +12,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 #
 
 # This file is maintained at the following location:
@@ -49,7 +49,7 @@ Summary:        Web Console for Linux servers
 License:        LGPL-2.1-or-later
 URL:            https://cockpit-project.org/
 
-Version:        321
+Version:        328
 Release:        1%{?dist}
 Source0:        https://github.com/cockpit-project/cockpit/releases/download/%{version}/cockpit-%{version}.tar.xz
 
@@ -57,12 +57,9 @@ Source0:        https://github.com/cockpit-project/cockpit/releases/download/%{v
 ExcludeArch: %{ix86}
 %endif
 
-# pcp stopped building on ix86 in Fedora 40+, and broke hard on 39: https://bugzilla.redhat.com/show_bug.cgi?id=2284431
-%define build_pcp 1
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 10
-%ifarch %ix86
-%define build_pcp 0
-%endif
+%define enable_multihost 1
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
+%define enable_multihost 0
 %endif
 
 # Ship custom SELinux policy
@@ -79,7 +76,6 @@ BuildRequires: autoconf automake
 BuildRequires: make
 BuildRequires: python3-devel
 BuildRequires: gettext >= 0.21
-BuildRequires: libssh-devel >= 0.8.5
 BuildRequires: openssl-devel
 BuildRequires: gnutls-devel >= 3.4.3
 BuildRequires: zlib-devel
@@ -93,19 +89,10 @@ BuildRequires: glib2-devel >= 2.50.0
 BuildRequires: systemd-devel >= 235
 %if 0%{?suse_version}
 BuildRequires: distribution-release
-%if %{build_pcp}
-BuildRequires: libpcp-devel
-BuildRequires: pcp-devel
-BuildRequires: libpcp3
-BuildRequires: libpcp_import1
-%endif
 BuildRequires: openssh
 BuildRequires: distribution-logos
 BuildRequires: wallpaper-branding
 %else
-%if %{build_pcp}
-BuildRequires: pcp-libs-devel
-%endif
 BuildRequires: openssh-clients
 BuildRequires: docbook-style-xsl
 %endif
@@ -128,7 +115,7 @@ Requires: cockpit-system
 # Optional components
 Recommends: (cockpit-storaged if udisks2)
 Recommends: (cockpit-packagekit if dnf)
-Suggests: cockpit-pcp
+Suggests: python3-pcp
 
 %if 0%{?rhel} == 0
 Recommends: (cockpit-networkmanager if NetworkManager)
@@ -145,11 +132,8 @@ BuildRequires:  python3-pip
 %if 0%{?rhel} == 0 && !0%{?suse_version}
 # All of these are only required for running pytest (which we only do on Fedora)
 BuildRequires:  procps-ng
-BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-pytest-asyncio
-BuildRequires:  python3-pytest-cov
 BuildRequires:  python3-pytest-timeout
-BuildRequires:  python3-tox-current-env
 %endif
 
 %prep
@@ -162,8 +146,8 @@ BuildRequires:  python3-tox-current-env
     --docdir=%_defaultdocdir/%{name} \
 %endif
     --with-pamdir='%{pamdir}' \
-%if %{build_pcp} == 0
-    --disable-pcp \
+%if %{enable_multihost}
+    --enable-multihost \
 %endif
 
 %make_build
@@ -172,7 +156,8 @@ BuildRequires:  python3-tox-current-env
 make -j$(nproc) check
 
 %if 0%{?rhel} == 0
-%tox
+export NO_QUNIT=1
+%pytest
 %endif
 
 %install
@@ -190,12 +175,6 @@ echo '%dir %{_datadir}/cockpit/base1' >> base.list
 find %{buildroot}%{_datadir}/cockpit/base1 -type f -o -type l >> base.list
 echo '%{_sysconfdir}/cockpit/machines.d' >> base.list
 echo %{buildroot}%{_datadir}/polkit-1/actions/org.cockpit-project.cockpit-bridge.policy >> base.list
-echo '%{_libexecdir}/cockpit-ssh' >> base.list
-
-%if %{build_pcp}
-echo '%dir %{_datadir}/cockpit/pcp' > pcp.list
-find %{buildroot}%{_datadir}/cockpit/pcp -type f >> pcp.list
-%endif
 
 echo '%dir %{_datadir}/cockpit/shell' >> system.list
 find %{buildroot}%{_datadir}/cockpit/shell -type f >> system.list
@@ -252,11 +231,11 @@ rm -rf %{buildroot}/usr/src/debug
 # On RHEL kdump, networkmanager, selinux, and sosreport are part of the system package
 %if 0%{?rhel}
 cat kdump.list sosreport.list networkmanager.list selinux.list >> system.list
-rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit-project.cockpit-sosreport.metainfo.xml
-rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit-project.cockpit-kdump.metainfo.xml
-rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit-project.cockpit-selinux.metainfo.xml
-rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit-project.cockpit-networkmanager.metainfo.xml
-rm -f %{buildroot}%{_datadir}/pixmaps/cockpit-sosreport.png
+rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit_project.cockpit_sosreport.metainfo.xml
+rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit_project.cockpit_kdump.metainfo.xml
+rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit_project.cockpit_selinux.metainfo.xml
+rm -f %{buildroot}%{_datadir}/metainfo/org.cockpit_project.cockpit_networkmanager.metainfo.xml
+rm -f %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/cockpit-sosreport.png
 %endif
 
 # -------------------------------------------------------------------------------
@@ -273,15 +252,14 @@ troubleshooting, interactive command-line sessions, and more.
 %{_docdir}/cockpit/AUTHORS
 %{_docdir}/cockpit/COPYING
 %{_docdir}/cockpit/README.md
-%{_datadir}/metainfo/cockpit.appdata.xml
-%{_datadir}/pixmaps/cockpit.png
+%{_datadir}/metainfo/org.cockpit_project.cockpit.appdata.xml
+%{_datadir}/icons/hicolor/128x128/apps/cockpit.png
 %doc %{_mandir}/man1/cockpit.1.gz
 
 
 %package bridge
 Summary: Cockpit bridge server-side component
 Requires: glib-networking
-Provides: cockpit-ssh = %{version}-%{release}
 # 233 dropped jquery.js, pages started to bundle it (commit 049e8b8dce)
 Conflicts: cockpit-dashboard < 233
 Conflicts: cockpit-networkmanager < 233
@@ -289,6 +267,7 @@ Conflicts: cockpit-storaged < 233
 Conflicts: cockpit-system < 233
 Conflicts: cockpit-tests < 233
 Conflicts: cockpit-docker < 233
+Obsoletes: cockpit-pcp < 326
 
 %description bridge
 The Cockpit bridge component installed server side and runs commands on the
@@ -338,6 +317,7 @@ Recommends: PackageKit
 Recommends: setroubleshoot-server >= 3.3.3
 Recommends: /usr/bin/kdumpctl
 Suggests: NetworkManager-team
+Suggests: python3-pcp
 Provides: cockpit-kdump = %{version}-%{release}
 Provides: cockpit-networkmanager = %{version}-%{release}
 Provides: cockpit-selinux = %{version}-%{release}
@@ -347,18 +327,20 @@ Provides: cockpit-sosreport = %{version}-%{release}
 Recommends: (reportd if abrt)
 %endif
 
-Provides: bundled(npm(@patternfly/patternfly)) = 5.3.1
-Provides: bundled(npm(@patternfly/react-core)) = 5.3.3
-Provides: bundled(npm(@patternfly/react-icons)) = 5.3.2
-Provides: bundled(npm(@patternfly/react-styles)) = 5.3.1
-Provides: bundled(npm(@patternfly/react-table)) = 5.3.3
-Provides: bundled(npm(@patternfly/react-tokens)) = 5.3.1
+Provides: bundled(npm(@patternfly/patternfly)) = 5.4.2
+Provides: bundled(npm(@patternfly/react-core)) = 5.4.2
+Provides: bundled(npm(@patternfly/react-icons)) = 5.4.0
+Provides: bundled(npm(@patternfly/react-styles)) = 5.4.0
+Provides: bundled(npm(@patternfly/react-table)) = 5.4.2
+Provides: bundled(npm(@patternfly/react-tokens)) = 5.4.0
+Provides: bundled(npm(@xterm/addon-canvas)) = 0.7.0
+Provides: bundled(npm(@xterm/xterm)) = 5.5.0
 Provides: bundled(npm(argparse)) = 1.0.10
-Provides: bundled(npm(attr-accept)) = 2.2.2
+Provides: bundled(npm(attr-accept)) = 2.2.4
 Provides: bundled(npm(autolinker)) = 3.16.2
 Provides: bundled(npm(dequal)) = 2.0.3
-Provides: bundled(npm(file-selector)) = 0.6.0
-Provides: bundled(npm(focus-trap)) = 7.5.2
+Provides: bundled(npm(file-selector)) = 2.1.0
+Provides: bundled(npm(focus-trap)) = 7.5.4
 Provides: bundled(npm(js-sha1)) = 0.7.0
 Provides: bundled(npm(js-sha256)) = 0.11.0
 Provides: bundled(npm(js-tokens)) = 4.0.0
@@ -368,7 +350,7 @@ Provides: bundled(npm(loose-envify)) = 1.4.0
 Provides: bundled(npm(object-assign)) = 4.1.1
 Provides: bundled(npm(prop-types)) = 15.8.1
 Provides: bundled(npm(react-dom)) = 18.3.1
-Provides: bundled(npm(react-dropzone)) = 14.2.3
+Provides: bundled(npm(react-dropzone)) = 14.3.2
 Provides: bundled(npm(react-is)) = 16.13.1
 Provides: bundled(npm(react)) = 18.3.1
 Provides: bundled(npm(remarkable)) = 2.0.1
@@ -376,10 +358,8 @@ Provides: bundled(npm(scheduler)) = 0.23.2
 Provides: bundled(npm(sprintf-js)) = 1.0.3
 Provides: bundled(npm(tabbable)) = 6.2.0
 Provides: bundled(npm(throttle-debounce)) = 5.0.2
-Provides: bundled(npm(tslib)) = 2.6.3
-Provides: bundled(npm(uuid)) = 9.0.1
-Provides: bundled(npm(xterm-addon-canvas)) = 0.5.0
-Provides: bundled(npm(xterm)) = 5.3.0
+Provides: bundled(npm(tslib)) = 2.8.1
+Provides: bundled(npm(uuid)) = 11.0.2
 
 %description system
 This package contains the Cockpit shell and system configuration interfaces.
@@ -522,7 +502,7 @@ BuildArch: noarch
 The Cockpit component for configuring kernel crash dumping.
 
 %files kdump -f kdump.list
-%{_datadir}/metainfo/org.cockpit-project.cockpit-kdump.metainfo.xml
+%{_datadir}/metainfo/org.cockpit_project.cockpit_kdump.metainfo.xml
 
 %package sosreport
 Summary: Cockpit user interface for diagnostic reports
@@ -536,8 +516,8 @@ The Cockpit component for creating diagnostic reports with the
 sosreport tool.
 
 %files sosreport -f sosreport.list
-%{_datadir}/metainfo/org.cockpit-project.cockpit-sosreport.metainfo.xml
-%{_datadir}/pixmaps/cockpit-sosreport.png
+%{_datadir}/metainfo/org.cockpit_project.cockpit_sosreport.metainfo.xml
+%{_datadir}/icons/hicolor/64x64/apps/cockpit-sosreport.png
 
 %package networkmanager
 Summary: Cockpit user interface for networking, using NetworkManager
@@ -552,7 +532,7 @@ BuildArch: noarch
 The Cockpit component for managing networking.  This package uses NetworkManager.
 
 %files networkmanager -f networkmanager.list
-%{_datadir}/metainfo/org.cockpit-project.cockpit-networkmanager.metainfo.xml
+%{_datadir}/metainfo/org.cockpit_project.cockpit_networkmanager.metainfo.xml
 
 %endif
 
@@ -570,7 +550,7 @@ This package contains the Cockpit user interface integration with the
 utility setroubleshoot to diagnose and resolve SELinux issues.
 
 %files selinux -f selinux.list
-%{_datadir}/metainfo/org.cockpit-project.cockpit-selinux.metainfo.xml
+%{_datadir}/metainfo/org.cockpit_project.cockpit_selinux.metainfo.xml
 
 %endif
 
@@ -597,7 +577,7 @@ BuildArch: noarch
 The Cockpit component for managing storage.  This package uses udisks.
 
 %files -n cockpit-storaged -f storaged.list
-%{_datadir}/metainfo/org.cockpit-project.cockpit-storaged.metainfo.xml
+%{_datadir}/metainfo/org.cockpit_project.cockpit_storaged.metainfo.xml
 
 %package -n cockpit-tests
 Summary: Tests for Cockpit
@@ -614,25 +594,6 @@ These files are not required for running Cockpit.
 %{pamdir}/mock-pam-conv-mod.so
 %{_unitdir}/cockpit-session.socket
 %{_unitdir}/cockpit-session@.service
-
-%if %{build_pcp}
-
-%package -n cockpit-pcp
-Summary: Cockpit PCP integration
-Requires: cockpit-bridge >= %{required_base}
-Requires: pcp
-
-%description -n cockpit-pcp
-Cockpit support for reading PCP metrics and loading PCP archives.
-
-%files -n cockpit-pcp -f pcp.list
-%{_libexecdir}/cockpit-pcp
-%{_localstatedir}/lib/pcp/config/pmlogconf/tools/cockpit
-
-%post -n cockpit-pcp
-systemctl reload-or-try-restart pmlogger
-
-%endif
 
 %package -n cockpit-packagekit
 Summary: Cockpit user interface for packages

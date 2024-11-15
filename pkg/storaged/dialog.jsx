@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 /* STORAGE DIALOGS
@@ -225,7 +225,6 @@ import { DataList, DataListCell, DataListCheck, DataListItem, DataListItemCells,
 import { Form, FormGroup } from "@patternfly/react-core/dist/esm/components/Form/index.js";
 import { Grid, GridItem } from "@patternfly/react-core/dist/esm/layouts/Grid/index.js";
 import { Radio } from "@patternfly/react-core/dist/esm/components/Radio/index.js";
-import { Select as TypeAheadSelect, SelectOption } from "@patternfly/react-core/dist/esm/deprecated/components/Select/index.js";
 import { Slider } from "@patternfly/react-core/dist/esm/components/Slider/index.js";
 import { Spinner } from "@patternfly/react-core/dist/esm/components/Spinner/index.js";
 import { Split } from "@patternfly/react-core/dist/esm/layouts/Split/index.js";
@@ -237,13 +236,14 @@ import { ExclamationTriangleIcon, InfoIcon, HelpIcon, EyeIcon, EyeSlashIcon } fr
 import { InputGroup } from "@patternfly/react-core/dist/esm/components/InputGroup/index.js";
 import { Table, Tbody, Tr, Td } from '@patternfly/react-table';
 
+import { TypeaheadSelect } from "cockpit-components-typeahead-select";
 import { show_modal_dialog, apply_modal_dialog } from "cockpit-components-dialog.jsx";
 import { ListingTable } from "cockpit-components-table.jsx";
 import { FormHelper } from "cockpit-components-form-helper";
 
 import {
     decode_filename, fmt_size, block_name, format_size_and_text, format_delay, for_each_async, get_byte_units,
-    is_available_block
+    is_available_block, BTRFS_TOOL_MOUNT_PATH
 } from "./utils.js";
 import { fmt_to_fragments } from "utils.jsx";
 import client from "./client.js";
@@ -261,8 +261,8 @@ function is_visible(field, values) {
     return !field.options || field.options.visible == undefined || field.options.visible(values);
 }
 
-const Row = ({ field, values, errors, onChange }) => {
-    const { tag, title, options } = field;
+const Field = ({ field, values, errors, onChange }) => {
+    const { tag, options } = field;
 
     if (!is_visible(field, values))
         return null;
@@ -276,10 +276,31 @@ const Row = ({ field, values, errors, onChange }) => {
         onChange(tag);
     }
 
-    const field_elts = field.render(values[tag], change, validated, error);
-    const nested_elts = (options && options.nested_fields
-        ? make_rows(options.nested_fields, values, errors, onChange)
-        : []);
+    return (
+        <>
+            {field.render(values[tag], change, validated, error)}
+            <FormHelper helperText={explanation} helperTextInvalid={validated && error} />
+        </>);
+};
+
+const Row = ({ field, values, errors, onChange }) => {
+    const { title, options } = field;
+
+    if (!is_visible(field, values))
+        return null;
+
+    const field_elts = <Field field={field} values={values} errors={errors} onChange={onChange} />;
+    let nested_elts = [];
+    if (options && options.nested_fields) {
+        if (field.is_group)
+            nested_elts = options.nested_fields.map(f => <Field key={f.tag}
+                                                                field={f}
+                                                                values={values}
+                                                                errors={errors}
+                                                                onChange={onChange} />);
+        else
+            nested_elts = make_rows(options.nested_fields, values, errors, onChange);
+    }
 
     if (title || title == "") {
         let titleLabel = title;
@@ -295,15 +316,13 @@ const Row = ({ field, values, errors, onChange }) => {
             <FormGroup label={titleLabel} hasNoPaddingTop={field.hasNoPaddingTop}>
                 { field_elts }
                 { nested_elts }
-                <FormHelper helperText={explanation} helperTextInvalid={validated && error} />
             </FormGroup>
         );
     } else if (!field.bare) {
         return (
-            <FormGroup validated={validated} hasNoPaddingTop={field.hasNoPaddingTop}>
+            <FormGroup hasNoPaddingTop={field.hasNoPaddingTop}>
                 { field_elts }
                 { nested_elts }
-                <FormHelper helperText={explanation} helperTextInvalid={validated && error} />
             </FormGroup>
         );
     } else
@@ -650,24 +669,17 @@ export const PassInput = (tag, title, options) => {
     };
 };
 
-const TypeAheadSelectElement = ({ options, change }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [value, setValue] = useState(options.value);
-
+const TypeAheadSelectElement = ({ value, options, change }) => {
     return (
-        <TypeAheadSelect
-            variant="typeahead"
-            isCreatable
-            createText={_("Use")}
-            id="nfs-path-on-server"
-            isOpen={isOpen}
-            selections={value}
-            onToggle={(_event, isOpen) => setIsOpen(isOpen)}
-            onSelect={(event, value) => { setValue(value); change(value) }}
-            onClear={() => setValue(false)}
-            isDisabled={options.disabled}>
-            {options.choices.map(entry => <SelectOption key={entry} value={entry} />)}
-        </TypeAheadSelect>
+        <TypeaheadSelect toggleProps={ { id: "nfs-path-on-server" } }
+                         isScrollable
+                         isCreatable
+                         createOptionMessage={val => cockpit.format(_("Use $0"), val)}
+                         selected={value}
+                         onSelect={(_, value) => change(value)}
+                         onClearSelection={() => change("")}
+                         isDisabled={options.disabled}
+                         selectOptions={options.choices.map(entry => ({ value: entry, content: entry }))} />
     );
 };
 
@@ -679,9 +691,11 @@ export const ComboBox = (tag, title, options) => {
         initial_value: options.value || "",
 
         render: (val, change, validated) => {
-            return <div data-field={tag} data-field-type="combobox">
-                <TypeAheadSelectElement options={options} change={change} />
-            </div>;
+            return (
+                <div data-field={tag} data-field-type="combobox">
+                    <TypeAheadSelectElement value={val} options={options} change={change} />
+                </div>
+            );
         }
     };
 };
@@ -717,37 +731,23 @@ export const SelectOneRadio = (tag, title, options) => {
         hasNoPaddingTop: true,
 
         render: (val, change) => {
-            return (
-                <Split hasGutter data-field={tag} data-field-type="select-radio">
-                    { options.choices.map(c => (
-                        <Radio key={c.value} isChecked={val == c.value} data-data={c.value}
+            const vertical = options?.vertical || false;
+            const fields = options.choices.map(c => (
+                <Radio key={c.value} isChecked={val == c.value} data-data={c.value}
                             id={tag + '.' + c.value}
-                            onChange={() => change(c.value)} label={c.title} />))
-                    }
-                </Split>
-            );
-        }
-    };
-};
+                            onChange={() => change(c.value)} label={c.title} />));
 
-export const SelectOneRadioVertical = (tag, title, options) => {
-    return {
-        tag,
-        title,
-        options,
-        initial_value: options.value || options.choices[0].value,
-        hasNoPaddingTop: true,
-
-        render: (val, change) => {
-            return (
-                <div data-field={tag} data-field-type="select-radio">
-                    { options.choices.map(c => (
-                        <Radio key={c.value} isChecked={val == c.value} data-data={c.value}
-                            id={tag + '.' + c.value}
-                            onChange={() => change(c.value)} label={c.title} />))
-                    }
-                </div>
-            );
+            if (vertical) {
+                return (
+                    <div data-field={tag} data-field-type="select-radio">
+                        {fields}
+                    </div>);
+            } else {
+                return (
+                    <Split hasGutter data-field={tag} data-field-type="select-radio">
+                        {fields}
+                    </Split>);
+            }
         }
     };
 };
@@ -1149,6 +1149,18 @@ export const SizeSlider = (tag, title, options) => {
     };
 };
 
+export const Group = (title, fields) => {
+    return {
+        tag: null,
+        title,
+        is_group: true,
+        hasNoPaddingTop: true,
+        options: { nested_fields: fields },
+
+        render: (val, change) => null,
+    };
+};
+
 export const BlockingMessage = (usage) => {
     const usage_desc = {
         pvol: _("physical volume of LVM2 volume group"),
@@ -1259,6 +1271,14 @@ export const TeardownMessage = (usage, expect_single_unmount) => {
         if (use.block) {
             const name = teardown_block_name(use);
             let location = use.location;
+
+            /* Don't show mount points used internally by Cockpit.
+             * It's fine to tear them down, but we don't want people
+             * to start worrying about them.
+             */
+            if (location && location.startsWith(BTRFS_TOOL_MOUNT_PATH))
+                return;
+
             if (use.usage == "mounted") {
                 location = client.strip_mount_point_prefix(location);
                 if (location === false)
@@ -1276,6 +1296,9 @@ export const TeardownMessage = (usage, expect_single_unmount) => {
             });
         }
     });
+
+    if (rows.length == 0)
+        return null;
 
     return (
         <div className="modal-footer-teardown">

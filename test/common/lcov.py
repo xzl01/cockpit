@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 # This module can convert profile data from CDP to LCOV, produce a
 # HTML report, and post review comments.
@@ -32,6 +32,7 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.parse
 from bisect import bisect_left
 from typing import Any, Mapping, Sequence
 
@@ -159,6 +160,12 @@ def get_dist_map(package):
 
 
 def get_distfile(url, dist_map):
+    path = urllib.parse.urlparse(url).path
+    if path.startswith('/qunit/'):
+        relpath = path[1:]
+        if os.path.exists(relpath) and os.path.exists(f'{relpath}.map'):
+            return DistFile(path[1:])
+
     parts = url.split("/")
     if len(parts) < 3 or "cockpit" not in parts:
         return None

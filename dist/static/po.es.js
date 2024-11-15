@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minutos"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "No se ha instalado una versión compatible de Cockpit en $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Se requiere un navegador moderno por seguridad, fiabilidad y rendimiento."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Se creará una nueva clave SSH en $0 para $1 en $2 y se añadirá al fichero $3 de $4 en $5."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Documentación de los roles de Ansible"
  ],
+ "Authentication": [
+  null,
+  "Autenticación"
+ ],
  "Authentication failed": [
   null,
   "Falló la autenticación"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Falló la autenticación: se ha cerrado la conexión con el servidor"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Se requiere autenticación para elevar privilegios y realizar tareas de administración en la consola Web de Cockpit"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Autorizar la clave SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -246,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit no es compatible con el software del sistema."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit no está instalado"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit no está instalado en el sistema."
@@ -270,6 +286,10 @@ window.cockpit_po = {
   null,
   "PCI compacto"
  ],
+ "Confirm key password": [
+  null,
+  "Confirme la contraseña de la clave"
+ ],
  "Connect to": [
   null,
   "Conectar a"
@@ -286,6 +306,10 @@ window.cockpit_po = {
   null,
   "Convertible"
  ],
+ "Copied": [
+  null,
+  "Copiado"
+ ],
  "Copy": [
   null,
   "Copiar"
@@ -294,9 +318,9 @@ window.cockpit_po = {
   null,
   "Copiar al portapapeles"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Crear"
+  "Crear una clave SSH y autorizarla"
  ],
  "Create new task file with this content.": [
   null,
@@ -382,6 +406,10 @@ window.cockpit_po = {
   null,
   "Si la huella coincide, pulse \"Aceptar la clave e iniciar sesión\". En caso contrario, no inicie sesión y contacte con su administrador."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Si la huella coincide, pulse \"Confiar en el anfitrión y añadirlo\". En caso contrario, no se conecte y contacte con su administrador."
+ ],
  "Install": [
   null,
   "Instalar"
@@ -389,6 +417,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Instalar software"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -430,6 +462,10 @@ window.cockpit_po = {
   null,
   "Volcado del kernel"
  ],
+ "Key password": [
+  null,
+  "Contraseña de la clave"
+ ],
  "Laptop": [
   null,
   "Portátil"
@@ -445,6 +481,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Iniciar sesión"
+ ],
+ "Log in to $0": [
+  null,
+  "Iniciar sesión en $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -530,6 +570,10 @@ window.cockpit_po = {
   null,
   "Sin retardo"
  ],
+ "No results found": [
+  null,
+  "No se encontraron resultados"
+ ],
  "No such file or directory": [
   null,
   "No existe el archivo o directorio"
@@ -585,6 +629,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit colapsó"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -670,18 +718,6 @@ window.cockpit_po = {
   null,
   "Anfitriones recientes"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Rechazando la conexión. Se desconoce el anfitrión"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Rechazando conexión. La clave del anfitrión no coincide"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Rechazando la conexión. La clave de anfitrión es desconocida"
- ],
  "Removals:": [
   null,
   "Borrados:"
@@ -694,9 +730,17 @@ window.cockpit_po = {
   null,
   "Eliminando $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Ejecute este comando en la máquina remota a través de una red de confianza o de forma física:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "Clave SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -786,17 +830,49 @@ window.cockpit_po = {
   null,
   "Tableta"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "La clave SSH $0 de $1 en $2 será añadida al archivo $3 de $4 en $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "La clave SSH $0 estará disponible durante el resto de la sesión y también lo estará para unirse a otros anfitriones."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "La clave SSH para iniciar sesión en $0 está protegida por contraseña, y el anfitrión no permite iniciar sesión con contraseña. Por favor, introduzca la contraseña de dicha clave en $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "La clave SSH para iniciar sesión en $0 está protegida. Puedes iniciar sesión tanto con la contraseña de usuario como introduciendo la contraseña de dicha clave en $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "La huella debería coincidir con:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "La contraseña de la clave no puede estar vacía"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Las contraseñas de la clave no coinciden"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "El usuario autenticado no tiene permisos para ver las modificaciones del sistema"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Las contraseñas no coinciden."
+  "La contraseña no puede estar vacía"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "La huella resultante es apta para compartirse en público, incluyendo correo electrónico."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "La huella resultante puede ser distribuida por medios públicos, incluyendo correo electrónico, sin riesgos. Si está pidiendo a alguien que haga la verificación por usted, pueden enviarle los resultados usando cualquier método."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -813,10 +889,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Esta herramienta configura la política de SELinux y puede ayudarle a comprender y resolver infracciones de la política."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Esta herramienta configura el sistema para que escriba en disco los volcados de colapso del kernel."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -862,6 +934,14 @@ window.cockpit_po = {
   null,
   "Torre"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "Confiar en el anfitrión y añadirlo"
+ ],
  "Try again": [
   null,
   "Intentar otra vez"
@@ -873,6 +953,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "No se pudo realizar una conexión con esa dirección"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "No se pudo iniciar sesión en $0. El servidor no acepta inicio de sesión por contraseña ni ninguna de tus claves SSH."
  ],
  "Unknown": [
   null,
@@ -893,6 +977,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Validando código de autenticación"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Verifique la huella"
  ],
  "View all logs": [
   null,

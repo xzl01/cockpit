@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import '../lib/patternfly/patternfly-5-cockpit.scss';
@@ -26,8 +26,6 @@ import { createRoot } from 'react-dom/client';
 
 import { Button } from "@patternfly/react-core/dist/esm/components/Button/index.js";
 import { ClipboardCopy } from "@patternfly/react-core/dist/esm/components/ClipboardCopy/index.js";
-import { Divider } from "@patternfly/react-core/dist/esm/components/Divider/index.js";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/esm/layouts/Flex/index.js";
 import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/dist/esm/components/Page/index.js";
 import { Popover } from "@patternfly/react-core/dist/esm/components/Popover/index.js";
 import { SearchInput } from "@patternfly/react-core/dist/esm/components/SearchInput/index.js";
@@ -39,6 +37,8 @@ import {
     FilterIcon,
     HelpIcon,
 } from '@patternfly/react-icons';
+
+import { TypeaheadSelect } from "cockpit-components-typeahead-select";
 
 import {
     checkJournalctlGrep,
@@ -108,7 +108,7 @@ export const LogsPage = () => {
     const [isOpenTimeFilter, setIsOpenTimeFilter] = useState(false);
     // `prio` is a legacy name. Accept it, but don't generate it
     const [journalPrio, setJournalPrio] = useState(getPrioFilterOption(options));
-    const [identifiersFilter, setIdentifiersFilter] = useState(options.tag || _("All"));
+    const [identifiersFilter, setIdentifiersFilter] = useState(options.tag || "all");
     const [showTextSearch, setShowTextSearch] = useState(false);
     const [textFilter, setTextFilter] = useState(full_grep);
     const [timeFilter, setTimeFilter] = useState(getTimeFilterOption(options));
@@ -124,7 +124,7 @@ export const LogsPage = () => {
             if (path.length == 1) return;
 
             setJournalPrio(getPrioFilterOption(options));
-            setIdentifiersFilter(options.tag || _("All"));
+            setIdentifiersFilter(options.tag || "all");
             setTextFilter(full_grep);
             setTimeFilter(getTimeFilterOption(options));
         }
@@ -153,7 +153,7 @@ export const LogsPage = () => {
     const onIdentifiersFilterChange = (value) => {
         setUpdateIdentifiersList(false);
 
-        if (value == _("All")) {
+        if (value == "all") {
             delete options.tag;
             updateUrl(Object.assign(options));
         } else {
@@ -184,7 +184,7 @@ export const LogsPage = () => {
 
     return (
         <Page>
-            <PageSection id="journal" padding={{ default: 'noPadding' }}>
+            <PageSection id="journal" className="journal-filters" padding={{ default: 'noPadding' }}>
                 <Toolbar>
                     <ToolbarContent>
                         <ToolbarToggleGroup className="pf-v5-u-flex-wrap pf-v5-u-flex-grow-1 pf-v5-u-align-items-flex-start" toggleIcon={<><span className="pf-v5-c-button__icon pf-m-start"><FilterIcon /></span>{_("Toggle filters")}</>} breakpoint="lg">
@@ -223,7 +223,7 @@ export const LogsPage = () => {
                                 <ToolbarItem variant="label">
                                     {_("Identifier")}
                                 </ToolbarItem>
-                                <ToolbarItem id="journal-identifier-menu">
+                                <ToolbarItem id="journal-identifier-menu" className="journal-filters-identifier-menu">
                                     <IdentifiersFilter currentIdentifiers={currentIdentifiers}
                                                     onIdentifiersFilterChange={onIdentifiersFilterChange}
                                                     identifiersFilter={identifiersFilter} />
@@ -238,6 +238,7 @@ export const LogsPage = () => {
                                     </ToolbarItem>
                                     <ToolbarItem className="text-search">
                                         <TextFilter id="journal-grep"
+                                                    className="journal-filters-grep"
                                                     key={textFilter}
                                                     textFilter={textFilter}
                                                     onTextFilterChange={onTextFilterChange}
@@ -271,7 +272,8 @@ export const LogsPage = () => {
             </PageSection>
             <PageSection padding={{ default: 'noPadding' }}
                          variant={PageSectionVariants.light}
-                         id="journal-box">
+                         id="journal-box"
+                         className="journal-filters-box">
                 <JournalBox dataFollowing={dataFollowing}
                             defaultSince={timeFilter ? timeFilter.value : getTimeFilterOption({}).value}
                             currentIdentifiers={currentIdentifiers}
@@ -285,44 +287,33 @@ export const LogsPage = () => {
 };
 
 const IdentifiersFilter = ({ identifiersFilter, onIdentifiersFilterChange, currentIdentifiers }) => {
-    const [isOpenIdentifiersFilter, setIsOpenIdentifiersFilter] = useState(false);
-
     let identifiersArray;
     if (currentIdentifiers !== undefined) {
         identifiersArray = [
-            <SelectOption key="all" value={_("All")} />,
-            <Divider component="li" key="divider" />
+            { value: "all", content: _("All") }
         ];
+        if (currentIdentifiers.length > 0) {
+            identifiersArray.push({ divider: true, key: "divider" });
+        }
         identifiersArray = identifiersArray.concat(
             currentIdentifiers
                     .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-                    .map(unit => <SelectOption key={unit} value={unit} />)
+                    .map(unit => ({ value: unit, content: unit }))
         );
     } else {
         identifiersArray = [
-            <SelectOption key={identifiersFilter} value={identifiersFilter} isDisabled />
+            { value: identifiersFilter, content: identifiersFilter, isDisabled: true }
         ];
     }
 
-    /* The noResultsFoundText is not shown because of https://github.com/patternfly/patternfly-react/issues/6005 */
     return (
-        <Select {...(currentIdentifiers === undefined && { loadingVariant: 'spinner' })}
-                onToggle={(_, isOpen) => setIsOpenIdentifiersFilter(isOpen)}
-                onSelect={(e, selection) => {
-                    setIsOpenIdentifiersFilter(false);
-                    onIdentifiersFilterChange(selection);
-                }}
-                isOpen={isOpenIdentifiersFilter}
-                noResultsFoundText={_("No results found")}
-                onClear={() => {
-                    setIsOpenIdentifiersFilter(false);
-                    onIdentifiersFilterChange(_("All"));
-                }}
-                selections={identifiersFilter}
-                typeAheadAriaLabel={_("Select a identifier")}
-                variant="typeahead">
-            {identifiersArray}
-        </Select>
+        <TypeaheadSelect selectOptions={identifiersArray}
+                         isScrollable
+                         selected={identifiersFilter}
+                         selectedIsTrusted
+                         onSelect={(e, selection) => { onIdentifiersFilterChange(selection) }}
+                         onClearSelection={identifiersFilter != "all" && (() => { onIdentifiersFilterChange("all") })}
+        />
     );
 };
 
@@ -331,58 +322,63 @@ const TextFilter = ({ textFilter, onTextFilterChange, filteredQuery }) => {
     const sinceUntilBody = _("Date specifications should be of the format YYYY-MM-DD hh:mm:ss. Alternatively the strings 'yesterday', 'today', 'tomorrow' are understood. 'now' refers to the current time. Finally, relative times may be specified, prefixed with '-' or '+'");
 
     const sinceLabel = (
-        <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>{_("Since")}</FlexItem>
+        <>
+            {_("Since")}
             <Popover headerContent={_("Start showing entries on or newer than the specified date.")}
-                     showClose={false}
                      bodyContent={sinceUntilBody}>
-                <HelpIcon />
+                <Button className="log-text-filter-popover-button" variant="plain">
+                    <HelpIcon />
+                </Button>
             </Popover>
-        </Flex>
+        </>
     );
 
     const untilLabel = (
-        <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>{_("Until")}</FlexItem>
+        <>
+            {_("Until")}
             <Popover headerContent={_("Start showing entries on or older than the specified date.")}
-                     showClose={false}
                      bodyContent={sinceUntilBody}>
-                <HelpIcon />
+                <Button className="log-text-filter-popover-button" variant="plain">
+                    <HelpIcon />
+                </Button>
             </Popover>
-        </Flex>
+        </>
     );
 
     const bootLabel = (
-        <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>{_("Boot")}</FlexItem>
+        <>
+            {_("Boot")}
             <Popover headerContent={_("Show messages from a specific boot.")}
-                     showClose={false}
                      bodyContent={_("This will add a match for '_BOOT_ID='. If not specified the logs for the current boot will be shown. If the boot ID is omitted, a positive offset will look up the boots starting from the beginning of the journal, and an equal-or-less-than zero offset will look up boots starting from the end of the journal. Thus, 1 means the first boot found in the journal in chronological order, 2 the second and so on; while -0 is the last boot, -1 the boot before last, and so on.")}>
-                <HelpIcon />
+                <Button className="log-text-filter-popover-button" variant="plain">
+                    <HelpIcon />
+                </Button>
             </Popover>
-        </Flex>
+        </>
     );
 
     const serviceLabel = (
-        <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>{_("Unit")}</FlexItem>
+        <>
+            {_("Unit")}
             <Popover headerContent={_("Show messages for the specified systemd unit.")}
-                     showClose={false}
                      bodyContent={_("This will add match for '_SYSTEMD_UNIT=', 'COREDUMP_UNIT=' and 'UNIT=' to find all possible messages for the given unit. Can contain more units separated by comma. ")}>
-                <HelpIcon />
+                <Button className="log-text-filter-popover-button" variant="plain">
+                    <HelpIcon />
+                </Button>
             </Popover>
-        </Flex>
+        </>
     );
 
     const freeTextLabel = (
-        <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
-            <FlexItem>{_("Free-form search")}</FlexItem>
+        <>
+            {_("Free-form search")}
             <Popover headerContent={_("Show messages containing given string.")}
-                     showClose={false}
                      bodyContent={_("Any text string in the logs messages can be filtered. The string can also be in the form of a regular expression. Also supports filtering by message log fields. These are space separated values, in form FIELD=VALUE, where value can be comma separated list of possible values.")}>
-                <HelpIcon />
+                <Button className="log-text-filter-popover-button" variant="plain">
+                    <HelpIcon />
+                </Button>
             </Popover>
-        </Flex>
+        </>
     );
 
     const searchInputAttributes = [
@@ -407,7 +403,7 @@ const TextFilter = ({ textFilter, onTextFilterChange, filteredQuery }) => {
                      submitSearchButtonLabel={_("Search")}
                      formAdditionalItems={<Stack hasGutter>
                          <Button variant="link" component="a" isInline
-                                     href="https://www.freedesktop.org/software/systemd/man/journalctl.html"
+                                     href="https://www.freedesktop.org/software/systemd/man/latest/journalctl.html"
                                      icon={<ExternalLinkSquareAltIcon />} iconPosition="right"
                                      target="blank" rel="noopener noreferrer">
                              {_("journalctl manpage")}
