@@ -67,6 +67,12 @@ QUnit.test("simple replace", async assert => {
     assert.equal(res, "4321\n", "correct content");
 });
 
+QUnit.test("empty replace", async assert => {
+    await cockpit.file(`${dir}/bar`).replace("");
+    const res = await cockpit.spawn(["cat", `${dir}/bar`]);
+    assert.equal(res, "", "correct content");
+});
+
 QUnit.test("stringify replace", async assert => {
     await cockpit.file(dir + "/bar", { syntax: JSON }).replace({ foo: 4321 });
     const res = await cockpit.spawn(["cat", dir + "/bar"]);
@@ -193,6 +199,28 @@ QUnit.test("modify", async assert => {
     assert.equal(n, 1, "callback called once");
 
     assert.equal(await cockpit.spawn(["cat", dir + "/quux"]), "dcba\n", "correct content");
+
+    // make sure that writing "" results in an empty file, not a deleted one
+    n = 0;
+    await file.modify(old => {
+        n += 1;
+        assert.equal(old, "dcba\n", "correct old content");
+        return "";
+    });
+    assert.equal(n, 1, "callback called once");
+
+    assert.equal(await cockpit.spawn(["cat", dir + "/quux"]), "", "correct content");
+
+    // make sure that writing null deletes the file
+    n = 0;
+    await file.modify(old => {
+        n += 1;
+        assert.equal(old, "", "correct old content");
+        return null;
+    });
+    assert.equal(n, 1, "callback called once");
+
+    assert.rejects(cockpit.spawn(["cat", dir + "/quux"]), /No such file or directory/, "file deleted");
 });
 
 QUnit.test("modify with conflict", async assert => {

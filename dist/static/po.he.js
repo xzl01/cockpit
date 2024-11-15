@@ -114,9 +114,17 @@ window.cockpit_po = {
   null,
   "60 דקות"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "לא מותקנת גרסה תואמת של Cockpit ב־$0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "נדרש דפדפן עדכני לטובת אבטחה, אמינות וביצועים."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "מפתח SSH חדש תחת $0 ייווצר עבור $1 על גבי $2 והוא יתווסף לקובץ $3 של $4 על גבי $5."
  ],
  "Absent": [
   null,
@@ -158,17 +166,21 @@ window.cockpit_po = {
   null,
   "תיעוד תפקידים של Ansible"
  ],
+ "Authentication": [
+  null,
+  "אימות"
+ ],
  "Authentication failed": [
   null,
   "האימות נכשל"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "האימות נכשל: השרת סגר את החיבור"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "נדרש אימות כדי לבצע משימות שדורשות השראה עם המסוף המקוון Cockpit"
+ ],
+ "Authorize SSH key": [
+  null,
+  "אישור מפתח SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -254,6 +266,10 @@ window.cockpit_po = {
   null,
   "Cockpit אינו תואם לתכנה שרצה על המערכת."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit אינו מותקן"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit אינו מותקן על המערכת."
@@ -278,6 +294,10 @@ window.cockpit_po = {
   null,
   "PCI חסכוני"
  ],
+ "Confirm key password": [
+  null,
+  "אישור סיסמת מפתח"
+ ],
  "Connect to": [
   null,
   "התחברות אל"
@@ -294,6 +314,10 @@ window.cockpit_po = {
   null,
   "מתהפך"
  ],
+ "Copied": [
+  null,
+  "הועתק"
+ ],
  "Copy": [
   null,
   "העתקה"
@@ -302,9 +326,9 @@ window.cockpit_po = {
   null,
   "העתקה ללוח הגזירים"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "יצירה"
+  "ליצור מפתח SSH חדש ולאשר אותו"
  ],
  "Create new task file with this content.": [
   null,
@@ -390,6 +414,10 @@ window.cockpit_po = {
   null,
   "אם טביעת האצבע תואמת, יש ללחוץ על „לקבל את המפתח להיכנס”. אחרת, לא להתחבר וליצור קשר עם הנהלת המערכת."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "אם טביעת האצבע תואמת, יש ללחוץ על ‚מתן אמון והוספת מארח’. אחרת, לא להתחבר וליצור קשר עם הנהלת המערכת."
+ ],
  "Install": [
   null,
   "התקנה"
@@ -397,6 +425,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "התקנת תכנה"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -438,6 +470,10 @@ window.cockpit_po = {
   null,
   "היטל ליבה"
  ],
+ "Key password": [
+  null,
+  "סיסמת מפתח"
+ ],
  "Laptop": [
   null,
   "מחשב נייד"
@@ -453,6 +489,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "כניסה"
+ ],
+ "Log in to $0": [
+  null,
+  "כניסה אל $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -538,6 +578,10 @@ window.cockpit_po = {
   null,
   "אין השהיה"
  ],
+ "No results found": [
+  null,
+  "לא נמצאו תוצאות"
+ ],
  "No such file or directory": [
   null,
   "אין קובץ או תיקייה בשם הזה"
@@ -593,6 +637,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit קרס"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -678,18 +726,6 @@ window.cockpit_po = {
   null,
   "מארחים אחרונים"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "החיבור מסורב. המארח אינו מוכר"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "החיבור מסורב. מפתח המארח לא תואם"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "החיבור מסורב. מפתח המארח אינו מוכר"
- ],
  "Removals:": [
   null,
   "הסרות:"
@@ -702,9 +738,17 @@ window.cockpit_po = {
   null,
   "$0 בהסרה"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "מפתח SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -786,17 +830,49 @@ window.cockpit_po = {
   null,
   "מחשב לוח"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "מפתח ה־SSH‏ $0 של $1 על גבי $2 יתווסף לקובץ $3 של $4 על גבי $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "מפתח ה־SSH‏ $0 יהפוך לזמין עד ליציאה מהמערכת ויהיה זמין לכניסה למארחים אחרים גם כן."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "מפתח ה־SSH לכניסה אל $0 מוגן בסיסמה, והמארח לא מרשה להיכנס למערכת עם סיסמה. נא לספק את הסיסמה למפתח שב־$1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "מפתח ה־SSH לכניסה אל $0 מוגן. יש לך אפשרות להיכנס עם שם המשתמש והסיסמה שלך או על ידי אספקת הסיסמה למפתח שב־$1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "טביעת האצבע אמורה להיות תואמת:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "סיסמת המפתח לא יכולה להישאר ריקה"
+ ],
+ "The key passwords do not match": [
+  null,
+  "סיסמאות המפתח אינן תואמות"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "המשתמש הנוכחי שנכנס למערכת אינו מורשה לצפות בשינויים שבוצעו במערכת"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "הסיסמאות אינן תואמות."
+  "סיסמת המפתח לא יכולה להישאר ריקה"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "זה בסדר לשתף את טביעת האצבע באופן ציבורי, לרבות בדוא״ל."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  ""
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -813,10 +889,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "הכלי הזה מגדיר את המדיניות של SELinux ויכול לסייע והבנת ופתרון הפרות של המדיניות."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "הכלי הזה מגדיר למערכת לכתוב את היטלי הקריסה של הליבה לכונן."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -862,6 +934,14 @@ window.cockpit_po = {
   null,
   "מארז גבוה"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "מתן אמון והוספת מארח"
+ ],
  "Try again": [
   null,
   "לנסות שוב"
@@ -873,6 +953,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "לא ניתן להתחבר לכתובת הזו"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "לא ניתן להיכנס אל $0. המארח לא מקבל כניסה עם סיסמה או אף אחד ממפתחות ה־SSH האחרים שלך."
  ],
  "Unknown": [
   null,

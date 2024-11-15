@@ -6,9 +6,7 @@ Uploaders: Michael Biebl <biebl@debian.org>,
            Martin Pitt <mpitt@debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
-               gettext (>= 0.19.7),
-               gettext (>= 0.21) | appstream,
-               libssh-dev (>= 0.8.5),
+               gettext (>= 0.21),
                zlib1g-dev,
                libkrb5-dev (>= 1.11),
                libxslt1-dev,
@@ -65,9 +63,11 @@ Depends: ${misc:Depends},
          ${python3:Depends},
          glib-networking
 Recommends: openssh-client
-Provides: cockpit-ssh
 Breaks: cockpit-ws (<< 181.x),
-Replaces: cockpit-dashboard (<< 170.x), cockpit-ws (<< 181.x)
+Replaces: cockpit-dashboard (<< 170.x), cockpit-ws (<< 181.x), cockpit-pcp (<< 236)
+Provides: cockpit-pcp
+Conflicts: cockpit-pcp
+Suggests: python3-pcp
 Description: Cockpit bridge server-side component
  The Cockpit bridge component installed server side and runs commands on
  the system on behalf of the web based user interface.
@@ -136,6 +136,7 @@ Provides: cockpit-shell,
 Conflicts: cockpit-shell
 Breaks: cockpit-dashboard
 Replaces: cockpit-shell, cockpit-dashboard
+Suggests: lastlog2
 Description: Cockpit admin interface for a system
  Cockpit admin interface package for configuring and
  troubleshooting a system.

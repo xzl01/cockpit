@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 import '../lib/patternfly/patternfly-5-cockpit.scss';
 import 'polyfills'; // once per application
@@ -672,18 +672,27 @@ const TwoColumnTitle = ({ icon, str }) => {
 
 const UpdateSuccess = ({ onIgnore, openServiceRestartDialog, openRebootDialog, restart, manual, reboot, tracerAvailable, history }) => {
     if (!tracerAvailable) {
+        /* tracer is not available any more in RHEL 10; as a special case, if only kpatch and kernel were
+         * updated, don't reboot (as that's their whole raison d'être) */
+        const pkgs = Object.keys(history[0] ?? {}).filter(p => p != "_time");
+        const only_kpatch = pkgs.filter(p => p.startsWith("kpatch")).length > 0 &&
+                            pkgs.filter(p => !p.startsWith("kernel") && !p.startsWith("kpatch")).length == 0;
+
+        const paragraph = only_kpatch ? null : _("Updated packages may require a reboot to take effect.");
+        const actions = only_kpatch
+            ? <Button id="ignore" variant="primary" onClick={onIgnore}>{_("Continue")}</Button>
+            : <>
+                <Button id="reboot-system" variant="primary" onClick={openRebootDialog}>{_("Reboot system...")}</Button>
+                <Button id="ignore" variant="link" onClick={onIgnore}>{_("Ignore")}</Button>
+            </>;
+
         return (<>
             <EmptyStatePanel icon={RebootingIcon}
                              title={ _("Update was successful") }
                              headingLevel="h5"
                              titleSize="4xl"
-                             paragraph={ _("Updated packages may require a reboot to take effect.") }
-                             secondary={
-                                 <>
-                                     <Button id="reboot-system" variant="primary" onClick={openRebootDialog}>{_("Reboot system...")}</Button>
-                                     <Button id="ignore" variant="link" onClick={onIgnore}>{_("Ignore")}</Button>
-                                 </>
-                             } />
+                             paragraph={paragraph}
+                             secondary={actions} />
             <div className="flow-list-blank-slate">
                 <ExpandableSection toggleText={_("Package information")}>
                     <PackageList packages={history[0]} />
@@ -1125,13 +1134,6 @@ class OsUpdates extends React.Component {
                 }
 
                 u.vendor_urls = vendor_urls;
-                // HACK: bug_urls and cve_urls also contain titles, in a not-quite-predictable order; ignore them,
-                // only pick out http[s] URLs (https://bugs.freedesktop.org/show_bug.cgi?id=104552)
-                if (bug_urls)
-                    bug_urls = bug_urls.filter(url => url.match(/^https?:\/\//));
-                if (cve_urls)
-                    cve_urls = cve_urls.filter(url => url.match(/^https?:\/\//));
-
                 u.description = this.removeHeading(update_text) || changelog;
                 if (update_text)
                     u.markdown = true;

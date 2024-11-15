@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import base64
 import json
@@ -57,7 +57,6 @@ class TestConnection(testlib.MachineCase):
             # show the leaked processes in the assertion
             self.fail(m.execute("pgrep -au admin '(cockpit|ssh-agent)'"))
 
-    @testlib.skipBrowser("Firefox cannot work with cookies", "firefox")
     def testBasic(self):
         m = self.machine
 
@@ -107,7 +106,7 @@ class TestConnection(testlib.MachineCase):
         # cookie should not be marked as secure, it's not https
         cookie = b.cookie("cockpit")
         self.assertTrue(cookie["httpOnly"])
-        self.assertEqual(cookie["sameSite"], "Strict")
+        self.assertEqual(cookie["sameSite"], "strict")
         self.assertFalse(cookie["secure"])
 
         # take cockpit-ws down on the server page
@@ -141,7 +140,7 @@ class TestConnection(testlib.MachineCase):
 
         try:
             b.switch_to_top()
-            with b.wait_timeout(60):
+            with b.wait_timeout(90):
                 b.wait_visible(".curtains-ct")
 
             b.wait_in_text(".curtains-ct h1", "Disconnected")
@@ -161,7 +160,7 @@ class TestConnection(testlib.MachineCase):
 
         self.assertNoAdminProcessLeaks()
 
-        if not m.ostree_image:  # cannot write to /usr on OSTree, and cockpit-session is in a container
+        if not m.ws_container:  # no cockpit-session
             # damage cockpit-session permissions, expect generic error message
             m.execute(f"chmod g-x {self.libexecdir}/cockpit-session")
             b.open("/system")
@@ -197,7 +196,7 @@ class TestConnection(testlib.MachineCase):
         self.allow_core_dumps = True
         self.allow_journal_messages(".*org.freedesktop.hostname1.*DBus.Error.NoReply.*")
 
-    @testlib.skipOstree("OSTree doesn't use systemd units")
+    @testlib.skipWsContainer("cockpit/ws doesn't use systemd units")
     @testlib.nondestructive
     def testUnitLifecycle(self):
         m = self.machine
@@ -313,7 +312,7 @@ class TestConnection(testlib.MachineCase):
             out = m.execute(f"su -c '! nc -U /run/cockpit/wsinstance/{s} 2>&1 || exit 1' admin")
             self.assertIn("Permission denied", out)
 
-    @testlib.skipOstree("OSTree doesn't use systemd units")
+    @testlib.skipWsContainer("cockpit/ws doesn't use systemd units")
     @testlib.nondestructive
     def testHttpsInstanceDoS(self):
         m = self.machine
@@ -348,6 +347,7 @@ class TestConnection(testlib.MachineCase):
 
         self.allow_journal_messages(".*cockpit-ws.*dumped core.*")
         self.allow_journal_messages(".*Error creating thread: Resource temporarily unavailable.*")
+        self.allow_journal_messages(".*Failed to check for ssh: Failed to fork.*")
 
         # initial instance still works
         self.assertIn("HTTP/1.1 200 OK", m.execute("curl --silent --show-error -k --head https://127.0.0.1:9090"))
@@ -358,8 +358,8 @@ class TestConnection(testlib.MachineCase):
         out = m.execute("curl --silent --show-error --head --unix-socket /run/cockpit/wsinstance/https@new.sock http://dummy")
         self.assertIn("HTTP/1.1 200 OK", out)
 
-    @testlib.skipBrowser("Firefox needs proper cert and CA", "firefox")
     @testlib.nondestructive
+    @testlib.skipBeiboot("beiboot doesn't have certs on the host")
     def testTls(self):
         m = self.machine
         b = self.browser
@@ -403,8 +403,7 @@ class TestConnection(testlib.MachineCase):
             output, r"no cipher match|no ciphers available|ssl handshake failure|Cipher is \(NONE\)")
 
         # get along with read-only config directory, as long as certificate exists
-        # this does not work on coreos as the user/group IDs are not mapped correctly
-        if not m.ostree_image:
+        if not m.ws_container:
             m.stop_cockpit()
             try:
                 m.execute("mount -o bind -r /etc/cockpit /etc/cockpit")
@@ -431,7 +430,7 @@ class TestConnection(testlib.MachineCase):
         check_cert_chain()
 
         # backwards compat: merged cert+key file also still works with cockpit-tls (but not any more with cockpit-ws/container)
-        if not m.ostree_image:
+        if not m.ws_container:
             m.execute("""cat /etc/cockpit/ws-certs.d/cert-chain.key >> /etc/cockpit/ws-certs.d/cert-chain.crt
                          chmod 640 /etc/cockpit/ws-certs.d/cert-chain.crt
                          rm /etc/cockpit/ws-certs.d/cert-chain.key""")
@@ -439,7 +438,7 @@ class TestConnection(testlib.MachineCase):
 
         # certmonger generated certificate; asciibetically later than the above
         # not all images have certmonger
-        if m.image not in ["debian-stable", "debian-testing", "fedora-coreos", "rhel4edge", "arch"]:
+        if m.image not in ["debian-stable", "debian-testing", "fedora-coreos", "arch"]:
             hostname = m.execute("hostname --fqdn").strip()
             m.execute(f"getcert request -f /etc/cockpit/ws-certs.d/monger.cert -k /etc/cockpit/ws-certs.d/monger.key -D {hostname} --ca=local --wait")
             self.addCleanup(m.execute, "getcert stop-tracking -f /etc/cockpit/ws-certs.d/monger.cert")
@@ -497,20 +496,19 @@ class TestConnection(testlib.MachineCase):
         m.upload(["../tools/debian/tests/smoke"], "/tmp")
         m.execute("/tmp/smoke")
 
-        b.ignore_ssl_certificate_errors(ignore=True)
         self.login_and_go("/system", tls=True)
         cookie = b.cookie("cockpit")
         # cookie should be marked as secure
         self.assertTrue(cookie["httpOnly"])
         self.assertTrue(cookie["secure"])
-        self.assertEqual(cookie["sameSite"], "Strict")
+        self.assertEqual(cookie["sameSite"], "strict")
         # same after logout
         b.logout()
         cookie = b.cookie("cockpit")
         self.assertEqual(cookie["value"], "deleted")
         self.assertTrue(cookie["httpOnly"])
         self.assertTrue(cookie["secure"])
-        self.assertEqual(cookie["sameSite"], "Strict")
+        self.assertEqual(cookie["sameSite"], "strict")
 
         # http on localhost should not redirect to https
         self.assertIn("HTTP/1.1 200 OK", m.execute("curl --head http://127.0.0.1:9090"))
@@ -547,7 +545,7 @@ class TestConnection(testlib.MachineCase):
 
         self.allow_journal_messages('peer did not close io when expected')
 
-    @testlib.skipOstree("OSTree doesn't have cockpit-ws")
+    @testlib.skipWsContainer("cockpit/ws doesn't have certs on the host")
     @testlib.nondestructive
     def test100YearsCert(self):
         m = self.machine
@@ -592,7 +590,7 @@ class TestConnection(testlib.MachineCase):
         m.execute(f'test ! {selfsign} -nt /tmp/timestamp')
         m.execute('rm /tmp/timestamp')
 
-    @testlib.skipOstree("OSTree doesn't use systemd units")
+    @testlib.skipWsContainer("cockpit/ws doesn't use systemd units")
     @testlib.nondestructive
     def testSocket(self):
         m = self.machine
@@ -663,7 +661,7 @@ class TestConnection(testlib.MachineCase):
 
         self.allow_journal_messages(".*Peer failed to perform TLS handshake")
 
-    @testlib.skipOstree("Can't remove/upgrade packages on OSTree")
+    @testlib.skipWsContainer("no cockpit-ws package with cockpit/ws container")
     def testWsPackage(self):
         m = self.machine
 
@@ -739,7 +737,7 @@ class TestConnection(testlib.MachineCase):
         if root_login_disallowed:
             self.assertIn('root', m.execute("cat /etc/cockpit/disallowed-users"))
 
-    @testlib.skipOstree("OSTree doesn't have cockpit-ws")
+    @testlib.skipWsContainer("no cockpit-ws binary with cockpit/ws container")
     @testlib.nondestructive
     def testCommandline(self):
         m = self.machine
@@ -820,7 +818,7 @@ class TestConnection(testlib.MachineCase):
         headers = m.execute("curl -s --head http://172.27.0.15:9090/cockpit+123/channel/foo")
         self.assertIn("HTTP/1.1 404 Not Found\r\n", headers)
 
-    @testlib.skipOstree("ssh root login not allowed")
+    @testlib.skipWsContainer("ssh root login not allowed")
     @testlib.nondestructive
     def testFlowControlDownload(self):
         m = self.machine
@@ -842,7 +840,6 @@ class TestConnection(testlib.MachineCase):
         self.assertLess(rss, 250000)
 
     @testlib.nondestructive
-    @testlib.skipImage("Broken with C bridge", "rhel-8*")
     def testFlowControlUpload(self):
         m = self.machine
         b = self.browser
@@ -858,44 +855,54 @@ class TestConnection(testlib.MachineCase):
         self.assertEqual(int(m.execute("stat -c %s /tmp/spawninput")), 65536000)
         self.assertEqual(m.execute("tail -c10 /tmp/spawninput").strip(), "a" * 10)
 
-    @testlib.skipOstree("OSTree doesn't have cockpit-ws")
+    @testlib.skipWsContainer("no cockpit-ws binary with cockpit/ws container")
     @testlib.nondestructive
     def testLocalSession(self):
         m = self.machine
 
+        def check_session():
+            m.wait_for_cockpit_running('localhost', 9090)
+            b = self.browser
+            # session works directly, no login page
+            b.open("/")
+            b.wait_visible('#content')
+            b.enter_page("/system")
+            b.switch_to_top()
+
+            # disconnect browser, and wait past ws session timeout
+            b.kill()
+            time.sleep(17)  # cockpit_ws_service_idle plus a bit
+            self.browser = self.new_browser()
+            b = self.browser
+
+            # can start new session
+            b.open("/")
+            b.wait_visible('#content')
+
+            # shut it down, wait until it is gone
+            m.execute("pkill cockpit-ws; while pgrep -a cockpit-ws; do sleep 1; done")
+            b.wait_in_text(".curtains-ct", "Disconnected")
+
         # start ws with --local-session, let it spawn bridge; ensure that this works without /etc/cockpit/
-        m.spawn("su - -c 'G_MESSAGES_DEBUG=all XDG_CONFIG_DIRS=/usr/local %s -p 9999 -a 127.0.0.90 "
+        m.stop_cockpit()
+        m.spawn("su - -c 'G_MESSAGES_DEBUG=all XDG_CONFIG_DIRS=/usr/local %s --no-tls "
                 "--local-session=cockpit-bridge' admin" % self.ws_executable,
                 "cockpit-ws-local")
-        m.wait_for_cockpit_running('127.0.0.90', 9999)
-        # System frame should work directly, no login page
-        out = m.execute("curl --compressed http://127.0.0.90:9999/cockpit/@localhost/system/index.html")
-        self.assertIn('id="overview"', out)
-
-        # shut it down, wait until it is gone
-        m.execute("pkill cockpit-ws; while pgrep -a cockpit-ws; do sleep 1; done")
+        check_session()
 
         # start ws with --local-session and existing running bridge
         self.write_file("/tmp/local.sh", f"""#!/bin/bash -eu
 coproc env G_MESSAGES_DEBUG=all cockpit-bridge
 export G_MESSAGES_DEBUG=all
 export XDG_CONFIG_DIRS=/usr/local
-{self.ws_executable} -p 9999 -a 127.0.0.90 --local-session=- <&${{COPROC[0]}} >&${{COPROC[1]}}
-""")
-        m.execute("chmod a+x /tmp/local.sh")
+{self.ws_executable} --no-tls --local-session=- <&${{COPROC[0]}} >&${{COPROC[1]}}
+""", perm="755")
         m.spawn("su - -c /tmp/local.sh admin", "local.sh")
-        m.wait_for_cockpit_running('127.0.0.90', 9999)
-
-        # System frame should work directly, no login page
-        out = m.execute("curl --compressed http://127.0.0.90:9999/cockpit/@localhost/system/index.html")
-        self.assertIn('id="overview"', out)
-
-        # shut it down, wait until it is gone
-        m.execute("pkill cockpit-ws; while pgrep -a cockpit-ws; do sleep 1; done")
+        check_session()
 
         self.allow_journal_messages("couldn't register polkit authentication agent.*")
 
-    @testlib.skipOstree("OSTree doesn't have cockpit-ws")
+    @testlib.skipWsContainer("no cockpit-ws binary with cockpit/ws container")
     @testlib.skipImage("Kernel does not allow user namespaces", "debian-*")
     @testlib.nondestructive
     def testCockpitDesktop(self):
@@ -979,7 +986,7 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
         self.allow_journal_messages(r".*cannot reauthorize identity\(s\): unix-user:.*")
         self.allow_journal_messages("admin: Executing command .*COMMAND=.*cockpit-bridge --privileged.*")
 
-    @testlib.skipBrowser("Firefox needs proper cert and CA", "firefox")
+    @testlib.skipBeiboot("test does not make sense in beiboot mode")
     def testReverseProxy(self):
         m = self.machine
         b = self.browser
@@ -987,7 +994,7 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
         self.ostree_setup_ws()
 
         # set up a poor man's reverse TLS proxy with socat
-        m.upload(["../src/bridge/mock-server.crt", "../src/bridge/mock-server.key"], "/tmp")
+        m.upload(["../test/data/mock-server.crt", "../test/data/mock-server.key"], "/tmp")
         m.spawn("socat OPENSSL-LISTEN:9090,reuseaddr,fork,cert=/tmp/mock-server.crt,"
                 "key=/tmp/mock-server.key,verify=0 TCP:localhost:9099",
                 "socat-tls.log")
@@ -1000,19 +1007,14 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
                 "ws-notls.log")
         m.wait_for_cockpit_running(tls=True)
 
-        b.ignore_ssl_certificate_errors(ignore=True)
         b.open(f"https://{b.address}:{b.port}/system")
         b.wait_visible("#login")
         b.set_val("#login-user-input", "admin")
         b.set_val("#login-password-input", "foobar")
         b.click('#login-button')
 
-        def check_wss_log():
-            for log in self.browser.get_js_log():
-                if 'Error during WebSocket handshake: Unexpected response code: 403' in log:
-                    return True
-            return False
-        testlib.wait(check_wss_log)
+        b.wait_text(".early-failure .pf-v5-c-empty-state__title", "Connection failed")
+        b.wait_in_text(".early-failure ", "unexpected error while connecting to the machine")
 
         testlib.wait(lambda: m.execute("grep 'received request from bad Origin' /var/log/ws-notls.log"))
 
@@ -1064,13 +1066,14 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
         self.assertIn("HTTP/1.1 200 OK", m.execute("curl --silent --head http://172.27.0.15:9091"))
 
     @testlib.nondestructive
+    @testlib.skipBeiboot("beiboot doesn't use systemd units")
     def testCaCert(self):
         m = self.machine
 
         # force cert regeneration
         m.execute("systemctl stop cockpit; rm -f /etc/cockpit/ws-certs.d/*")
         m.start_cockpit()
-        if not m.ostree_image:
+        if not m.ws_container:
             # Really start Cockpit to make sure it has generated all its certificates.
             m.execute("systemctl start cockpit")
 
@@ -1095,7 +1098,7 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
 
         # We don't have access to the stuff on the filesystem if it's living in
         # the container.
-        if not m.ostree_image:
+        if not m.ws_container:
             # make sure that there are no broken links in "our" directory
             self.assertEqual(m.execute(f'find {branddir} -xtype l'), '')
 
@@ -1120,7 +1123,7 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
             self.addCleanup(m.execute, f"rm /tmp/{name}")
 
             # compare that it matches what we expected
-            if not m.ostree_image:
+            if not m.ws_container:
                 m.execute(f'cmp /tmp/{name} {reference}')
 
         # some brands miss the images, but the OSes we CI have them all
@@ -1134,7 +1137,7 @@ until pgrep -f '^(/usr/[^ ]+/[^ /]*python[^ /]* )?/usr/bin/cockpit-bridge'; do s
         b.wait_visible("#login")
         b.assert_pixels("body", "login-screen")
 
-    @testlib.skipOstree("no cockpit-ws package")
+    @testlib.skipWsContainer("cockpit/ws doesn't use systemd units")
     @testlib.nondestructive
     def testAuthUnixPath(self):
         """test UnixPath for auth method in cockpit.conf"""
@@ -1157,7 +1160,7 @@ UnixPath=/run/cockpit/session
         m.start_cockpit()
         self.login_and_go("/system")
 
-    @testlib.skipOstree("test assumes local install")
+    @testlib.skipWsContainer("no local config with cockpit/ws")
     @testlib.nondestructive
     def testXdgConfig(self):
         xdg_env = f"XDG_CONFIG_DIRS={self.vm_tmpdir}/xdg:/etc/test-xdg\n"
@@ -1208,6 +1211,7 @@ UnixPath=/run/cockpit/session
         self.assertFalse(b.is_present("#nav-system li:contains(Services)"))
 
     @testlib.nondestructive
+    @testlib.skipBeiboot("no cockpit-bridge binary on host in beiboot mode")
     def testBridgeCLI(self):
         m = self.machine
 
@@ -1229,10 +1233,6 @@ UnixPath=/run/cockpit/session
         bridge_names = [b['name'] for b in bridges]
         self.assertGreater(len(bridges), 0)
         self.assertIn('sudo', bridge_names)
-
-        # OStree has no PCP bridge; it's temporarily gone from Debian testing as well
-        if not m.ostree_image and m.image != "debian-testing":
-            self.assertIn(f'{self.libexecdir}/cockpit-pcp', bridge_names)
 
 
 class TestReverseProxy(testlib.MachineCase):
@@ -1277,7 +1277,6 @@ ProtocolHeader = X-Forwarded-Proto
         self.assertIn(b"subject: CN=alice; DC=COCKPIT", out)
 
         # works with browser (but we can't set our CA)
-        b.ignore_ssl_certificate_errors(ignore=True)
         (https_host, https_port) = self.machine.forward["443"].split(':')
         b.open(f"https://{https_host}:{https_port}{urlroot}/system")
         if login:
@@ -1293,11 +1292,9 @@ ProtocolHeader = X-Forwarded-Proto
             # check that we show up in the system logs from the browser's IP, not the proxy's
             self.assertIn('(172.27.0.2)', self.machine.execute('who'))
         b.logout()
-        b.cdp.invoke("Browser.close")
 
     @testlib.skipImage("nginx not installed", "centos-*", "rhel-*", "debian-*", "ubuntu-*", "arch")
     @testlib.skipOstree("nginx not installed")
-    @testlib.skipBrowser("Firefox needs proper cert and CA", "firefox")
     def testNginxTLS(self):
         """test proxying to Cockpit with TLS
 
@@ -1339,11 +1336,14 @@ server {
         m.start_cockpit(tls=True)
         self.checkCockpitOnProxy()
 
+        # avoid crash when stopping the unit: https://bugzilla.redhat.com/show_bug.cgi?id=2304015
+        m.execute("nginx -s stop")
+
         # now test with UrlRoot
         m.write("/etc/cockpit/cockpit.conf", "UrlRoot = cockpit-root\n", append=True)
         m.execute("systemctl stop cockpit.service")
-        self.sed_file("s_location /_location /cockpit-root_", "/etc/nginx/conf.d/cockpit.conf",
-                      "systemctl restart nginx")
+        self.sed_file("s_location /_location /cockpit-root_", "/etc/nginx/conf.d/cockpit.conf")
+        m.execute("systemctl start nginx")
         self.checkCockpitOnProxy(urlroot="/cockpit-root")
 
         # get a non-cockpit file from the server
@@ -1360,7 +1360,6 @@ server {
 
         # embedding
         b = self.browser
-        b.ignore_ssl_certificate_errors(ignore=True)
         (https_host, https_port) = self.machine.forward["443"].split(':')
         b.open(f"https://{https_host}:{https_port}/embed-cockpit/index.html")
         b.set_val("#embed-address", f"https://{https_host}:{https_port}/cockpit-root")
@@ -1376,7 +1375,6 @@ server {
 
     @testlib.skipImage("nginx not installed", "centos-*", "rhel-*", "debian-*", "ubuntu-*", "arch")
     @testlib.skipOstree("nginx not installed")
-    @testlib.skipBrowser("Firefox needs proper cert and CA", "firefox")
     def testNginxNoTLS(self):
         """test proxying to Cockpit with plain HTTP
 
@@ -1433,10 +1431,13 @@ server {
         self.checkCockpitOnProxy(login=False)
         kill_ws()
 
+        # avoid crash when stopping the unit: https://bugzilla.redhat.com/show_bug.cgi?id=2304015
+        m.execute("nginx -s stop")
+
         # UrlRoot + login page
         m.write("/etc/cockpit/cockpit.conf", "UrlRoot = myroot\n", append=True)
-        self.sed_file("s_location /_location /myroot_", "/etc/nginx/conf.d/cockpit.conf",
-                      "systemctl restart nginx")
+        self.sed_file("s_location /_location /myroot_", "/etc/nginx/conf.d/cockpit.conf")
+        m.execute("systemctl start nginx")
         run_ws()
         self.checkCockpitOnProxy(urlroot="/myroot")
         kill_ws()

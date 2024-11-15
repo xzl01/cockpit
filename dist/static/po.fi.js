@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minuuttia"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Yhteensopivaa versiota Cockpitistä ei ole asennettu kohteessa $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Nykyaikainen selain vaaditaan turvallisuuden, luotettavuuden ja suorituskyvyn takaamiseksi."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Uusi SSH-avain nimellä $0 luodaan käyttäjälle $1 koneella $2 ja se lisätään käyttäjän $3 tiedostoon $4 koneella $5."
  ],
  "Absent": [
   null,
@@ -142,17 +150,21 @@ window.cockpit_po = {
   null,
   "Ansible-roolien dokumentaatio"
  ],
+ "Authentication": [
+  null,
+  "Tunnistautuminen"
+ ],
  "Authentication failed": [
   null,
   "Tunnistautuminen epäonnistui"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Tunnistautuminen epäonnistui: Palvelin sulki yhteyden"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Todennus vaaditaan etuoikeutettujen tehtävien suorittamiseen Cockpit Web Console:ssa"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Valtuuta SSH-avain"
  ],
  "Automatically using NTP": [
   null,
@@ -238,6 +250,10 @@ window.cockpit_po = {
   null,
   "Cockpit ei ole yhteensopiva järjestelmän ohjelmiston kanssa."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit ei ole asennettu"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit ei ole asennettu järjestelmässä."
@@ -262,6 +278,10 @@ window.cockpit_po = {
   null,
   "Kompakti PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Vahvista avaimen salasana"
+ ],
  "Connect to": [
   null,
   "Yhdistä"
@@ -278,6 +298,10 @@ window.cockpit_po = {
   null,
   "Muunnettavissa"
  ],
+ "Copied": [
+  null,
+  "Kopioitu"
+ ],
  "Copy": [
   null,
   "Kopio"
@@ -286,9 +310,9 @@ window.cockpit_po = {
   null,
   "Kopioi leikepöydälle"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Luo"
+  "Luo uusi SSH-avain ja valtuuta se"
  ],
  "Create new task file with this content.": [
   null,
@@ -370,6 +394,10 @@ window.cockpit_po = {
   null,
   "Jos sormenjälki on sama, napsauta \"Hyväksy avain ja kirjaudu sisään\". Muussa tapauksessa älä kirjaudu sisään ja ota yhteyttä ylläpitäjään."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Jos sormenjälki on sama, napsauta 'Luota ja lisää yhteys'. Muussa tapauksessa älä muodosta yhteyttä ja ota yhteyttä järjestelmänvalvojaan."
+ ],
  "Install": [
   null,
   "Asennus"
@@ -377,6 +405,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Asennetaan ohjelmistoja"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -418,6 +450,10 @@ window.cockpit_po = {
   null,
   "Ytimen tyhjennys"
  ],
+ "Key password": [
+  null,
+  "Avaimen salasana"
+ ],
  "Laptop": [
   null,
   "Kannettava"
@@ -433,6 +469,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Kirjaudu sisään"
+ ],
+ "Log in to $0": [
+  null,
+  "Kirjaudu kohteeseen $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -518,6 +558,10 @@ window.cockpit_po = {
   null,
   "Ei viivettä"
  ],
+ "No results found": [
+  null,
+  "Tuloksia ei löytynyt"
+ ],
  "No such file or directory": [
   null,
   "Tiedostoa tai hakemistoa ei löydy"
@@ -573,6 +617,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit kaatui"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -658,18 +706,6 @@ window.cockpit_po = {
   null,
   "Viimeaikaiset isännät"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Kieltäytyminen yhteyden muodostamisesta. Kone on tuntematon"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Kieltäytyminen yhteyden muodostamisesta. Koneen avain ei täsmää"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Kieltäytyminen yhteyden muodostamisesta. Koneen avain on tuntematon"
- ],
  "Removals:": [
   null,
   "Poistot:"
@@ -682,9 +718,17 @@ window.cockpit_po = {
   null,
   "Poistetaan $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-avain"
  ],
  "Sealed-case PC": [
   null,
@@ -766,17 +810,45 @@ window.cockpit_po = {
   null,
   "Tabletti"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "Käyttäjän $0:n SSH-avain $1 koneella $2 lisätään käyttäjän $4 tiedostoon $3 koneella $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH-avain $0 on käytettävissä koko istunnon ajan ja on käytettävissä myös muille koneille sisäänkirjautumista varten."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "SSH-avain koneelle $0 sisäänkirjautumista varten on suojattu salasanalla, eikä kone salli salasanalla kirjautumista. Anna avaimen $1 salasana."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "SSH-avain koneelle $0 sisäänkirjautumista varten on suojattu. Voit kirjautua sisään joko kirjautumissalasanallasi tai antamalla avaimen $1 salasanan."
+ ],
+ "The key password can not be empty": [
+  null,
+  "Avaimen salasana ei voi olla tyhjä"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Avainsalasanat eivät täsmää"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Sisäänkirjautunut käyttäjä ei saa tarkastella järjestelmän muutoksia"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Salasanat eivät täsmää."
+  "Salasana ei voi olla tyhjä"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Tuloksena oleva sormenjälki sopii jakaa julkisilla menetelmillä, mukaan lukien sähköposti."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  ""
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -793,10 +865,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Tämä työkalu asettaa SELinux-käytännön ja auttaa käytäntörikkeiden ymmärtämisessä ja ratkaisemisessa."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Tämä työkalu asettaa järjestelmän kirjoittamaan ytimen kaatumisvedokset levylle."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -842,6 +910,10 @@ window.cockpit_po = {
   null,
   "Torni"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
  "Try again": [
   null,
   "Yritä uudelleen"
@@ -853,6 +925,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "Siihen osoitteeseen yhdistäminen epäonnistui"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Ei voida kirjautua sisään koneelle $0. Kone ei hyväksy salasanakirjautumista tai mitään SSH-avaimistasi."
  ],
  "Unknown": [
   null,
@@ -873,6 +949,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Vahvistetaan todennustunnus"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Vahvista sormenjälki"
  ],
  "View all logs": [
   null,

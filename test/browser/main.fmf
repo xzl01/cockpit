@@ -36,7 +36,7 @@
     - cockpit
     - cockpit-storaged
     # for at least swap metrics on storage page
-    - cockpit-pcp
+    - python3-pcp
     # build/test infra dependencies
     - podman
     # required by tests
@@ -45,7 +45,6 @@
     - firewalld
     - lvm2
     - nfs-utils
-    - python3-tracer
     - stratis-cli
     - stratisd
     - subscription-manager
@@ -62,7 +61,7 @@
     - cockpit
     - cockpit-storaged
     # for at least swap metrics on storage page
-    - cockpit-pcp
+    - python3-pcp
     # build/test infra dependencies
     - podman
     # required by tests
@@ -72,7 +71,6 @@
     - firewalld
     - lvm2
     - nfs-utils
-    - python3-tracer
     - rpm-build
     - stratis-cli
     - stratisd

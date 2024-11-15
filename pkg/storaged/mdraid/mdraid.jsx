@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -281,7 +281,7 @@ const MDRaidCard = ({ card, mdraid, block }) => {
     if (missing_bitmap(mdraid)) {
         alerts.push(
             <Alert isInline variant="warning" key="bitmap"
-                   title={_("This MDRAID device has no write-intent bitmap. Such a bitmap can reduce sychronization times significantly.")}>
+                   title={_("This MDRAID device has no write-intent bitmap. Such a bitmap can reduce synchronization times significantly.")}>
                 <div className="storage-alert-actions">
                     <StorageButton onClick={fix_bitmap}>{_("Add a bitmap")}</StorageButton>
                 </div>

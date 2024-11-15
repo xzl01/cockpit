@@ -37,6 +37,7 @@ const pkgOptions = {
 
 // context options for qunit tests in qunit/
 const qunitOptions = {
+    sourcemap: "linked",
     bundle: true,
     minify: false,
     nodePaths,

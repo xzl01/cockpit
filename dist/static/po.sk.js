@@ -108,9 +108,17 @@ window.cockpit_po = {
   null,
   "60 minút"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Na $0 nie je nainštalovaná kompatibilná verzia Cockpitu."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Z dôvodu zabezpečenia, spoľahlivosti a rýchlosti je potrebný moderný prehliadač."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Na $0 bude vygenerovaný nový kľúč SSH $1 na $2 a bude pridaný do súboru $3 $4 na $5."
  ],
  "Absent": [
   null,
@@ -152,17 +160,21 @@ window.cockpit_po = {
   null,
   "Dokumentácia k Ansible roliam"
  ],
+ "Authentication": [
+  null,
+  "Overovanie"
+ ],
  "Authentication failed": [
   null,
   "Overenie sa nepodarilo"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Overenie zlyhalo: Server prerušil spojenie"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Pre vykonávanie privilegovaných úloh pomocou webovej konzole Cockpit je potrebné overiť svoju totožnosť"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Poveriť SSH kľúč"
  ],
  "Automatically using NTP": [
   null,
@@ -252,6 +264,10 @@ window.cockpit_po = {
   null,
   "Cockpit nie je kompatibilný so sofvérom na systéme."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit nie je nainštalovaný"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit nie je nainštalovaný na tomto systéme."
@@ -276,13 +292,17 @@ window.cockpit_po = {
   null,
   "Kompaktné PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Potvrdiť heslo ku kľúči"
+ ],
  "Connect to": [
   null,
-  "Pripojiť k"
+  "Pripojiť sa k"
  ],
  "Connect to:": [
   null,
-  "Pripojiť k:"
+  "Pripojiť sa k:"
  ],
  "Connection has timed out.": [
   null,
@@ -292,6 +312,10 @@ window.cockpit_po = {
   null,
   "Počítač 2v1"
  ],
+ "Copied": [
+  null,
+  "Skopírované"
+ ],
  "Copy": [
   null,
   "Kopírovať"
@@ -300,9 +324,9 @@ window.cockpit_po = {
   null,
   "Kopírovať do schránky"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Vytvoriť"
+  "Vytvoriť nový SSH kľúč a poveriť ho"
  ],
  "Create new task file with this content.": [
   null,
@@ -388,6 +412,10 @@ window.cockpit_po = {
   null,
   "Ak as odtlačok zhoduje, kliknite na „Prijať kľúč a prihlásiť sa\". V opačnom prípade sa nepripájajte sa obráťte sa na správcu systému."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Ak sa odtlačok zhoduje, kliknite na „Dôverovať a pridať stroj\". V opačnom prípade sa nepripájajte a obráťte sa na správcu systému."
+ ],
  "Install": [
   null,
   "Inštalovať"
@@ -395,6 +423,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Nainštalovať softvér"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -436,6 +468,10 @@ window.cockpit_po = {
   null,
   "Výpis pamäti jadra"
  ],
+ "Key password": [
+  null,
+  "Heslo ku kľúču"
+ ],
  "Laptop": [
   null,
   "Notebook"
@@ -451,6 +487,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Prihlásiť"
+ ],
+ "Log in to $0": [
+  null,
+  "Prihlásiť sa k $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -536,6 +576,10 @@ window.cockpit_po = {
   null,
   "Bez oneskorenia"
  ],
+ "No results found": [
+  null,
+  "Neboli nájdené žiadne výsledky"
+ ],
  "No such file or directory": [
   null,
   "Žiaden taký súbor alebo adresár neexistuje"
@@ -591,6 +635,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit zhavaroval"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -676,18 +724,6 @@ window.cockpit_po = {
   null,
   "Nedávni hostitelia"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Odmietam sa pripojiť. Stroj nie je známy"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Odmietam sa pripojiť. Kľúč stroja sa líši"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Odmietam sa pripojiť. Kľúč stroja nie je známy"
- ],
  "Removals:": [
   null,
   "Odstránenia:"
@@ -708,9 +744,17 @@ window.cockpit_po = {
   null,
   "Výber riadka"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Na vzdialenom stroji spustite – cez dôveryhodnú sieť alebo fyzicky priamo na ňom – tento príkaz:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH kľúč"
  ],
  "Sealed-case PC": [
   null,
@@ -800,17 +844,49 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "Kľúč SSH $0 používateľa $1 na $2 bude pridaný do súboru $3 používateľa $4 na $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH kľúč $0 bude sprístupnený po celú reláciu a bude k dispozícií tiež pre prihlasovanie se k ostatním strojom."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "Kľúč SSH na prihlásenie k $0 je chránený a hostiteľ neumožňuje prihlásenie pomocou hesla. Zadajte, prosím, heslo pre kľúč na $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "Kľúč SSH na prihlásenie k $0 je chránený. Môžete sa pripojiť buď pomocou prihlasovacím heslom alebo zadaním hesla ku kľúču na $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Odtlačok by sa mal zhodovať:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Heslo ku kľúču nemôže byť prázdne"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Heslá ku kľúču sa líšia"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Prihlásený používateľ nie je oprávnený zobrazovať modifikácie systému"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Heslá sa líšia."
+  "Heslo nemôže byť prázdne"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Výsledný odtlačok je možné zdieľať verejnými spôsobmi, vrátane e-mailu."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Výsledný odtlačok je bez problémov možné zdieľať prostredníctvom verejných spôsobov, vrátane e-mailu. Ak niekoho iného žiadate, aby urobil overovanie za vás, môže poslať výsledky ľubovoľnou cestou."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -827,10 +903,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Tento nástroj nastavuje politiky pre SELinux a môže pomôcť s porozumením a riešením porušenia pravidiel."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Tento nástroj nastavuje systém pre zapisovanie výpisov pádov jadra na disk."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -876,6 +948,14 @@ window.cockpit_po = {
   null,
   "Veža"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "Dôverovať a pridať hostiteľa"
+ ],
  "Try again": [
   null,
   "Skúsiť znova"
@@ -887,6 +967,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "K tejto adrese sa nedarí pripojiť"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Nedarí sa prihlásiť k $0. Hostiteľ neprijíma prihlasovanie heslom ani žiaden z vašich SSH kľúčov."
  ],
  "Unknown": [
   null,
@@ -908,13 +992,17 @@ window.cockpit_po = {
   null,
   "Kontrolujem overovací žetón"
  ],
+ "Verify fingerprint": [
+  null,
+  "Overiť odtlačok"
+ ],
  "View all logs": [
   null,
   "Zobraziť všetky záznamy udalostí"
  ],
  "View automation script": [
   null,
-  "Ukázať automatizačný skript"
+  "Zobraziť automatizačný skript"
  ],
  "Visit firewall": [
   null,
@@ -978,10 +1066,10 @@ window.cockpit_po = {
  ],
  "show less": [
   null,
-  "ukázať menej"
+  "zobraziť menej"
  ],
  "show more": [
   null,
-  "ukázať viac"
+  "zobraziť viac"
  ]
 };

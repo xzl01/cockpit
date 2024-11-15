@@ -31,6 +31,10 @@ module = [
     "libvirt_qemu",
     "pika",
 
+    # run without pcp module types
+    "pcp",
+    "cpmapi",
+
     # run without gobject-introspection (used from cockpit-client for Gtk)
     "gi.*",
 
@@ -64,8 +68,9 @@ module = [
     'cockpit.transports',
 
     # test/common
-    'cdp',
     'testlib',
+    'js_coverage',
+    'webdriver_bidi',
 ]
 
 [tool.pylint]
@@ -138,10 +143,14 @@ known-first-party = ["cockpit"]
 
 [tool.pytest.ini_options]
 addopts = ['--strict-markers']  # cf. https://github.com/cockpit-project/cockpit/pull/18584#issuecomment-1490243994
-pythonpath = ["src"]
+pythonpath = ["src", "test/common", "bots"]
 testpaths = ["test/pytest"]
 log_cli = true
 required_plugins = ["pytest-asyncio"]
+
+[tool.pyright]
+strict = ["**"]
+extraPaths = ["src", "test/common", "bots"]
 
 [tool.vulture]
 paths = [
@@ -151,12 +160,15 @@ paths = [
 ]
 ignore_names = [
    "do_*",
+   "pytest_*",
    "test[A-Z0-9]*",
+   "pytestmark",
 ]
 ignore_decorators = [
    "@*.getter",
    "@*.register_function",
    "@bus.Interface.Method",
+   "@pytest.fixture",
    "@pytest.hookimpl",
 ]
 
@@ -193,6 +205,8 @@ wheel_build_env = pkg
 # All other environments (names like py311-lint, py36-pytest, etc) are isolated
 # from the system and get their packages from PyPI, according to the specific
 # test environment being requested.  We build the wheel in a common environment.
+# These tests will not run the PCP tests as there is no wheel available.
+# https://github.com/performancecopilot/pcp/issues/2076
 [testenv]
 package = wheel
 wheel_build_env = venv-pkg
@@ -207,6 +221,8 @@ deps =
   pytest: pytest-timeout
   pytest: pytest-xdist
 allowlist_externals = test/static-code
+setenv =
+  NO_QUNIT=1
 commands =
   pytest: python3 -m pytest -opythonpath= {posargs}
   lint: test/static-code --tap

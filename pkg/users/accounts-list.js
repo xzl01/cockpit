@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from 'cockpit';
@@ -338,7 +338,8 @@ const GroupsList = ({ groups, accounts, isExpanded, setIsExpanded, min_gid, max_
                     rows={ filtered_groups.map(a => getGroupRow(a, accounts)) }
                     loading={ groups.length && accounts.length ? '' : _("Loading...") }
                     sortMethod={sortRows}
-                    emptyComponent={<EmptyStatePanel title={_("No matching results")} icon={SearchIcon} />}
+                    emptyComponent={<EmptyStatePanel title={_("No matching results")} icon={SearchIcon} action={_("Clear filter")}
+                                                     onAction={() => setCurrentTextFilter('')} actionVariant="link" />}
                     variant="compact" sortBy={{ index: 2, direction: SortByDirection.asc }} />
             </CardExpandableContent>
         </Card>
@@ -451,7 +452,8 @@ const AccountsList = ({ accounts, current_user, groups, min_uid, max_uid, shells
                           rows={ filtered_accounts.map(a => getAccountRow(a, current_user === a.name, groups)) }
                           loading={ accounts.length ? '' : _("Loading...") }
                           sortMethod={sortRows}
-                          emptyComponent={<EmptyStatePanel title={_("No matching results")} icon={SearchIcon} />}
+                          emptyComponent={<EmptyStatePanel title={_("No matching results")} icon={SearchIcon} action={_("Clear filter")}
+                                                           onAction={() => setCurrentTextFilter('')} actionVariant="link" />}
                           variant="compact" sortBy={{ index: 0, direction: SortByDirection.asc }} />
         </Card>
 

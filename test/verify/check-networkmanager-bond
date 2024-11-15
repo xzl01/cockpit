@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import netlib
 import testlib
@@ -44,7 +44,7 @@ class TestBonding(netlib.NetworkCase):
         b.wait_visible("#network-bond-settings-dialog")
         # wait until dialog initialized
         b.wait_visible("#network-bond-settings-dialog button[aria-label=Close]")
-        b.wait_visible("#network-bond-settings-mac-input-select-typeahead")
+        b.wait_visible("#network-bond-settings-mac-input")
         # menu is not visible by default, but gets initialized dynamically
         b.assert_pixels("#network-bond-settings-dialog", "networking-bond-settings-dialog",
                         # help icon gets rendered with unstable noise
@@ -212,7 +212,7 @@ class TestBonding(netlib.NetworkCase):
         b.wait_visible("#network-bond-settings-dialog")
         b.set_input_text("#network-bond-settings-interface-name-input", "tbond")
         b.set_checked(f"input[data-iface='{iface}']", val=True)
-        b.click("#network-bond-settings-mac-input")
+        b.click("#network-bond-settings-mac-input input")
         b.click("li button:contains('(cockpit1)')")
         b.click("#network-bond-settings-dialog button:contains('Add')")
         b.wait_not_present("#network-bond-settings-dialog")
@@ -262,7 +262,7 @@ class TestBonding(netlib.NetworkCase):
 class TestBondingVirt(netlib.NetworkCase):
     provision = {
         "machine1": {"address": "10.111.113.1/20", "memory_mb": 512},
-        "machine2": {"image": TEST_OS_DEFAULT, "address": "10.111.113.2/20", "dhcp": True, "memory_mb": 256}
+        "machine2": {"image": TEST_OS_DEFAULT, "address": "10.111.113.2/20", "dhcp": True, "memory_mb": 512}
     }
 
     @testlib.skipImage("Main interface can't be managed", "debian-*", "ubuntu-*")

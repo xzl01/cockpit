@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -559,7 +559,7 @@ spawn_and_wait (const char **argv, const char **envp,
         abort_with_message ("setresgid: couldn't set gid to %u: %m\n", (int) gid);
 
       if (setresuid (uid, uid, uid) != 0)
-        abort_with_message ("setresgid: couldn't set uid to %u: %m\n", (int) gid);
+        abort_with_message ("setresuid: couldn't set uid to %u: %m\n", (int) uid);
 
       /* paranoid */
       {

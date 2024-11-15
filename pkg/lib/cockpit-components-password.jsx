@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 import cockpit from 'cockpit';
 import React, { useState } from 'react';
@@ -123,7 +123,6 @@ export const PasswordFormFields = ({
                                </button>
                            </Popover>
                        }
-                       validated={error_password ? "warning" : "default"}
                        id={idPrefix + "-pw1-group"}
                        fieldId={idPrefix + "-pw1"}>
                 <InputGroup>

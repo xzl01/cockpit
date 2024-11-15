@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -24,6 +24,8 @@ import * as timeformat from "timeformat";
 
 const _ = cockpit.gettext;
 const C_ = cockpit.gettext;
+
+export const BTRFS_TOOL_MOUNT_PATH = "/var/lib/cockpit/btrfs/";
 
 /* UTILITIES
  */
@@ -679,7 +681,7 @@ export function should_ignore(client, path) {
 /* GET_CHILDREN gets the direct children of the storage object at
    PATH, like the partitions of a partitioned block device, or the
    volume group of a physical volume.  By calling GET_CHILDREN
-   recursively, you can traverse the whole storage hierachy from
+   recursively, you can traverse the whole storage hierarchy from
    hardware drives at the bottom to filesystems at the top.
 
    GET_CHILDREN_FOR_TEARDOWN is similar but doesn't consider things
@@ -864,6 +866,11 @@ export function get_active_usage(client, path, top_action, child_action, is_temp
             const [, mount_point] = get_fstab_config_with_client(client, block);
             const has_fstab_entry = is_temporary && location == mount_point;
 
+            // Ignore the secret btrfs mount point unless we are
+            // formatting (in which case subvol is false).
+            if (btrfs_volume && subvol && location.startsWith(BTRFS_TOOL_MOUNT_PATH))
+                return;
+
             for (const u of usage) {
                 if (u.usage == 'mounted' && u.location == location) {
                     if (is_top) {
@@ -881,7 +888,7 @@ export function get_active_usage(client, path, top_action, child_action, is_temp
                 has_fstab_entry,
                 set_noauto: !is_top && !is_temporary,
                 actions: (is_top ? get_actions(_("unmount")) : [_("unmount")]).concat(has_fstab_entry ? [_("mount")] : []),
-                blocking: client.strip_mount_point_prefix(location) === false,
+                blocking: client.strip_mount_point_prefix(location) === false && !location.startsWith(BTRFS_TOOL_MOUNT_PATH),
             });
         }
 

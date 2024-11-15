@@ -138,13 +138,13 @@ window.cockpit_po = {
   null,
   "Ansible roller dokumentasjon"
  ],
+ "Authentication": [
+  null,
+  "Autentisering"
+ ],
  "Authentication failed": [
   null,
   "Autentisering feilet"
- ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Autentisering feilet: Serveren lukket tilkoblingen"
  ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
@@ -234,6 +234,10 @@ window.cockpit_po = {
   null,
   "Cockpit er ikke kompatibel med programvaren på systemet."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit er ikke installert"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit er ikke installert på systemet."
@@ -254,6 +258,10 @@ window.cockpit_po = {
   null,
   ""
  ],
+ "Confirm key password": [
+  null,
+  "Bekreft nøkkel-passord"
+ ],
  "Connect to": [
   null,
   "Koble til"
@@ -266,6 +274,10 @@ window.cockpit_po = {
   null,
   "Konverterbar"
  ],
+ "Copied": [
+  null,
+  ""
+ ],
  "Copy": [
   null,
   "Kopier"
@@ -273,10 +285,6 @@ window.cockpit_po = {
  "Copy to clipboard": [
   null,
   "Kopier til utklippstavle"
- ],
- "Create": [
-  null,
-  "Opprett"
  ],
  "Create new task file with this content.": [
   null,
@@ -358,6 +366,10 @@ window.cockpit_po = {
   null,
   "Installer programvare"
  ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
+ ],
  "Installing $0": [
   null,
   "Installerer $0"
@@ -397,6 +409,10 @@ window.cockpit_po = {
  "Kernel dump": [
   null,
   "Kjerne dump"
+ ],
+ "Key password": [
+  null,
+  "Nøkkel-passord"
  ],
  "Laptop": [
   null,
@@ -490,6 +506,10 @@ window.cockpit_po = {
   null,
   "Ingen forsinkelse"
  ],
+ "No results found": [
+  null,
+  "Ingen resultater funnet"
+ ],
  "No such file or directory": [
   null,
   "Ingen slik fil eller katalog"
@@ -541,6 +561,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit krasjet"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -618,18 +642,6 @@ window.cockpit_po = {
   null,
   "Omstart"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Nekter å koble til. Verten er ukjent"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Nekter å koble til. Vertsnøkkel samsvarer ikke"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Nekter å koble til. Vertsnøkkel er ukjent"
- ],
  "Removals:": [
   null,
   ""
@@ -638,9 +650,17 @@ window.cockpit_po = {
   null,
   "Fjerner $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-nøkkel"
  ],
  "Sealed-case PC": [
   null,
@@ -718,17 +738,25 @@ window.cockpit_po = {
   null,
   "Nettbrett"
  ],
+ "The key password can not be empty": [
+  null,
+  "Nøkkelpassordet kan ikke være tomt"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Nøkkelpassordene stemmer ikke overens"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Den påloggede brukeren har ikke lov til å se systemendringer"
  ],
- "The passwords do not match.": [
-  null,
-  "Passordene samsvarer ikke."
- ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Det resulterende fingeravtrykket er greit å dele via offentlige metoder, inkludert e-post."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  ""
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -746,7 +774,7 @@ window.cockpit_po = {
   null,
   ""
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
   ""
  ],
@@ -791,6 +819,14 @@ window.cockpit_po = {
   "Total størrelse: $0"
  ],
  "Tower": [
+  null,
+  ""
+ ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
   null,
   ""
  ],

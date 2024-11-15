@@ -36,7 +36,7 @@
   </screenshots>
 
   <releases>
-    <release version="321" date="2024-07-10"/>
+    <release version="328" date="2024-11-06"/>
   </releases>
 
   <launchable type="desktop-id">org.cockpit_project.CockpitClient.desktop</launchable>

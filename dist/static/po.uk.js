@@ -108,9 +108,17 @@ window.cockpit_po = {
   null,
   "60 хвилин"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "На $0 не встановлено сумісної версії Cockpit."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Для забезпечення безпеки, надійної роботи та швидкодії слід встановити сучасну програму для перегляду інтернету."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Буде створено новий ключ SSH у $0 для $1 на $2 і його буде додано до файла $3 $4 на $5."
  ],
  "Absent": [
   null,
@@ -152,17 +160,21 @@ window.cockpit_po = {
   null,
   "Документація з ролей Ansible"
  ],
+ "Authentication": [
+  null,
+  "Розпізнавання"
+ ],
  "Authentication failed": [
   null,
   "Не вдалось пройти розпізнавання"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Не вдалося пройти розпізнавання: з’єднання розірвано сервером"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Щоб отримати доступ до виконання привілейованих завдань за допомогою вебконсолі Cockpit, слід пройти розпізнавання"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Уповноважити ключ SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -252,6 +264,10 @@ window.cockpit_po = {
   null,
   "Cockpit є несумісним із програмним забезпеченням цієї системи."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit не встановлено"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit у цій системі не встановлено."
@@ -276,6 +292,10 @@ window.cockpit_po = {
   null,
   "Компактний PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Підтвердження пароля до ключа"
+ ],
  "Connect to": [
   null,
   "З’єднатися з"
@@ -292,6 +312,10 @@ window.cockpit_po = {
   null,
   "Змінюваний"
  ],
+ "Copied": [
+  null,
+  "Скопійовано"
+ ],
  "Copy": [
   null,
   "Копіювати"
@@ -300,9 +324,13 @@ window.cockpit_po = {
   null,
   "Копіювати до буфера"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "Створити"
+  "Створити $0"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "Створити ключ SSH і уповноважити його"
  ],
  "Create new task file with this content.": [
   null,
@@ -380,13 +408,29 @@ window.cockpit_po = {
   null,
   "Приховати пароль"
  ],
+ "Host is unknown": [
+  null,
+  "Невідомий вузол"
+ ],
  "Host key is incorrect": [
   null,
   "Ключ вузла є неправильним"
  ],
+ "Hostkey does not match": [
+  null,
+  "Ключ вузла є невідповідним"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "Ключ вузла є невідомим"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "Якщо відбиток є відповідним, натисніть «Прийняти ключ і увійти». Якщо ж це не так, не входьте і повідомте про подію адміністратору."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Якщо відбиток є відповідним, натисніть «Довіряти і додати вузол». Якщо ж це не так, не встановлюйте з'єднання і повідомте про подію адміністратору."
  ],
  "Install": [
   null,
@@ -395,6 +439,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Встановити програмне забезпечення"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "Встановіть пакунок cockpit-system (а також, необов'язково, інші пакунки cockpit) на $0, щоб уможливити доступ до вебконсолі."
  ],
  "Installing $0": [
   null,
@@ -407,6 +455,10 @@ window.cockpit_po = {
  "Internal error: Invalid challenge header": [
   null,
   "Внутрішня помилка: некоректний заголовок виклику"
+ ],
+ "Internal protocol error": [
+  null,
+  "Помилка внутрішнього протоколу"
  ],
  "Invalid date format": [
   null,
@@ -436,6 +488,10 @@ window.cockpit_po = {
   null,
   "Дамп ядра"
  ],
+ "Key password": [
+  null,
+  "Пароль до ключа"
+ ],
  "Laptop": [
   null,
   "Переносний ПК"
@@ -451,6 +507,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Увійти"
+ ],
+ "Log in to $0": [
+  null,
+  "Увійти до $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -536,6 +596,10 @@ window.cockpit_po = {
   null,
   "Без затримки"
  ],
+ "No results found": [
+  null,
+  "Нічого не знайдено"
+ ],
  "No such file or directory": [
   null,
   "Немає такого файла або каталогу"
@@ -591,6 +655,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "Аварійне завершення роботи PackageKit"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "Сеанс без пакунків не доступний"
  ],
  "Password": [
   null,
@@ -676,17 +744,9 @@ window.cockpit_po = {
   null,
   "Нещодавні вузли"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "Відмовляємо у з’єднанні. Невідомий вузол."
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Відмовляємо у з’єднанні. Ключі вузла не збігаються."
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Відмовляємо у з’єднанні. Невідомий ключ вузла."
+  "Відмова у з’єднанні"
  ],
  "Removals:": [
   null,
@@ -708,9 +768,21 @@ window.cockpit_po = {
   null,
   "Вибір рядка"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Запустити цю команду довіреною мережею або фізично на віддаленому комп'ютері:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "Ключ SSH"
+ ],
+ "SSH key login": [
+  null,
+  "Вхід за ключем SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -723,6 +795,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "Сервер"
+ ],
+ "Server closed connection": [
+  null,
+  "З’єднання розірвано сервером"
  ],
  "Server has closed the connection.": [
   null,
@@ -800,17 +876,49 @@ window.cockpit_po = {
   null,
   "Планшет"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "Ключ SSH $0 $1 на $2 буде додано до файла $3 $4 на $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "Ключ SSH $0 буде доступним протягом решти сеансу і також буде доступним для входу на інші вузли."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "Ключ SSH для входу до $0 захищено паролем, а на вузлі заборонено вхід без пароля. Буль ласка, вкажіть пароль до ключа у $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "Ключ SSH для входу до $0 захищено. Ви можете увійти або за допомогою пароль до вашого облікового запису або вказавши пароль до ключа у $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Відбиток має збігатися:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Пароль до ключа не може бути порожнім"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Паролі до ключа не збігаються"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Користувач, який увійшов до системи, не має права переглядати модифікації системи"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Паролі не збігаються."
+  "Пароль не може бути порожнім"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Відбиток-результат можна поширювати у спосіб із загальним доступом, зокрема електронною поштою."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Відбиток-результат можна поширювати відкритими способами, включно із електронною поштою. Якщо ви просите когось виконати перевірку для вас, вони можуть надсилати результати за допомогою будь-якого способу."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -828,9 +936,9 @@ window.cockpit_po = {
   null,
   "Цей інструмент налаштовує правила SELinux і може допомогти зрозуміти та усунути порушення правил."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "Цей інструмент налаштовує систему на запис дампів аварій ядра на диск."
+  "Цей інструмент налаштовує систему на запис дампів аварій ядра. Передбачено підтримку призначень дампу «local» (диск), «ssh» та «nfs»."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -876,6 +984,14 @@ window.cockpit_po = {
   null,
   "Башточка"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "Проміжні сеанси без пакунків потребують однакової операційної системи та версії з міркувань сумісності: $0."
+ ],
+ "Trust and add host": [
+  null,
+  "Довіряти і додати вузол"
+ ],
  "Try again": [
   null,
   "Спробувати ще раз"
@@ -888,9 +1004,21 @@ window.cockpit_po = {
   null,
   "Не вдалося встановити з’єднання із цією адресою"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "Не вдалося увійти до $0 за допомогою розпізнавання за ключем SSH. Будь ласка, вкажіть пароль."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Не вдалося увійти до $0. Вузол не приймає входу за паролем або будь-яким з ваших ключів SSH."
+ ],
  "Unknown": [
   null,
   "Невідомий"
+ ],
+ "Unknown host: $0": [
+  null,
+  "Невідомий вузол: $0"
  ],
  "Untrusted host": [
   null,
@@ -907,6 +1035,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Перевіряємо ключ розпізнавання"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Перевірити відбиток"
  ],
  "View all logs": [
   null,
@@ -966,11 +1098,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "за менше, ніж хвилину"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "менш, ніж хвилину тому"
  ],
  "password quality": [
   null,

@@ -206,11 +206,11 @@ $desktop: $phone + 1px;
     inset: 0;
     background: var(--pf-v5-global--BackgroundColor--dark-200);
 
+    z-index: 399; // Modals have 400 and modals should be in front of host switcher
+
     .pf-v5-theme-dark & {
       background: var(--pf-v5-global--BackgroundColor--dark-300);
     }
-
-    z-index: 399; // Modals have 400 and modals should be in front of host switcher
 
     &.edit-hosts {
       .pf-v5-c-nav__list {
@@ -397,6 +397,12 @@ $desktop: $phone + 1px;
   }
 }
 
+.ct-switcher-localonly {
+  padding-inline-start: var(--pf-v5-global--spacer--lg);
+  padding-block-start: var(--pf-v5-global--spacer--sm);
+  color: var(--pf-v5-global--Color--light-100);
+}
+
 .pf-v5-theme-dark {
   .pf-v5-c-select__toggle {
     > * {
@@ -465,7 +471,7 @@ $desktop: $phone + 1px;
   // PF uses margin for non-first elements; it really should use gap in the
   // parent instead; fixing it with a local override, specific for our menu, as
   // we really need it for mobile. It changes desktop too, but does the right
-  // thing there (but it's not visabily noticable in desktop).
+  // thing there (but it's not visibly noticeable in desktop).
   .nav-item {
     --pf-v5-c-nav__item--MarginTop: 0;
   }
@@ -667,6 +673,11 @@ $desktop: $phone + 1px;
   // Hide border from navigation items for mobile
   .pf-v5-c-menu-toggle::before {
     border: none;
+  }
+
+  // Hide local-only host switcher (i.e. when only showing the current user name)
+  .ct-switcher-localonly {
+    display: none !important;
   }
 }
 

@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import base64
 import hashlib
@@ -408,7 +408,7 @@ class CommonTests:
                 self.assertGreaterEqual(len(sessions), 1)
                 for session in sessions:
                     out = m.execute('loginctl session-status ' + session)
-                    if "State: active" in out:  # skip closing sessions
+                    if "State: active" in out and "Class: manager" not in out:  # skip closing and manager sessions
                         self.assertIn(session_leader, out)
                         self.assertIn('cockpit-bridge', out)
                         # systemd < 255: "Service: cockpit; type web; class user"
@@ -432,12 +432,18 @@ class CommonTests:
         self.allow_journal_messages("cockpit-session: user account access failed: 4 alice: System error")
 
         # cert auth should not be enabled by default
-        do_test(alice_cert_key, ["HTTP/1.1 401 Authentication required", '"authorize"'])
+        do_test(alice_cert_key, ["HTTP/1.1 401 Authentication failed", '"authorize"'])
         # password auth should work (but might need to be retried)
         do_test(alice_user_pass, ['HTTP/1.1 200 OK', '"csrf-token"'], session_leader='cockpit-session', retry=True)
 
         # enable cert based auth
-        m.write("/etc/cockpit/cockpit.conf", '[WebService]\nClientCertAuthentication = true\n', append=True)
+        # FIXME: this is ugly, and we don't currently accept multiple [WebService] sections
+        if self.multihost_enabled:
+            # no previous cockpit.conf
+            m.write("/etc/cockpit/cockpit.conf", '[WebService]\nClientCertAuthentication = true\n', append=True)
+        else:
+            # enable_multihost above already wrote [WebService]
+            m.write("/etc/cockpit/cockpit.conf", 'ClientCertAuthentication = true\n', append=True)
         # cert auth should work now
         do_test(alice_cert_key, ['HTTP/1.1 200 OK', '"csrf-token"'])
         # password auth, too
@@ -452,14 +458,14 @@ class CommonTests:
         self.allow_journal_messages("cockpit-session: No matching user for certificate")
         m.upload(["bob.pem", "bob.key"], "/var/tmp", relative_dir="src/tls/ca/")
         do_test(['--cert', "/var/tmp/bob.pem", '--key', "/var/tmp/bob.key"],
-                ["HTTP/1.1 401 Authentication failed", '<h1>Authentication failed</h1>'],
+                ["HTTP/1.1 401 Authentication failed"],
                 not_expected=["crsf-token"])
         self.allow_journal_messages("cockpit-session: Failed to map certificate to user: .* Invalid certificate provided")
 
         # disallow password auth
         m.write("/etc/cockpit/cockpit.conf", "[Basic]\naction = none\n", append=True)
         do_test(alice_cert_key, ['HTTP/1.1 200 OK', '"csrf-token"'])
-        do_test(alice_user_pass, ['HTTP/1.1 401 Authentication disabled', '<h1>Authentication disabled</h1>'],
+        do_test(alice_user_pass, ['HTTP/1.1 401 Authentication disabled'],
                 not_expected=["crsf-token"])
 
         # valid user certificate which fails CA validation
@@ -478,6 +484,7 @@ class CommonTests:
 
 
 @testlib.skipOstree("No realmd available")
+@testlib.skipWsContainer("No sssd PAM integration in beiboot mode")
 @testlib.skipImage("No realmd available", "arch")
 @testlib.no_retry_when_changed
 class TestRealms(testlib.MachineCase):
@@ -495,6 +502,7 @@ class TestRealms(testlib.MachineCase):
         self.op_admin_password = "#realms-op-admin-password"
         self.domain_sel = "#system_information_domain_button"
         self.machine.execute("hostnamectl set-hostname x0.cockpit.lan")
+        self.enable_multihost(self.machine)
 
         # realmd times out on inactivity, which occasionally races with the proxy
         self.allow_journal_messages("couldn't get all properties of org.freedesktop.realmd.Service.*org.freedesktop.DBus.Error.NoReply: Remote peer disconnected")
@@ -545,9 +553,6 @@ class TestIPA(TestRealms, CommonTests):
 
         # validate Kerberos setup for ws
         m.execute(f"echo {self.admin_password} | kinit -f {self.admin_user}@COCKPIT.LAN")
-        # HACK: https://launchpad.net/bugs/2061055
-        if m.image == 'ubuntu-stable':
-            m.execute(self.restart_sshd)
         m.execute(WAIT_KRB_SCRIPT.format(f"{self.admin_user}@cockpit.lan"), timeout=300)
 
         # kerberos login should work
@@ -586,17 +591,9 @@ class TestIPA(TestRealms, CommonTests):
         m.stop_cockpit()
         m.start_cockpit()
 
-        # check respecting FreeIPA's/sssd's ssh known host keys
-        b.login_and_go("/system", user=f'{self.admin_user}@cockpit.lan', password=self.admin_password)
-        b.switch_to_top()
-        b.click("#hosts-sel button")
-        b.click("button:contains('Add new host')")
-        b.wait_popup('hosts_setup_server_dialog')
-        b.set_input_text('#add-machine-address', "x0.cockpit.lan")
-        b.click('#hosts_setup_server_dialog button:contains(Add)')
-
-        b.wait_not_present('#hosts_setup_server_dialog')
-        b.wait_visible("a[href='/@x0.cockpit.lan']")
+        # check respecting FreeIPA's/sssd's ssh known host keys; login_and_go() does not expect/answer
+        # unknown host prompts
+        b.login_and_go(user=f'{self.admin_user}@cockpit.lan', password=self.admin_password)
         # starts proper session
         m.execute("until loginctl --no-legend list-sessions | grep -qi 'admin@COCKPIT.LAN.*web console'; do sleep 1; done", timeout=10)
         b.logout()
@@ -634,7 +631,7 @@ class TestIPA(TestRealms, CommonTests):
                           r"/pam_sss/ s/use_first_pass/forward_pass/", "/etc/pam.d/common-auth")
 
         # set up "alice" user with HOTP; that won't affect existing users (admin)
-        # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/otp
+        # https://docs.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/otp
         out = self.machines['services'].execute("""podman exec -i freeipa sh -ec '
             ipa config-mod --user-auth-type=otp
             ipa user-add --first=Alice --last=Developer alice
@@ -663,7 +660,8 @@ class TestIPA(TestRealms, CommonTests):
         # wrong token (wrong number of digits)
         b.set_val("#conversation-input", "1234")
         b.click('#login-button')
-        b.wait_text("#login-error-message", "Authentication failed")
+        b.wait_text("#login-error-title", "Authentication failed")
+        b.wait_not_visible("#login-error-message")
 
         b.set_val('#login-user-input', "alice")
         b.set_val('#login-password-input', "alicessecret")
@@ -762,8 +760,7 @@ ipa-advise enable-admins-sudo | sh -ex
         b.open("/system/terminal")
         b.enter_page("/system/terminal")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "alice")
-        b.input_text("klist")
-        b.key("Enter")
+        b.input_text("klist\n")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "Ticket cache: FILE:/run/user")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "Default principal: alice@COCKPIT.LAN")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "for client HTTP/x0.cockpit.lan@COCKPIT.LAN")
@@ -806,34 +803,25 @@ ipa-advise enable-admins-sudo | sh -ex
         b.enter_page("/system")
         b.wait_visible("#reboot-button")
 
-        # ssh works with the delegated ticket
+        # CLI ssh works with the delegated ticket
         out = m.execute(f"su -c '{ccache_env} ssh -vv -K x0.cockpit.lan echo hello' alice")
         self.assertEqual(out.strip(), "hello")
 
-        # cockpit-ssh works with the delegated ticket
+        # cockpit session through ssh works with the delegated ticket
         b.switch_to_top()
-        b.click("#hosts-sel button")
-        b.click(".nav-hosts-actions button")
-        b.set_input_text("#add-machine-address", "x0.cockpit.lan")
-        b.click("#hosts_setup_server_dialog .pf-m-primary")
-        b.click(".view-hosts a[href='/@x0.cockpit.lan']")
-        b.wait_js_cond("window.location.pathname == '/@x0.cockpit.lan/system'")
-        # no root privs in that session (see below)
+        b.go("/@x0.cockpit.lan/system")
+        # only ack the addition of host, no authentication/password
+        b.click("#machine-troubleshoot")
+        b.wait_visible('#hosts_setup_server_dialog')
+        b.click('#hosts_setup_server_dialog button:contains(Add)')
+        b.wait_not_present('#hosts_setup_server_dialog')
+
+        # Getting root privs through sudo with kerberos in the remote SSH session does not currently work.
+        # ssh -K is supposed to forward the credentials cache, but doesn't; klist in the ssh session is empty
+        # and there is no ccache.
         b.enter_page("/system", "x0.cockpit.lan")
         b.wait_visible(".pf-v5-c-alert:contains('Web console is running in limited access mode.')")
         b.wait_not_present("#reboot-button")
-
-        # Getting root privs through sudo in the remote SSH session does not currently work.
-        # ssh -K is supposed to forward the credentials cache, but doesn't; klist in the ssh session is empty
-        # and there is no ccache; so, emulate what cockpit-ssh could eventually do and check that *if* the
-        # session had the ticket forwarded, it *could* do sudo. See https://issues.redhat.com/browse/COCKPIT-643
-        with b.wait_timeout(60):
-            b.open("/@x0.cockpit.lan/system/terminal")
-            b.enter_page("/system/terminal", host="x0.cockpit.lan")
-        b.wait_in_text(".terminal .xterm-accessibility-tree", "alice")
-        b.input_text(f"{ccache_env} sudo whoami")
-        b.key("Enter")
-        b.wait_in_text(".terminal .xterm-accessibility-tree", "root")
 
         # S4U proxy ticket gets cleaned up on logout
         b.logout()
@@ -995,6 +983,7 @@ sed -i '/^sudoers:/ s/files sss/sss files/' /etc/nsswitch.conf
 
 
 @testlib.skipOstree("No realmd available")
+@testlib.skipWsContainer("No sssd PAM integration in beiboot mode")
 @testlib.skipImage("No realmd available", "arch")
 @testlib.skipImage("freeipa not currently available", "debian-*")
 @testlib.no_retry_when_changed
@@ -1007,6 +996,7 @@ class TestKerberos(testlib.MachineCase):
     def setUp(self):
         super().setUp()
         maybe_setup_fake_chrony(self.machine)
+        self.enable_multihost(self.machine)
 
     def configure_kerberos(self, keytab):
         self.machines["services"].execute("/root/run-freeipa")
@@ -1018,12 +1008,8 @@ class TestKerberos(testlib.MachineCase):
             # no nss-myhostname there
             self.machine.execute("echo '10.111.113.1 x0.cockpit.lan' >> /etc/hosts")
         self.machine.execute(JOIN_SCRIPT % args, timeout=1800)
-        # HACK: https://launchpad.net/bugs/2061055
-        if self.machine.image == 'ubuntu-stable':
-            self.machine.execute(self.restart_sshd)
         self.machine.execute(WAIT_KRB_SCRIPT.format("admin"), timeout=300)
 
-    @testlib.skipBrowser("Firefox cannot work with cookies", "firefox")
     def testNegotiate(self):
         self.allow_hostkey_messages()
         b = self.browser
@@ -1074,8 +1060,7 @@ class TestKerberos(testlib.MachineCase):
         b.enter_page("/system/terminal")
         # wait for prompt
         b.wait_in_text(".terminal .xterm-accessibility-tree", "admin")
-        b.input_text("klist")
-        b.key("Enter")
+        b.input_text("klist\n")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "Ticket cache")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "Default principal: admin@COCKPIT.LAN")
         b.wait_in_text(".terminal .xterm-accessibility-tree", "krbtgt/COCKPIT.LAN")

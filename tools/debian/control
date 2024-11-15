@@ -4,9 +4,7 @@ Priority: optional
 Maintainer: Cockpit <cockpit@cockpit-project.org>
 Build-Depends: debhelper-compat (= 13),
                dh-python,
-               gettext (>= 0.19.7),
-               gettext (>= 0.21) | appstream,
-               libssh-dev (>= 0.8.5),
+               gettext (>= 0.21),
                zlib1g-dev,
                libkrb5-dev (>= 1.11),
                libxslt1-dev,
@@ -14,11 +12,8 @@ Build-Depends: debhelper-compat (= 13),
                libgnutls28-dev (>= 3.4.3) | gnutls-dev,
                libsystemd-dev (>= 235),
                libpolkit-agent-1-dev,
-               libpcp3-dev,
                libjson-glib-dev,
                libpam0g-dev,
-               libpcp-import1-dev,
-               libpcp-pmda3-dev,
                pkgconf,
                systemd-dev | systemd (<< 253-2~),
                xsltproc,
@@ -50,7 +45,6 @@ Recommends: cockpit-storaged (>= ${source:Version}),
             cockpit-networkmanager (>= ${source:Version}),
             cockpit-packagekit (>= ${source:Version}),
 Suggests: cockpit-doc (>= ${source:Version}),
-          cockpit-pcp (>= ${source:Version}),
           cockpit-sosreport (>= ${source:Version}),
           xdg-utils,
 Description: Web Console for Linux servers
@@ -67,9 +61,11 @@ Depends: ${misc:Depends},
          ${python3:Depends},
          glib-networking
 Recommends: openssh-client
-Provides: cockpit-ssh
 Breaks: cockpit-ws (<< 181.x),
-Replaces: cockpit-dashboard (<< 170.x), cockpit-ws (<< 181.x)
+Replaces: cockpit-dashboard (<< 170.x), cockpit-ws (<< 181.x), cockpit-pcp (<< 236)
+Provides: cockpit-pcp
+Conflicts: cockpit-pcp
+Suggests: python3-pcp
 Description: Cockpit bridge server-side component
  The Cockpit bridge component installed server side and runs commands on
  the system on behalf of the web based user interface.
@@ -93,15 +89,6 @@ Depends: ${misc:Depends},
 Description: Cockpit user interface for networking
  The Cockpit components for interacting with networking configuration.
  Incompatible with systemd-networkd/ifupdown defined networks.
-
-Package: cockpit-pcp
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         cockpit-bridge (>= ${source:Version}),
-         pcp
-Description: Cockpit PCP integration
- Cockpit support for reading PCP metrics and loading PCP archives.
 
 Package: cockpit-packagekit
 Architecture: all
@@ -140,7 +127,6 @@ Depends: ${misc:Depends},
          openssl,
 # policykit-1 was split into multiple packages; keep old name for Debian 11 and Ubuntu
 Recommends: sudo | pkexec | policykit-1
-Suggests: lastlog2
 Provides: cockpit-shell,
           cockpit-systemd,
           cockpit-tuned,
@@ -148,6 +134,7 @@ Provides: cockpit-shell,
 Conflicts: cockpit-shell
 Breaks: cockpit-dashboard
 Replaces: cockpit-shell, cockpit-dashboard
+Suggests: lastlog2
 Description: Cockpit admin interface for a system
  Cockpit admin interface package for configuring and
  troubleshooting a system.

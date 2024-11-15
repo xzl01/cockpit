@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -260,7 +260,6 @@ class SELinuxStatus extends React.Component {
                     <h2>{_("SELinux policy")}</h2>
                     <Switch isChecked={this.props.selinuxStatus.enforcing}
                             label={_("Enforcing")}
-                            labelOff={_("Permissive")}
                             onChange={this.props.changeSelinuxMode} />
                 </Flex>
                 { note !== null &&

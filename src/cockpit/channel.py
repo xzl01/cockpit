@@ -366,10 +366,11 @@ class ProtocolChannel(Channel, asyncio.Protocol):
     Otherwise, if the subclass implements .do_open() itself, it is responsible
     for setting up the connection and ensuring that .connection_made() is called.
     """
-    _transport: 'asyncio.Transport | None'
+    _transport: 'asyncio.Transport | None' = None
     _send_pongs: bool = True
     _last_ping: 'JsonObject | None' = None
     _create_transport_task: 'asyncio.Task[asyncio.Transport] | None' = None
+    _ready_info: 'JsonObject | None' = None
 
     # read-side EOF handling
     _close_on_eof: bool = False
@@ -400,7 +401,10 @@ class ProtocolChannel(Channel, asyncio.Protocol):
             return
 
         self.connection_made(transport)
-        self.ready()
+        if self._ready_info is not None:
+            self.ready(**self._ready_info)
+        else:
+            self.ready()
 
     def connection_made(self, transport: asyncio.BaseTransport) -> None:
         assert isinstance(transport, asyncio.Transport)
@@ -427,8 +431,11 @@ class ProtocolChannel(Channel, asyncio.Protocol):
 
     def data_received(self, data: bytes) -> None:
         assert self._transport is not None
-        if not self.send_data(data):
-            self._transport.pause_reading()
+        try:
+            if not self.send_data(data):
+                self._transport.pause_reading()
+        except ChannelError as exc:
+            self.close(exc.get_attrs())
 
     def do_resume_send(self) -> None:
         assert self._transport is not None

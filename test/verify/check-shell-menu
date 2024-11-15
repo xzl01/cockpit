@@ -15,13 +15,14 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import time
 
 import testlib
 
 
+@testlib.skipBeiboot("no local overrides/config in beiboot mode")
 @testlib.nondestructive
 class TestMenu(testlib.MachineCase):
 
@@ -45,7 +46,7 @@ class TestMenu(testlib.MachineCase):
         b.wait_not_present("html.pf-v5-theme-dark")
 
         # Test overriding, switching only works on Chromium
-        if b.cdp.browser.name == "chromium":
+        if b.browser == "chromium":
             # Light theme overrides browser defaults
             b._set_emulated_media_theme("dark")
             b.wait_not_present("html.pf-v5-theme-dark")
@@ -101,15 +102,9 @@ class TestMenu(testlib.MachineCase):
         b.wait_in_text("#host-apps .pf-m-current", "Development")
 
         b.enter_page("/playground/exception")
-        b.wait_visible("button")
-        with self.assertRaisesRegex(RuntimeError, "TypeError:.*undefined"):
-            b.click("button")
-            # Some round trips, one of which should update the deferred exception
-            for _ in range(5):
-                b.wait_visible("button")
-                time.sleep(2)
+        b.click("button")
 
-        # UI should also show the crash
+        # UI should show the crash
         b.switch_to_top()
         b.wait_visible("#navbar-oops")
 
@@ -163,7 +158,7 @@ class TestMenu(testlib.MachineCase):
         self.login_and_go()
 
         # initially shows host switcher
-        b.wait_visible("#host-toggle")
+        b.wait_visible("#hosts-sel")
         self.assertEqual(b.eval_js("document.activeElement.tagName"), "BODY")
         # conceptually we want that, but we use CSS hacks (-999 offset and 1x1 size) to hide it
         # b.wait_not_visible(".skiplink")
@@ -180,7 +175,8 @@ class TestMenu(testlib.MachineCase):
 
         # reset
         b.reload()
-        b.wait_visible("#host-toggle")
+        b.wait_visible("#hosts-sel")
+        b.wait_text("#super-user-indicator", "Administrative access")
 
         # press Tab twice → "Skip main navigation" skiplink
         b.key("Tab")
@@ -191,18 +187,17 @@ class TestMenu(testlib.MachineCase):
         b.wait_js_cond("document.activeElement.tagName === 'NAV'")
         self.assertEqual(b.eval_js("document.activeElement.getAttribute('id')"), "hosts-sel")
 
-        # actually skips the page menu and goes on to top nav bar
+        # actually skips the page menu and goes on to top nav bar; where exactly depends on whether
+        # the host switcher is enabled.
         b.key("Tab")
-        b.wait_js_cond("document.activeElement.getAttribute('id') === 'host-toggle'")
-        b.key("Tab")
-        if self.machine.ostree_image:
-            b.wait_js_cond("document.activeElement.textContent === 'Help'")
-        else:
-            b.wait_js_cond("document.activeElement.textContent === 'Administrative access'")
+        if self.multihost_enabled:
+            b.wait_js_cond("document.activeElement.getAttribute('id') === 'host-toggle'")
+            b.key("Tab")
+        b.wait_js_cond("document.activeElement.textContent === 'Administrative access'")
 
         # reset
         b.reload()
-        b.wait_visible("#host-toggle")
+        b.wait_visible("#hosts-sel")
 
         # without skip links, tabbing goes through page menu
         b.key("Tab", repeat=5)

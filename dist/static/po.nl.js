@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minuten"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Er is geen compatibele versie van Cockpit geïnstalleerd op $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Een moderne browser is vereist voor goede beveiliging, betrouwbaarheid en prestaties."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Een nieuwe SSH-sleutel op $0 wordt gemaakt voor $1 op $2 en deze wordt toegevoegd aan het $3-bestand van $4 op $5."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Ansible rollen documentatie"
  ],
+ "Authentication": [
+  null,
+  "Authenticatie"
+ ],
  "Authentication failed": [
   null,
   "Authenticatie mislukte"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Authenticatie mislukte: Server verbrak verbinding"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Authenticatie is vereist voor het uitvoeren van bevoorrechte taken met de Cockpit Web Console"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Autoriseer SSH-sleutel"
  ],
  "Automatically using NTP": [
   null,
@@ -242,6 +254,10 @@ window.cockpit_po = {
   null,
   "Cockpit is niet compatibel met de software op het systeem."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit is niet geïnstalleerd"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit is niet op het systeem geïnstalleerd."
@@ -266,6 +282,10 @@ window.cockpit_po = {
   null,
   "Compact PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Bevestig sleutelwachtwoord"
+ ],
  "Connect to": [
   null,
   "Verbinden met"
@@ -282,6 +302,10 @@ window.cockpit_po = {
   null,
   "Converteerbaar"
  ],
+ "Copied": [
+  null,
+  "Gekopieerd"
+ ],
  "Copy": [
   null,
   "Kopiëren"
@@ -290,9 +314,9 @@ window.cockpit_po = {
   null,
   "Kopiëren naar clipboard"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Aanmaken"
+  "Maak een nieuwe SSH-sleutel en autoriseer deze"
  ],
  "Create new task file with this content.": [
   null,
@@ -378,6 +402,10 @@ window.cockpit_po = {
   null,
   "Als de vingerafdruk overeenkomt, klik dan op \"Accepteer sleutel en log in\". Log anders niet in en neem contact op met je beheerder."
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Als de vingerafdruk overeenkomt, klik dan op 'Vertrouw en host toevoegen'. Verbind anders niet en neem contact op met je beheerder."
+ ],
  "Install": [
   null,
   "Installeren"
@@ -385,6 +413,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Installeer software"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -426,6 +458,10 @@ window.cockpit_po = {
   null,
   "Kerneldump"
  ],
+ "Key password": [
+  null,
+  "Sleutelwachtwoord"
+ ],
  "Laptop": [
   null,
   "Laptop"
@@ -441,6 +477,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Inloggen"
+ ],
+ "Log in to $0": [
+  null,
+  "Log in op $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -526,6 +566,10 @@ window.cockpit_po = {
   null,
   "Geen vertraging"
  ],
+ "No results found": [
+  null,
+  "Geen resultaten gevonden"
+ ],
  "No such file or directory": [
   null,
   "Bestand of map bestaat niet"
@@ -581,6 +625,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit is gecrasht"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -666,18 +714,6 @@ window.cockpit_po = {
   null,
   "Recente hosts"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Verbinding maken geweigerd. Host is onbekend"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Verbinding maken geweigerd. Hostsleutel komt niet overeen"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Verbinding maken geweigerd. Hostsleutel is onbekend"
- ],
  "Removals:": [
   null,
   "Verwijderingen:"
@@ -690,9 +726,17 @@ window.cockpit_po = {
   null,
   "$0 verwijderen"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Voer deze opdracht uit via een vertrouwd netwerk of fysiek op de externe machine:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-sleutel"
  ],
  "Sealed-case PC": [
   null,
@@ -782,17 +826,49 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "De SSH-sleutel $0 van $1 op $2 zal worden toegevoegd aan het $3 bestand van $4 op $5."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "De SSH-sleutel $0 zal beschikbaar worden gesteld voor de rest van de sessie en zal ook beschikbaar zijn om in te loggen bij andere hosts."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "De SSH-sleutel voor inloggen op $0 is beschermd met een wachtwoord en de host staat inloggen met een wachtwoord niet toe. Geef het wachtwoord van de sleutel op $1."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "De SSH-sleutel voor inloggen op $0 is beschermd. Je kunt inloggen met je inlogwachtwoord of door het wachtwoord van de sleutel op te geven op $1."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "De vingerafdruk moet overeenkomen met:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Het sleutelwachtwoord mag niet leeg zijn"
+ ],
+ "The key passwords do not match": [
+  null,
+  "De sleutelwachtwoorden komen niet overeen"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "De ingelogde gebruiker mag geen systeemwijzigingen bekijken"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "De wachtwoorden komen niet overeen."
+  "Het wachtwoord mag niet leeg zijn"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "De resulterende vingerafdruk is prima te delen via openbare methoden, inclusief e-mail."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "De resulterende vingerafdruk kan prima worden gedeeld via openbare methoden, waaronder e-mail. Als je iemand anders vraagt om de verificatie voor je uit te voeren, kan hij of zij de resultaten op elke gewenste manier verzenden."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -809,10 +885,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Dit gereedschap configureert het SELinux-beleid en kan helpen bij het begrijpen en oplossen van beleidsschendingen."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Dit gereedschap configureert het systeem om kernelcrashdumps naar schijf te schrijven."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -858,6 +930,14 @@ window.cockpit_po = {
   null,
   "Toren"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "Vertrouw en voeg host toe"
+ ],
  "Try again": [
   null,
   "Probeer opnieuw"
@@ -869,6 +949,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "Kan niet verbinden met dat adres"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Kan niet inloggen op $0. De host accepteert geen aanmelden met wachtwoord of een van je SSH-sleutels."
  ],
  "Unknown": [
   null,
@@ -889,6 +973,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Verificatietoken valideren"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Vingerafdruk verifiëren"
  ],
  "View all logs": [
   null,

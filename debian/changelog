@@ -1,8 +1,55 @@
-cockpit (321-1deepin1) unstable; urgency=medium
+cockpit (328-1) unstable; urgency=medium
 
-  * Disable package.json check
+  * New upstream bug fix release.
 
- -- xiangzelong <xiangzelong@deepin.org>  Tue, 23 Jul 2024 11:31:29 +0800
+ -- Martin Pitt <mpitt@debian.org>  Sat, 09 Nov 2024 21:04:12 +0100
+
+cockpit (327-1) unstable; urgency=medium
+
+  * New upstream release:
+    - Connect to similar servers without Cockpit installed
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 23 Oct 2024 11:15:28 +0200
+
+cockpit (326-1) unstable; urgency=medium
+
+  * New upstream release:
+    - cockpit-pcp package is now obsolete
+    - Storage: Support for Stratis filesystem sizes and limits
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 09 Oct 2024 15:16:48 +0000
+
+cockpit (325-1) unstable; urgency=medium
+
+  * New upstream release:
+    - storage: Expose Stratis virtual filesystem sizes
+    - client: Properly handle unknown SSH host keys
+
+ -- Martin Pitt <mpitt@debian.org>  Wed, 25 Sep 2024 12:57:32 +0200
+
+cockpit (324-1) unstable; urgency=medium
+
+  * New upstream bug fix release:
+    - Make building of cockpit-bridge.beipack.xz reproducible.
+
+ -- Martin Pitt <mpitt@debian.org>  Sun, 15 Sep 2024 17:50:32 +0200
+
+cockpit (323-1) unstable; urgency=medium
+
+  * New upstream bug fix release:
+    - metrics: Install valkey instead of redis on RHEL/CentOS 10
+    - login: Prevent multiple logins in a single browser session
+    - Update documentation links
+    - debian/copyright: Fix CC0-1.0 license path. (Closes: #1078801)
+
+ -- Martin Pitt <mpitt@debian.org>  Tue, 20 Aug 2024 10:21:51 +0200
+
+cockpit (322-1) unstable; urgency=medium
+
+  * New upstream release:
+    - shell: Deprecate host switcher
+
+ -- Martin Pitt <mpitt@debian.org>  Thu, 08 Aug 2024 11:12:15 +0200
 
 cockpit (321-1) unstable; urgency=medium
 

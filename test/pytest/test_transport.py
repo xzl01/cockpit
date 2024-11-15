@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import asyncio
 import contextlib
@@ -21,6 +21,7 @@ import errno
 import os
 import signal
 import subprocess
+import sys
 import unittest.mock
 from typing import Any, List, Optional, Tuple
 
@@ -254,6 +255,10 @@ class TestSubprocessTransport:
         assert transport.get_returncode() == 0
         assert protocol.sent == protocol.received
         transport.close()
+        # make sure the connection_lost handler isn't called immediately
+        assert protocol.transport is not None
+        # ...but "soon" (in the very next mainloop iteration)
+        await asyncio.sleep(0.01)
         assert protocol.transport is None
 
     @pytest.mark.asyncio
@@ -297,15 +302,10 @@ class TestSubprocessTransport:
 
     @pytest.mark.asyncio
     async def test_safe_watcher_ENOSYS(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(asyncio, 'PidfdChildWatcher', unittest.mock.Mock(side_effect=OSError), raising=False)
-        protocol, transport = self.subprocess(['true'])
-        watcher = transport._get_watcher(asyncio.get_running_loop())
-        assert isinstance(watcher, asyncio.SafeChildWatcher)
-        await protocol.eof_and_exited_with_code(0)
+        if sys.version_info >= (3, 12, 0):
+            pytest.skip()
 
-    @pytest.mark.asyncio
-    async def test_safe_watcher_oldpy(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delattr(asyncio, 'PidfdChildWatcher', raising=False)
+        monkeypatch.setattr(asyncio, 'PidfdChildWatcher', unittest.mock.Mock(side_effect=OSError), raising=False)
         protocol, transport = self.subprocess(['true'])
         watcher = transport._get_watcher(asyncio.get_running_loop())
         assert isinstance(watcher, asyncio.SafeChildWatcher)
@@ -334,6 +334,10 @@ class TestSubprocessTransport:
         # Now let's write to the stdin with the other side closed.
         # This should be enough to immediately disconnect us (EPIPE)
         protocol.write(b'abc')
+        # make sure the connection_lost handler isn't called immediately
+        assert protocol.transport is not None
+        # ...but "soon" (in the very next mainloop iteration)
+        await asyncio.sleep(0.01)
         assert protocol.transport is None
         assert isinstance(protocol.exc, BrokenPipeError)
 
@@ -400,7 +404,11 @@ class TestSubprocessTransport:
         assert protocol.transport
         assert protocol.transport.get_write_buffer_size() == 0
         protocol.transport.close()
-        assert protocol.transport is None  # make sure it closed immediately
+        # make sure the connection_lost handler isn't called immediately
+        assert protocol.transport is not None
+        # ...but "soon" (in the very next mainloop iteration)
+        await asyncio.sleep(0.01)
+        assert protocol.transport is None
         # we have another ref on the transport
         transport.close()  # should be idempotent
 

@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -421,13 +421,13 @@ function ensure_nbde_support_dialog(steps, client, block, url, adv, old_key, exi
         Title: _("Add Network Bound Disk Encryption"),
         Body: (
             <TextContent>
-                <Text compmonent={TextVariants.p}>
+                <Text component={TextVariants.p}>
                     { steps.is_root
                         ? _("The system does not currently support unlocking the root filesystem with a Tang keyserver.")
                         : _("The system does not currently support unlocking a filesystem with a Tang keyserver during boot.")
                     }
                 </Text>
-                <Text compmonent={TextVariants.p}>
+                <Text component={TextVariants.p}>
                     {_("These additional steps are necessary:")}
                 </Text>
                 <TextList>

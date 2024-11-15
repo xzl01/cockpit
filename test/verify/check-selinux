@@ -15,7 +15,7 @@
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+# along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
 
 import time
 
@@ -56,7 +56,7 @@ class TestSelinux(testlib.MachineCase):
 
     @testlib.skipImage("No setroubleshoot", "debian-*", "ubuntu-*", "arch")
     @testlib.skipOstree("No setroubleshoot")
-    @testlib.skipBrowser("Firefox needs http to access clipboard", "firefox")
+    @testlib.skipBrowser("Firefox fails to recognize 'clipboard-read' permission", "firefox")
     def testTroubleshootAlerts(self):
         b = self.browser
         m = self.machine
@@ -207,11 +207,7 @@ class TestSelinux(testlib.MachineCase):
         b.click(dismiss_sel)
         b.wait_not_present(row_selector)
 
-        try:
-            b.grant_permissions("clipboardReadWrite", "clipboardSanitizedWrite")
-        except RuntimeError:
-            # fallback for older Chrome releases
-            b.grant_permissions("clipboardRead", "clipboardWrite")
+        b.grant_permissions("clipboard-read", "clipboard-write")
 
         b.wait_visible(".pf-v5-c-data-list__cell:contains(Allow zebra)")
         b.wait_visible(".pf-v5-c-data-list__cell:contains(fcontext -a -f a -t samba_share_t -r 's0' '/var/tmp/')")
@@ -272,8 +268,7 @@ class TestSelinux(testlib.MachineCase):
         b.go("/system/terminal")
         b.enter_page("/system/terminal")
         b.focus('.terminal')
-        b.input_text('"')
-        b.key("Enter")
+        b.input_text('"\n')
         # Right click and paste
         b.mouse(".terminal", "contextmenu", btn=2)
         b.click('.contextMenu li:nth-child(2) button')

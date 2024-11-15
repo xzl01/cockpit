@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 Minuten"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Eine kompatible Version von Cockpit ist auf $0 nicht installiert."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Ein moderner Browser ist für Sicherheit, Zuverlässigkeit und Leistung erforderlich."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Ein neuer SSH-Schlüssel unter $0 wird für $1 auf $2 erstellt und zur Datei $3 von $4 auf $5 hinzugefügt."
  ],
  "Absent": [
   null,
@@ -113,6 +121,10 @@ window.cockpit_po = {
  "Accept key and log in": [
   null,
   "Schlüssel akzeptieren und anmelden"
+ ],
+ "Acceptable password": [
+  null,
+  "Akzeptables Passwort"
  ],
  "Add $0": [
   null,
@@ -142,17 +154,21 @@ window.cockpit_po = {
   null,
   "Ansible Rollendokumentation"
  ],
+ "Authentication": [
+  null,
+  "Authentifizierung"
+ ],
  "Authentication failed": [
   null,
   "Authentifizierung fehlgeschlagen"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Authentifizierung fehlgeschlagen: Server geschlossene Verbindung"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Privilegierte Aktionen der Cockpit Web-Konsole benötigen Berechtigung"
+ ],
+ "Authorize SSH key": [
+  null,
+  "SSH-Schlüssel autorisieren"
  ],
  "Automatically using NTP": [
   null,
@@ -181,6 +197,10 @@ window.cockpit_po = {
  "Bus expansion chassis": [
   null,
   "Bus-Erweiterungsgehäuse"
+ ],
+ "Bypass browser check": [
+  null,
+  "Browserprüfung umgehen"
  ],
  "Cancel": [
   null,
@@ -238,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit ist mit der Software auf dem System nicht kompatibel."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit ist nicht installiert"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit ist auf dem System nicht installiert."
@@ -262,6 +286,10 @@ window.cockpit_po = {
   null,
   "Kompakte PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Neues Passwort wiederholen"
+ ],
  "Connect to": [
   null,
   "Verbinden zu"
@@ -278,6 +306,10 @@ window.cockpit_po = {
   null,
   "Convertible"
  ],
+ "Copied": [
+  null,
+  "Kopiert"
+ ],
  "Copy": [
   null,
   "Kopieren"
@@ -286,9 +318,9 @@ window.cockpit_po = {
   null,
   "In Zwischenablage kopieren"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Erstellen"
+  "Einen neuen SSH-Schlüssel erstellen und ihn autorisieren"
  ],
  "Create new task file with this content.": [
   null,
@@ -374,6 +406,10 @@ window.cockpit_po = {
   null,
   "Software installieren"
  ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
+ ],
  "Installing $0": [
   null,
   "$0 wird installiert"
@@ -414,6 +450,10 @@ window.cockpit_po = {
   null,
   "Kernel dump"
  ],
+ "Key password": [
+  null,
+  "Schlüsselpasswort"
+ ],
  "Laptop": [
   null,
   "Laptop"
@@ -429,6 +469,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Anmelden"
+ ],
+ "Log in to $0": [
+  null,
+  "Bei $0 anmelden"
  ],
  "Log in with your server user account.": [
   null,
@@ -514,6 +558,10 @@ window.cockpit_po = {
   null,
   "Keine Verzögerung"
  ],
+ "No results found": [
+  null,
+  "Keine Ergebnisse gefunden"
+ ],
  "No such file or directory": [
   null,
   "Datei oder Verzeichnis nicht vorhanden"
@@ -569,6 +617,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit ist abgestürzt"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -654,18 +706,6 @@ window.cockpit_po = {
   null,
   "Zuletzt genutzte Hosts"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Verbindung ablehnen Host ist unbekannt"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Verbindung ablehnen Hostkey stimmt nicht überein"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Verbindung ablehnen Hostkey ist unbekannt"
- ],
  "Removals:": [
   null,
   "Umzüge:"
@@ -678,9 +718,17 @@ window.cockpit_po = {
   null,
   "Entfernen $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH-Schlüssel"
  ],
  "Sealed-case PC": [
   null,
@@ -758,17 +806,45 @@ window.cockpit_po = {
   null,
   "Tablett"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "Der SSH-Schlüssel $0 von $1 auf $2 wird der Datei $3 von $4 auf $5 hinzugefügt."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "Der SSH-Schlüssel $0 wird für den Rest der Sitzung zur Verfügung gestellt und steht auch für die Anmeldung bei anderen Hosts zur Verfügung."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "Der SSH-Schlüssel für die Anmeldung bei $0 ist durch ein Passwort geschützt, und der Host erlaubt keine Anmeldung mit einem Passwort. Bitte geben Sie das Passwort des Schlüssels auf $1 an."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "Der SSH-Schlüssel für die Anmeldung bei $0 ist geschützt. Sie können sich entweder mit Ihrem Anmeldepasswort oder mit dem Passwort des Schlüssels bei $1 anmelden."
+ ],
+ "The key password can not be empty": [
+  null,
+  "Das Schlüsselpasswort darf nicht leer sein"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Die Schlüsselpasswörter stimmen nicht überein"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Der angemeldete Benutzer ist nicht berechtigt, Systemänderungen einzusehen"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Die Passwörter stimmen nicht überein."
+  "Das Passwort darf nicht leer sein"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Der entstandene Fingerabdruck kann über öffentliche Methoden, einschließlich E-Mail, weitergegeben werden."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  ""
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -785,10 +861,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Dieses Tool konfiguriert die SELinux Policy und hilft dabei Verletzungen der Policy zu verstehen und aufzulösen."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Dieses Tool konfiguriert das System zum Schreiben von Kernel Absturz Auszügen auf Datenträger."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -834,6 +906,10 @@ window.cockpit_po = {
   null,
   "Turm"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
  "Try again": [
   null,
   "Versuchen Sie es nochmal"
@@ -845,6 +921,10 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "Es kann keine Verbindung zu dieser Adresse hergestellt werden"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "Die Anmeldung bei $0 ist nicht möglich. Der Host akzeptiert weder ein Passwort noch einen Ihrer SSH-Schlüssel."
  ],
  "Unknown": [
   null,

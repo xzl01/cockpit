@@ -25,9 +25,10 @@ const info = {
         "playground/preloaded.js",
         "playground/notifications-receiver.js",
         "playground/journal.jsx",
+        "playground/remote.tsx",
 
         "selinux/selinux.js",
-        "shell/shell.js",
+        "shell/shell.jsx",
         "sosreport/sosreport.jsx",
         "static/login.js",
         "storaged/storaged.jsx",
@@ -47,6 +48,7 @@ const info = {
         "base1/test-browser-storage.js",
         "base1/test-cache.js",
         "base1/test-chan.js",
+        "base1/test-channel.ts",
         "base1/test-dbus-address.js",
         "base1/test-dbus-framed.js",
         "base1/test-dbus.js",
@@ -75,6 +77,8 @@ const info = {
         "base1/test-types.ts",
         "base1/test-user.js",
         "base1/test-websocket.js",
+
+        "lib/test-path.ts",
 
         "kdump/test-config-client.js",
 
@@ -112,6 +116,7 @@ const info = {
         "playground/preloaded.html",
         "playground/notifications-receiver.html",
         "playground/journal.html",
+        "playground/remote.html",
 
         "selinux/index.html",
 

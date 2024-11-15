@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 dakika"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "$0 üzerinde uyumlu bir Cockpit sürümü kurulu değil."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Güvenlik, güvenilirlik ve performans için modern bir tarayıcı gereklidir."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "$2 üzerinde $1 için $0 konumunda yeni bir SSH anahtarı oluşturulacak ve $5 üzerindeki $4 kullanıcısının $3 dosyasına eklenecektir."
  ],
  "Absent": [
   null,
@@ -146,17 +154,21 @@ window.cockpit_po = {
   null,
   "Ansible rolleri belgeleri"
  ],
+ "Authentication": [
+  null,
+  "Kimlik doğrulama"
+ ],
  "Authentication failed": [
   null,
   "Kimlik doğrulama başarısız oldu"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Kimlik doğrulama başarısız oldu: Sunucu bağlantıyı kapattı"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Cockpit Web Konsolu ile yetkili görevleri gerçekleştirmek için kimlik doğrulaması gerekir"
+ ],
+ "Authorize SSH key": [
+  null,
+  "SSH anahtarını yetkilendir"
  ],
  "Automatically using NTP": [
   null,
@@ -246,6 +258,10 @@ window.cockpit_po = {
   null,
   "Cockpit, sistemdeki yazılımla uyumlu değil."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit kurulu değil"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit sistemde kurulu değil."
@@ -270,6 +286,10 @@ window.cockpit_po = {
   null,
   "Compact PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Anahtar parolasını onayla"
+ ],
  "Connect to": [
   null,
   "Şuna bağlan"
@@ -286,6 +306,10 @@ window.cockpit_po = {
   null,
   "Dönüştürülebilir"
  ],
+ "Copied": [
+  null,
+  "Kopyalandı"
+ ],
  "Copy": [
   null,
   "Kopyala"
@@ -294,9 +318,13 @@ window.cockpit_po = {
   null,
   "Panoya kopyala"
  ],
- "Create": [
+ "Create $0": [
   null,
-  "Oluştur"
+  "$0 oluştur"
+ ],
+ "Create a new SSH key and authorize it": [
+  null,
+  "Yeni bir SSH anahtarı oluştur ve yetkilendir"
  ],
  "Create new task file with this content.": [
   null,
@@ -374,13 +402,29 @@ window.cockpit_po = {
   null,
   "Parolayı gizle"
  ],
+ "Host is unknown": [
+  null,
+  "Anamakine bilinmiyor"
+ ],
  "Host key is incorrect": [
   null,
   "Anamakine anahtarı yanlış"
  ],
+ "Hostkey does not match": [
+  null,
+  "Anamakine anahtarı eşleşmiyor"
+ ],
+ "Hostkey is unknown": [
+  null,
+  "Anamakine anahtarı bilinmiyor"
+ ],
  "If the fingerprint matches, click \"Accept key and log in\". Otherwise, do not log in and contact your administrator.": [
   null,
   "Eğer parmak izi eşleşirse, \"Anahtarı kabul et ve oturum aç\"a tıklayın. Aksi takdirde, oturum açmayın ve yöneticinize başvurun."
+ ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "Eğer parmak izi eşleşirse, 'Anamakineye güven ve ekle'ye tıklayın. Aksi takdirde, bağlanmayın ve yöneticinize başvurun."
  ],
  "Install": [
   null,
@@ -390,17 +434,25 @@ window.cockpit_po = {
   null,
   "Yazılım kur"
  ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  "Web konsolu erişimini etkinleştirmek için cockpit-system paketini (ve isteğe bağlı olarak diğer cockpit paketlerini) $0 üzerine yükleyin."
+ ],
  "Installing $0": [
   null,
   "$0 kuruluyor"
  ],
  "Internal error": [
   null,
-  "Dahili hata"
+  "İç hata"
  ],
  "Internal error: Invalid challenge header": [
   null,
   "İç hata: Geçersiz sınama üstbilgisi"
+ ],
+ "Internal protocol error": [
+  null,
+  "İç protokol hatası"
  ],
  "Invalid date format": [
   null,
@@ -430,6 +482,10 @@ window.cockpit_po = {
   null,
   "Çekirdek dökümü"
  ],
+ "Key password": [
+  null,
+  "Anahtar parolası"
+ ],
  "Laptop": [
   null,
   "Dizüstü"
@@ -445,6 +501,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Oturum aç"
+ ],
+ "Log in to $0": [
+  null,
+  "$0 üzerinde oturum aç"
  ],
  "Log in with your server user account.": [
   null,
@@ -530,6 +590,10 @@ window.cockpit_po = {
   null,
   "Gecikme yok"
  ],
+ "No results found": [
+  null,
+  "Bulunan sonuçlar yok"
+ ],
  "No such file or directory": [
   null,
   "Böyle bir dosya ya da dizin yok"
@@ -585,6 +649,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit çöktü"
+ ],
+ "Packageless session unavailable": [
+  null,
+  "Paketsiz oturum mevcut değil"
  ],
  "Password": [
   null,
@@ -670,17 +738,9 @@ window.cockpit_po = {
   null,
   "En son anamakineler"
  ],
- "Refusing to connect. Host is unknown": [
+ "Refusing to connect": [
   null,
-  "Bağlanmayı reddediyor. Anamakine bilinmiyor"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Bağlanmayı reddediyor. Anamakine anahtarı eşleşmiyor"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Bağlanmayı reddediyor. Anamakine anahtarı bilinmiyor"
+  "Bağlanmayı reddediyor"
  ],
  "Removals:": [
   null,
@@ -702,9 +762,21 @@ window.cockpit_po = {
   null,
   "Satır seçimi"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "Bu komutu güvenilir bir ağ üzerinden veya fiziksel olarak uzaktaki makinede çalıştırın:"
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH anahtarı"
+ ],
+ "SSH key login": [
+  null,
+  "SSH anahtarı oturum açma"
  ],
  "Sealed-case PC": [
   null,
@@ -717,6 +789,10 @@ window.cockpit_po = {
  "Server": [
   null,
   "Sunucu"
+ ],
+ "Server closed connection": [
+  null,
+  "Sunucu bağlantıyı kapattı"
  ],
  "Server has closed the connection.": [
   null,
@@ -794,17 +870,49 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "$2 üzerindeki $1 kullanıcısının $0 SSH anahtarı, $5 üzerindeki $4 kullanıcısının $3 dosyasına eklenecektir."
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "$0 SSH anahtarı, oturumun geri kalanı için kullanılabilir olacak ve diğer anamakinelerde oturum açmak için de kullanılabilecektir."
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "$0 üzerinde oturum açmak için kullanılan SSH anahtarı korumalı ve anamakine bir parola ile oturum açmaya izin vermiyor. Lütfen $1 konumundaki anahtarın parolasını sağlayın."
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "$0 üzerinde oturum açmak için kullanılan SSH anahtarı korumalı. Oturum açma parolanızla veya $1 konumundaki anahtarın parolasını sağlayarak oturum açabilirsiniz."
+ ],
+ "The fingerprint should match:": [
+  null,
+  "Parmak izi eşleşmeli:"
+ ],
+ "The key password can not be empty": [
+  null,
+  "Anahtar parolası boş olamaz"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Anahtar parolaları eşleşmiyor"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "Oturum açmış kullanıcının sistem değişikliklerini görüntülemesine izin verilmiyor"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "Parolalar eşleşmiyor."
+  "Parola boş olamaz"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "Ortaya çıkan parmak izinin, e-posta dahil olmak üzere herkese açık yöntemlerle paylaşılması uygundur."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "Ortaya çıkan parmak izi, e-posta dahil ortak yöntemler aracılığıyla paylaşılabilir. Eğer başka birinden doğrulamayı sizin için yapmasını istiyorsanız, sonuçları herhangi bir yöntemi kullanarak gönderebilirler."
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -822,9 +930,9 @@ window.cockpit_po = {
   null,
   "Bu araç, SELinux ilkesini yapılandırır ve ilke ihlallerinin anlaşılmasına ve çözülmesine yardımcı olabilir."
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
-  "Bu araç, sistemi çekirdek çökme dökümlerini diske yazacak şekilde yapılandırır."
+  "Bu araç, sistemi çekirdek çökme dökümlerini yazmak için yapılandırır. \"Yerel\" (disk), \"ssh\" ve \"nfs\" döküm hedeflerini destekler."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -852,7 +960,7 @@ window.cockpit_po = {
  ],
  "To verify a fingerprint, run the following on $0 while physically sitting at the machine or through a trusted network:": [
   null,
-  "Bir parmak izini doğrulamak için makinede fiziksel olarak bulunurken veya güvenilir bir ağ aracılığıyla 0$ üzerinde aşağıdakileri çalıştırın:"
+  "Bir parmak izini doğrulamak için makinede fiziksel olarak bulunurken veya güvenilir bir ağ aracılığıyla $0 üzerinde aşağıdakileri çalıştırın:"
  ],
  "Toggle date picker": [
   null,
@@ -870,6 +978,14 @@ window.cockpit_po = {
   null,
   "Tower"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  "Geçici paketsiz oturumlar, uyumluluk nedenleriyle aynı işletim sistemi ve sürümünü gerektirir: $0."
+ ],
+ "Trust and add host": [
+  null,
+  "Anamakineye güven ve ekle"
+ ],
  "Try again": [
   null,
   "Tekrar dene"
@@ -882,9 +998,21 @@ window.cockpit_po = {
   null,
   "Bu adrese bağlanılamıyor"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "SSH anahtar kimlik doğrulaması kullanılarak $0 için oturum açılamıyor. Lütfen parolayı girin."
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "$0 üzerinde oturum açılamıyor. Anamakine, parola ile oturum açmayı veya SSH anahtarlarınızdan hiçbirini kabul etmiyor."
+ ],
  "Unknown": [
   null,
   "Bilinmiyor"
+ ],
+ "Unknown host: $0": [
+  null,
+  "Bilinmeyen anamakine: $0"
  ],
  "Untrusted host": [
   null,
@@ -901,6 +1029,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "Kimlik doğrulama belirteci doğrulanıyor"
+ ],
+ "Verify fingerprint": [
+  null,
+  "Parmak izini doğrula"
  ],
  "View all logs": [
   null,

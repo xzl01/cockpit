@@ -102,9 +102,17 @@ window.cockpit_po = {
   null,
   "60 minuti"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Una versione compatibile di Cockpit non è installata su $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Un browser moderno è necessario per la sicurezza, l'affidabilità e le prestazioni."
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "Una nuova chiave SSH in $0 verrà creata per $1 su $2 e sarà aggiunta al file $3 di $4 su $5."
  ],
  "Absent": [
   null,
@@ -142,17 +150,21 @@ window.cockpit_po = {
   null,
   "Documentazione sui ruoli Ansible"
  ],
+ "Authentication": [
+  null,
+  "Autenticazione"
+ ],
  "Authentication failed": [
   null,
   "Autenticazione fallita"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Autenticazione fallita: il server ha terminato la connessione"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "E' necessario autenticarsi per eseguire azioni privilegiate con Cockpit Web Console"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Autorizza chiave SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -238,6 +250,10 @@ window.cockpit_po = {
   null,
   "Cockpit non è compatibile con il software del sistema."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit non è installato"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit non è installato sul sistema."
@@ -262,6 +278,10 @@ window.cockpit_po = {
   null,
   "PCI compatto"
  ],
+ "Confirm key password": [
+  null,
+  "Conferma la password chiave"
+ ],
  "Connect to": [
   null,
   "Collegati a"
@@ -278,6 +298,10 @@ window.cockpit_po = {
   null,
   "Convertibile"
  ],
+ "Copied": [
+  null,
+  "Copiato"
+ ],
  "Copy": [
   null,
   "Copia"
@@ -286,9 +310,9 @@ window.cockpit_po = {
   null,
   "Copia negli appunti"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Crea"
+  "Crea una nuova chiave SSH e autorizzala"
  ],
  "Create new task file with this content.": [
   null,
@@ -374,6 +398,10 @@ window.cockpit_po = {
   null,
   "Installa il software"
  ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
+ ],
  "Installing $0": [
   null,
   "Installazione di $0"
@@ -414,6 +442,10 @@ window.cockpit_po = {
   null,
   "Kernel dump"
  ],
+ "Key password": [
+  null,
+  "Password della chiave"
+ ],
  "Laptop": [
   null,
   "Portatile"
@@ -429,6 +461,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "Accedi"
+ ],
+ "Log in to $0": [
+  null,
+  "Entra in $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -514,6 +550,10 @@ window.cockpit_po = {
   null,
   "Nessun ritardo"
  ],
+ "No results found": [
+  null,
+  "nessun risultato trovato"
+ ],
  "No such file or directory": [
   null,
   "Nessun file o directory"
@@ -569,6 +609,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit si è interrotto"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -654,18 +698,6 @@ window.cockpit_po = {
   null,
   "Host recenti"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Rifiuto di connessione. L'host è sconosciuto"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Rifiuto di connessione. Il tasto Hostkey non corrisponde"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Rifiuto di connessione. La chiave host è sconosciuta"
- ],
  "Removals:": [
   null,
   "Rimozioni:"
@@ -678,9 +710,17 @@ window.cockpit_po = {
   null,
   "Rimozione $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "Chiave SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -758,17 +798,25 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The key password can not be empty": [
+  null,
+  "La password della chiave non può essere vuota"
+ ],
+ "The key passwords do not match": [
+  null,
+  "Le password della chiave non corrispondono"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "L'utente che ha effettuato l'accesso non è autorizzato a visualizzare le modifiche di sistema"
  ],
- "The passwords do not match.": [
-  null,
-  "Le password non corrispondono."
- ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "L'impronta digitale risultante è idonea per la condivisione pubblica, email inclusa."
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  ""
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -785,10 +833,6 @@ window.cockpit_po = {
  "This tool configures the SELinux policy and can help with understanding and resolving policy violations.": [
   null,
   "Questo strumento configura i criteri SELinux e può aiutare a comprendere e risolvere le violazioni dei criteri."
- ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "Questo strumento configura il sistema per scrivere i crash dump del kernel su disco."
  ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
@@ -833,6 +877,10 @@ window.cockpit_po = {
  "Tower": [
   null,
   "Tower"
+ ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
  ],
  "Try again": [
   null,

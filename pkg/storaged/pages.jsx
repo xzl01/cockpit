@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import cockpit from "cockpit";
@@ -127,7 +127,7 @@ const _ = cockpit.gettext;
 
    When a page appears in such a crossref table, it has dedicated
    actions, a dedicated size, and generally looks different from when
-   it appears in a "normal" childrens table. This is another source of
+   it appears in a "normal" children's table. This is another source of
    complication of how cards and pages interact.
 */
 

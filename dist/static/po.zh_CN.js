@@ -96,9 +96,17 @@ window.cockpit_po = {
   null,
   "60 分钟"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "主机 $0 上找不到版本兼容的 Cockpit。"
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "请更新浏览器以确保安全性、可靠性和性能。"
+ ],
+ "A new SSH key at $0 will be created for $1 on $2 and it will be added to the $3 file of $4 on $5.": [
+  null,
+  "将在 $2 上为 $1 在 $0 处创建一个新的 SSH 密钥，该密钥将被添加到 $5 上 $4 的$3 文件中。"
  ],
  "Absent": [
   null,
@@ -140,17 +148,21 @@ window.cockpit_po = {
   null,
   "Ansible 角色文档"
  ],
+ "Authentication": [
+  null,
+  "认证"
+ ],
  "Authentication failed": [
   null,
   "认证失败"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "认证失败：服务端已关闭连接"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "通过Cockpit Web Console进行验证后才能执行特权操作"
+ ],
+ "Authorize SSH key": [
+  null,
+  "授权 SSH 密钥"
  ],
  "Automatically using NTP": [
   null,
@@ -240,6 +252,10 @@ window.cockpit_po = {
   null,
   "Cockpit 与系统上的软件不兼容。"
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit 未安装"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit 未安装在系统上。"
@@ -264,6 +280,10 @@ window.cockpit_po = {
   null,
   "紧凑型 PCI"
  ],
+ "Confirm key password": [
+  null,
+  "确认密钥密码"
+ ],
  "Connect to": [
   null,
   "连接到"
@@ -280,6 +300,10 @@ window.cockpit_po = {
   null,
   "可转换"
  ],
+ "Copied": [
+  null,
+  "复制的"
+ ],
  "Copy": [
   null,
   "复制"
@@ -288,9 +312,9 @@ window.cockpit_po = {
   null,
   "复制到剪贴板"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "创建"
+  "创建一个新的 SSH 密钥，并对其进行授权"
  ],
  "Create new task file with this content.": [
   null,
@@ -376,6 +400,10 @@ window.cockpit_po = {
   null,
   "如果指纹匹配，点\"Accept key and log in\"。否则，请不要登录并联系您的管理员。"
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  "如果指纹匹配，点 'Trust and add host'。否则，请不要连接并联系您的管理员。"
+ ],
  "Install": [
   null,
   "安装"
@@ -383,6 +411,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "安装软件"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -424,6 +456,10 @@ window.cockpit_po = {
   null,
   "内核转储"
  ],
+ "Key password": [
+  null,
+  "钥匙密码"
+ ],
  "Laptop": [
   null,
   "笔记本电脑"
@@ -439,6 +475,10 @@ window.cockpit_po = {
  "Log in": [
   null,
   "登录"
+ ],
+ "Log in to $0": [
+  null,
+  "登录到 $0"
  ],
  "Log in with your server user account.": [
   null,
@@ -524,6 +564,10 @@ window.cockpit_po = {
   null,
   "无延时"
  ],
+ "No results found": [
+  null,
+  "没有找到结果"
+ ],
  "No such file or directory": [
   null,
   "没有该文件或目录"
@@ -579,6 +623,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit 已崩溃"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -664,18 +712,6 @@ window.cockpit_po = {
   null,
   "最近的主机"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "拒绝连接。主机未知"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "拒绝连接。主机密钥不匹配"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "拒绝连接。未知主机密钥"
- ],
  "Removals:": [
   null,
   "移除："
@@ -688,9 +724,29 @@ window.cockpit_po = {
   null,
   "正在删除 $0"
  ],
+ "Row expansion": [
+  null,
+  "行扩展"
+ ],
+ "Row select": [
+  null,
+  "行选择"
+ ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  "通过一个可信网络运行这个命令，或在远程机器上运行这个命令："
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "SSH 密钥"
+ ],
+ "SSH key login": [
+  null,
+  "SSH 密钥登录"
  ],
  "Sealed-case PC": [
   null,
@@ -780,17 +836,49 @@ window.cockpit_po = {
   null,
   "平板"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  "$2 上 $1 的 SSH 密钥 $0 将被添加到 $5 上 $4 的 $3 文件中。"
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  "SSH 密钥 $0 将会在剩余的会话中可用，也可以在登录到其他主机时可用。"
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  "登录到 $0 的 SSH 密钥是受密码保护的，主机不允许使用密码登录。请在 $1 提供密钥的密码。"
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  "登录到 $0 的 SSH 密钥是受保护的。您可以用您的登录密码或通过在 $1 提供密钥的密码来登录。"
+ ],
+ "The fingerprint should match:": [
+  null,
+  "指纹应匹配："
+ ],
+ "The key password can not be empty": [
+  null,
+  "密钥密码不能为空"
+ ],
+ "The key passwords do not match": [
+  null,
+  "密钥密码不匹配"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   "登陆的用户没有权限查看系统改变"
  ],
- "The passwords do not match.": [
+ "The password can not be empty": [
   null,
-  "密码不匹配。"
+  "密钥密码不能为空"
  ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
   null,
   "结果指纹可以通过公共方法（包括电子邮件）共享。"
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
+  null,
+  "生成的指纹可以通过公共方法（包括电子邮件）共享。如果您需要其他人为您进行验证，他们可以使用任何方法发送结果。"
  ],
  "The server refused to authenticate '$0' using password authentication, and no other supported authentication methods are available.": [
   null,
@@ -808,10 +896,6 @@ window.cockpit_po = {
   null,
   "这个工具配置 SELinux 策略，帮助理解和解决策略违规。"
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
-  null,
-  "这个工具配置系统，以将内核崩溃转储写入磁盘。"
- ],
  "This tool generates an archive of configuration and diagnostic information from the running system. The archive may be stored locally or centrally for recording or tracking purposes or may be sent to technical support representatives, developers or system administrators to assist with technical fault-finding and debugging.": [
   null,
   "此工具从正在运行的系统中生成配置和诊断信息的存档。出于记录或跟踪目的，存档可能被存储在本地或集中存储，或者被发送到技术支持代表、开发人员或系统管理员，以帮助技术故障查找和调试。"
@@ -822,7 +906,7 @@ window.cockpit_po = {
  ],
  "This tool manages networking such as bonds, bridges, teams, VLANs and firewalls using NetworkManager and Firewalld. NetworkManager is incompatible with Ubuntu's default systemd-networkd and Debian's ifupdown scripts.": [
   null,
-  "此工具使用 NetworkManager 和 Firewalld 管理网络，如绑定、网桥、团队、VLAN 和防火墙等。NetworkManager 与 Ubuntu 的默认 systemd-networkd 和 Debian 的 ifupdown 脚本不兼容。"
+  "此工具使用 NetworkManager 和 Firewalld 管理网络，如绑定、网桥、组合、VLAN 和防火墙等。NetworkManager 与 Ubuntu 默认的 systemd-networkd 以及 Debian 的 ifupdown 脚本不兼容。"
  ],
  "This web browser is too old to run the Web Console (missing $0)": [
   null,
@@ -856,6 +940,14 @@ window.cockpit_po = {
   null,
   "Tower"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
+ "Trust and add host": [
+  null,
+  "信任并添加主机"
+ ],
  "Try again": [
   null,
   "重试"
@@ -868,9 +960,21 @@ window.cockpit_po = {
   null,
   "无法连接至该地址"
  ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  "无法使用 SSH 密钥身份验证登录到 $0。请提供密码。"
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  "无法登录到 $0 。主机不接受密码登录，或您的任何 SSH 密钥。"
+ ],
  "Unknown": [
   null,
   "未知"
+ ],
+ "Unknown host: $0": [
+  null,
+  "未知主机：$0"
  ],
  "Untrusted host": [
   null,
@@ -887,6 +991,10 @@ window.cockpit_po = {
  "Validating authentication token": [
   null,
   "正在校验验证口令"
+ ],
+ "Verify fingerprint": [
+  null,
+  "验证指纹"
  ],
  "View all logs": [
   null,
@@ -946,11 +1054,11 @@ window.cockpit_po = {
  ],
  "in less than a minute": [
   null,
-  ""
+  "少于一分钟"
  ],
  "less than a minute ago": [
   null,
-  ""
+  "少于一分钟前"
  ],
  "password quality": [
   null,

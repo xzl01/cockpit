@@ -14,7 +14,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+ * along with Cockpit; If not, see <https://www.gnu.org/licenses/>.
  */
 
 import React from "react";
@@ -22,8 +22,8 @@ import PropTypes from "prop-types";
 import { Modal } from "@patternfly/react-core/dist/esm/components/Modal/index.js";
 import { Button } from "@patternfly/react-core/dist/esm/components/Button/index.js";
 import { MenuList, MenuItem } from "@patternfly/react-core/dist/esm/components/Menu";
-import { Terminal as Term } from "xterm";
-import { CanvasAddon } from 'xterm-addon-canvas';
+import { CanvasAddon } from '@xterm/addon-canvas';
+import { Terminal as Term } from "@xterm/xterm";
 
 import { ContextMenu } from "cockpit-components-context-menu.jsx";
 import cockpit from "cockpit";
@@ -316,10 +316,13 @@ export class Terminal extends React.Component {
         const padding = 10; // Leave a bit of space around terminal
         const realHeight = this.terminal._core._renderService.dimensions.css.cell.height;
         const realWidth = this.terminal._core._renderService.dimensions.css.cell.width;
+        const parentHeight = this.terminalRef.current.parentElement.clientHeight;
+        const parentWidth = this.terminalRef.current.parentElement.clientWidth;
         if (realHeight && realWidth && realWidth !== 0 && realHeight !== 0)
             return {
-                rows: Math.floor((this.terminalRef.current.parentElement.clientHeight - padding) / realHeight),
-                cols: Math.floor((this.terminalRef.current.parentElement.clientWidth - padding - 12) / realWidth) // Remove 12px for scrollbar
+                // it can happen that parent{Width,Height} are not yet initialized (0), avoid negative values
+                rows: Math.max(Math.floor((parentHeight - padding) / realHeight), 1),
+                cols: Math.max(Math.floor((parentWidth - padding - 12) / realWidth), 1) // Remove 12px for scrollbar
             };
 
         return { rows: this.state.rows, cols: this.state.cols };

@@ -102,6 +102,10 @@ window.cockpit_po = {
   null,
   "60 Minutos"
  ],
+ "A compatible version of Cockpit is not installed on $0.": [
+  null,
+  "Uma versão compatível do Cockpit não está instalada em $0."
+ ],
  "A modern browser is required for security, reliability, and performance.": [
   null,
   "Um navegador moderno é necessário para segurança, confiabilidade e desempenho."
@@ -138,17 +142,21 @@ window.cockpit_po = {
   null,
   "Documentação de papéis do Ansible"
  ],
+ "Authentication": [
+  null,
+  "Autenticação"
+ ],
  "Authentication failed": [
   null,
   "Falha na Autenticação"
  ],
- "Authentication failed: Server closed connection": [
-  null,
-  "Falha na Autenticação: Conexão encerrada com servidor"
- ],
  "Authentication is required to perform privileged tasks with the Cockpit Web Console": [
   null,
   "Autenticação é necessária para executar ações privilegiadas no Console Web do Cockpit"
+ ],
+ "Authorize SSH key": [
+  null,
+  "Autorizar chave SSH"
  ],
  "Automatically using NTP": [
   null,
@@ -226,6 +234,10 @@ window.cockpit_po = {
   null,
   "O Cockpit não é compatível com o software no sistema."
  ],
+ "Cockpit is not installed": [
+  null,
+  "Cockpit não está instalado"
+ ],
  "Cockpit is not installed on the system.": [
   null,
   "Cockpit não está instalado no sistema."
@@ -246,6 +258,10 @@ window.cockpit_po = {
   null,
   "Compacto PCI"
  ],
+ "Confirm key password": [
+  null,
+  "Confirme a senha da chave"
+ ],
  "Connect to": [
   null,
   "Conectar à"
@@ -262,6 +278,10 @@ window.cockpit_po = {
   null,
   "Conversível"
  ],
+ "Copied": [
+  null,
+  ""
+ ],
  "Copy": [
   null,
   "Copiar"
@@ -270,9 +290,9 @@ window.cockpit_po = {
   null,
   "Copiar para área de transferência"
  ],
- "Create": [
+ "Create a new SSH key and authorize it": [
   null,
-  "Criar"
+  ""
  ],
  "Create new task file with this content.": [
   null,
@@ -342,6 +362,10 @@ window.cockpit_po = {
   null,
   ""
  ],
+ "If the fingerprint matches, click 'Trust and add host'. Otherwise, do not connect and contact your administrator.": [
+  null,
+  ""
+ ],
  "Install": [
   null,
   "Instale"
@@ -349,6 +373,10 @@ window.cockpit_po = {
  "Install software": [
   null,
   "Instale Software"
+ ],
+ "Install the cockpit-system package (and optionally other cockpit packages) on $0 to enable web console access.": [
+  null,
+  ""
  ],
  "Installing $0": [
   null,
@@ -389,6 +417,10 @@ window.cockpit_po = {
  "Kernel dump": [
   null,
   "Dump do Kernel"
+ ],
+ "Key password": [
+  null,
+  "Nova senha"
  ],
  "Laptop": [
   null,
@@ -482,6 +514,10 @@ window.cockpit_po = {
   null,
   "Sem Atraso"
  ],
+ "No results found": [
+  null,
+  "Nenhum resultado encontrado"
+ ],
  "No such file or directory": [
   null,
   "Diretório ou arquivo não encontrado"
@@ -533,6 +569,10 @@ window.cockpit_po = {
  "PackageKit crashed": [
   null,
   "PackageKit caiu"
+ ],
+ "Packageless session unavailable": [
+  null,
+  ""
  ],
  "Password": [
   null,
@@ -598,18 +638,6 @@ window.cockpit_po = {
   null,
   "Reiniciar"
  ],
- "Refusing to connect. Host is unknown": [
-  null,
-  "Recusando-se a se conectar. O host é desconhecido"
- ],
- "Refusing to connect. Hostkey does not match": [
-  null,
-  "Recusando-se a se conectar. A chave não coincide"
- ],
- "Refusing to connect. Hostkey is unknown": [
-  null,
-  "Recusando-se a se conectar. A chave é desconhecida"
- ],
  "Removals:": [
   null,
   "Remoções:"
@@ -618,9 +646,17 @@ window.cockpit_po = {
   null,
   "Removendo $0"
  ],
+ "Run this command over a trusted network or physically on the remote machine:": [
+  null,
+  ""
+ ],
  "SELinux": [
   null,
   "SELinux"
+ ],
+ "SSH key": [
+  null,
+  "Chave SSH"
  ],
  "Sealed-case PC": [
   null,
@@ -686,15 +722,39 @@ window.cockpit_po = {
   null,
   "Tablet"
  ],
+ "The SSH key $0 of $1 on $2 will be added to the $3 file of $4 on $5.": [
+  null,
+  ""
+ ],
+ "The SSH key $0 will be made available for the remainder of the session and will be available for login to other hosts as well.": [
+  null,
+  ""
+ ],
+ "The SSH key for logging in to $0 is protected by a password, and the host does not allow logging in with a password. Please provide the password of the key at $1.": [
+  null,
+  ""
+ ],
+ "The SSH key for logging in to $0 is protected. You can log in with either your login password or by providing the password of the key at $1.": [
+  null,
+  ""
+ ],
+ "The key password can not be empty": [
+  null,
+  "A senha da chave não pode estar vazia"
+ ],
+ "The key passwords do not match": [
+  null,
+  "As senhas da chave não coincidem"
+ ],
  "The logged in user is not permitted to view system modifications": [
   null,
   ""
  ],
- "The passwords do not match.": [
-  null,
-  "As senhas não batem."
- ],
  "The resulting fingerprint is fine to share via public methods, including email.": [
+  null,
+  ""
+ ],
+ "The resulting fingerprint is fine to share via public methods, including email. If you are asking someone else to do the verification for you, they can send the results using any method.": [
   null,
   ""
  ],
@@ -714,7 +774,7 @@ window.cockpit_po = {
   null,
   ""
  ],
- "This tool configures the system to write kernel crash dumps to disk.": [
+ "This tool configures the system to write kernel crash dumps. It supports the \"local\" (disk), \"ssh\", and \"nfs\" dump targets.": [
   null,
   ""
  ],
@@ -758,6 +818,10 @@ window.cockpit_po = {
   null,
   "Torre"
  ],
+ "Transient packageless sessions require the same operating system and version, for compatibility reasons: $0.": [
+  null,
+  ""
+ ],
  "Try again": [
   null,
   "Tentar novamente"
@@ -769,6 +833,14 @@ window.cockpit_po = {
  "Unable to connect to that address": [
   null,
   "Não é possível conectar a esse endereço"
+ ],
+ "Unable to log in to $0 using SSH key authentication. Please provide the password.": [
+  null,
+  ""
+ ],
+ "Unable to log in to $0. The host does not accept password login or any of your SSH keys.": [
+  null,
+  ""
  ],
  "Unknown": [
   null,
