@@ -1,3 +1,9 @@
+cockpit (328-1deepin1) unstable; urgency=medium
+
+  * Disable make package lock json in debian build.
+
+ -- xiangzelong <xiangzelong@deepin.org>  Fri, 15 Nov 2024 13:51:10 +0800
+
 cockpit (328-1) unstable; urgency=medium
 
   * New upstream bug fix release.
