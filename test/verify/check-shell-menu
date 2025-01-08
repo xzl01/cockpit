@@ -68,7 +68,7 @@ class TestMenu(testlib.MachineCase):
         m.execute("mkdir -p /usr/local/share/cockpit/systemd; cp -rp /usr/share/cockpit/systemd/* /usr/local/share/cockpit/systemd")
         m.execute(
             """sed -i '/"menu"/a "memory": { "label": "Memory", "path": "#/memory" },' /usr/local/share/cockpit/systemd/manifest.json""")
-        self.addCleanup(m.execute, "rm -r /usr/local/share/cockpit")
+        self.addCleanup(m.execute, "rm -r /usr/local/share/cockpit/systemd")
 
         self.login_and_go("/system")
 
@@ -203,6 +203,16 @@ class TestMenu(testlib.MachineCase):
         b.key("Tab", repeat=5)
         # different browsers behave a bit different here -- Firefox is at "Overview", Chromium at "Logs"
         b.wait_js_cond("document.activeElement.classList.contains('pf-v5-c-nav__link')")
+
+    def testCustomLandingPage(self):
+        b = self.browser
+        m = self.machine
+
+        # # Make the logs page the default page
+        m.write("/etc/cockpit/systemd.override.json", '{"menu":{"index":{"order":100},"logs":{"order":1}}}')
+
+        self.login_and_go()
+        b.wait_js_cond('window.location.pathname == "/system/logs"')
 
 
 if __name__ == '__main__':

@@ -406,7 +406,7 @@ def get_review_comments(diff_info_file):
         # Don't complain about lines that contain only punctuation, or
         # nothing but "else".  We don't seem to get reliable
         # information for them.
-        if not re.search('[a-zA-Z0-9]', text.replace("else", "")):
+        if not re.search(r'[a-zA-Z0-9]', text.replace("else", "")):
             return False
         return True
 
@@ -479,7 +479,7 @@ def create_coverage_report() -> None:
         diff_file = f"{BASE_DIR}/lcov/diff.info"
         excludes = []
         # Exclude pkg/lib in Cockpit projects such as podman/machines.
-        if title != "cockpit.git":
+        if title != "cockpit.git" and title != "cockpit":
             excludes = ["--exclude", "pkg/lib"]
         subprocess.check_call(["lcov", "--quiet", "--output", all_file, *excludes,
                                *itertools.chain(*[["--add", f] for f in lcov_files])])

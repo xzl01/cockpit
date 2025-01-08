@@ -94,10 +94,13 @@ if [ "$PLAN" = "main" ]; then
               TestLogin.testSSH
               TestLogin.testRaw
               TestLogin.testServer
+              TestLogin.testSELinuxRestrictedUser
               TestLogin.testUnsupportedBrowser
 
               TestNetworkingBasic.testIpHelper
               TestNetworkingBasic.testNoService
+              TestNetworkingCheckpoints.testCheckpoint
+              TestNetworkingCheckpoints.testCheckpointSlowRollback
               TestNetworkingUnmanaged.testUnmanaged
 
               TestSOS.testWithUrlRoot
@@ -106,6 +109,7 @@ if [ "$PLAN" = "main" ]; then
 
               TestSystemInfo.testInsightsStatus
               TestSystemInfo.testMotd
+              TestSystemInfo.testOverview
               TestSystemInfo.testShutdownStatus
 
               TestJournal.testAbrtDelete
@@ -140,6 +144,7 @@ fi
 if [ "$PLAN" = "storage-basic" ]; then
     TESTS="TestStorageBasic
            TestStorageBtrfs
+           TestStorageMdRaid
            TestStorageMounting
            TestStorageMountingLUKS
            TestStorageMsDOS

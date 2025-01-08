@@ -37,7 +37,7 @@ override_dh_auto_configure:
 override_dh_auto_install:
 	DEB_PYTHON_INSTALL_LAYOUT=deb dh_auto_install
 
-# avoid trying to start cockpit-motd.service and cockpit-wsinstance-*.socket etc.
+# avoid trying to start cockpit-issue.service and cockpit-wsinstance-*.socket etc.
 override_dh_installsystemd:
 	dh_installsystemd -p cockpit-ws cockpit.socket
 
@@ -72,8 +72,6 @@ ifeq ($(PRE4AA),)
 	install -p -m 644 tools/apparmor.d/cockpit-desktop debian/cockpit-ws/etc/apparmor.d/
 endif
 
-	make install-tests DESTDIR=debian/cockpit-tests
-
 execute_after_dh_install-indep:
 	# avoid dh_missing failure
 	rm -r debian/tmp/usr/lib/python*
@@ -87,7 +85,3 @@ else
 	NO_QUNIT=1 pytest -vv -k 'not linter and not test_descriptions' -opythonpath=$$(ls -d debian/cockpit-bridge/usr/lib/python3*/dist-packages)
 endif
 endif
-
-# dh compat 14 does that automatically, remove when upgrading
-execute_before_dh_installtmpfiles:
-	dh_installsysusers

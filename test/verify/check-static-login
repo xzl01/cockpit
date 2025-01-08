@@ -220,7 +220,9 @@ account    required     pam_succeed_if.so user ingroup %s""" % m.get_admin_group
         def assert_messages(has_last, n_fail):
             if has_last:
                 b.wait_in_text('#system_last_login', "Last successful login")
-                b.wait_in_text('#system_last_login_from', "from")  # only present if IP was logged
+                b.wait_in_text('#system_last_login_from',
+                               # this is the correct IP for our CI, and we don't run this on tmt
+                               "from ::ffff:172.27.0.2 on web console")  # only present if IP was logged
 
             if n_fail:
                 b.wait_in_text('#system_last_login', f'{n_fail} failed login')
@@ -243,7 +245,7 @@ account    required     pam_succeed_if.so user ingroup %s""" % m.get_admin_group
         m.start_cockpit()
 
         # Clean out the relevant logfiles
-        m.execute("truncate -s0 /var/log/{[bw]tmp,lastlog} /var/run/utmp")
+        m.execute("truncate -s0 /var/log/{[bw]tmp,lastlog} /run/utmp")
 
         if m.image == "arch":
             self.sed_file("s/# deny = 3/deny = 4/", "/etc/security/faillock.conf")
@@ -369,7 +371,7 @@ account    required     pam_succeed_if.so user ingroup %s""" % m.get_admin_group
                                     '.*Sorry, passwords do not match.')
         self.allow_restart_journal_messages()
 
-    @testlib.skipWsContainer("mock-pam-conv from cockpit-tests not installed")
+    @testlib.skipWsContainer("mock-pam-conv not installed")
     def testConversation(self):
         m = self.machine
         b = self.browser
@@ -559,7 +561,7 @@ account    required     pam_succeed_if.so user ingroup %s""" % m.get_admin_group
         b.wait_in_text(f"#shutdown-dialog button{self.danger_btn_class}", 'Reboot')
         b.click("#delay")
         b.click("button:contains('5 minutes')")
-        b.wait_text("#delay .pf-v5-c-select__toggle-text", "5 minutes")
+        b.wait_text("#delay .pf-v5-c-menu-toggle__text", "5 minutes")
         b.click(f"#shutdown-dialog button{self.danger_btn_class}")
 
         # cancel reboot
@@ -653,7 +655,7 @@ account    required     pam_succeed_if.so user ingroup %s""" % m.get_admin_group
         module = 'faillock'
 
         def logfile(user):
-            return '/var/run/faillock/' + user
+            return '/run/faillock/' + user
 
         def expect_fail_count(expected, user="admin", must_exist=True):
             if must_exist:
@@ -856,6 +858,8 @@ matchrule = <SUBJECT>^DC=LAN,DC=COCKPIT,CN=alice$
         # it into the browser.
 
         def do_test(authopts, expected, not_expected=None, session_leader=None):
+            # avoid running into start-limit-hit
+            m.execute("systemctl reset-failed")
             m.start_cockpit(tls=True)
             output = m.execute(['curl', '-ksS', '-D-', *authopts, 'https://localhost:9090/cockpit/login'])
             for s in expected:

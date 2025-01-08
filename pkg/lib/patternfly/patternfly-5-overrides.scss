@@ -75,12 +75,6 @@ select.pf-v5-c-form-control {
   margin: 0;
 }
 
-// Fix the double-spacing issue for other dropdowns
-// https://github.com/patternfly/patternfly/issues/6632
-.pf-v5-c-menu-toggle__controls:last-child > .pf-v5-c-menu-toggle__toggle-icon {
-  margin-inline-end: 0;
-}
-
 // Fix menus cropping contents
 // https://github.com/patternfly/patternfly/issues/6565
 .pf-v5-c-menu__item-text {
@@ -396,4 +390,11 @@ select.pf-v5-c-form-control {
 // Workaround for https://github.com/patternfly/patternfly/issues/5865
 .pf-v5-c-card.pf-m-selectable, .pf-v5-c-card.pf-m-clickable {
   isolation: auto;
+}
+
+/* Style secondary button in dark mode as secondary */
+.pf-v5-c-menu-toggle.pf-m-secondary.pf-m-split-button {
+    .pf-v5-theme-dark & {
+    background-color: var(--pf-v5-global--BackgroundColor--400);
+  }
 }

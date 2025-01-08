@@ -483,7 +483,7 @@ class ServicesPageBody extends React.Component {
                     const unit_files = {};
                     unitFilesResults.forEach(([UnitFilePath, UnitFileState]) => {
                         const Id = UnitFilePath.split('/').pop();
-                        if (!this.isUnitHandled(Id) | this.isTemplate(Id))
+                        if (!this.isUnitHandled(Id) || this.isTemplate(Id))
                             return;
 
                         this.seenUnitFileStates.add(UnitFileState);
@@ -585,7 +585,7 @@ class ServicesPageBody extends React.Component {
 
         Object.values(this.units).forEach(u => {
             if (u.ActiveState == "failed" && u.LoadState != "not-found") {
-                const suffix = u.Id.substr(u.Id.lastIndexOf('.') + 1);
+                const suffix = u.Id.substring(u.Id.lastIndexOf('.') + 1);
                 if (service_tabs_suffixes.includes(suffix)) {
                     tabErrors[suffix] = true;
                     failed.add(u.Id);

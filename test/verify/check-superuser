@@ -43,7 +43,6 @@ class TestSuperuser(testlib.MachineCase):
         b.assert_pixels("#topnav", "topnav-unprivileged")
 
         # Check they are still gone after logout
-        self.allow_restart_journal_messages()
         b.relogin()
         b.leave_page()
         b.check_superuser_indicator("Limited access")
@@ -125,6 +124,7 @@ class TestSuperuser(testlib.MachineCase):
         b.become_superuser(passwordless=True)
 
     @testlib.skipBeiboot("no local PAM config in beiboot mode")
+    @testlib.skipOstree("mock-pam-conv not installed")
     def testTwoPasswds(self):
         b = self.browser
         m = self.machine
@@ -428,6 +428,8 @@ class TestSuperuserDashboard(testlib.MachineCase):
         b.wait_visible('#hosts_setup_server_dialog')
         b.wait_visible('#hosts_setup_server_dialog button:contains("Add")')
         b.click('#hosts_setup_server_dialog button:contains("Add")')
+        b.wait_visible('#hosts_connect_server_dialog')
+        b.click('#hosts_connect_server_dialog button.pf-m-warning')
         b.wait_in_text('#hosts_setup_server_dialog', "You are connecting to 10.111.113.2 for the first time.")
         b.click('#hosts_setup_server_dialog button.pf-m-primary')
         b.wait_in_text('#hosts_setup_server_dialog', "Unable to log in")
@@ -455,9 +457,9 @@ class TestSuperuserDashboard(testlib.MachineCase):
 
         # Logging out and logging back in should give us immediate
         # superuser on m2 (once we have logged in there).
-        self.allow_restart_journal_messages()
         b.relogin()
-        b.click('#machine-troubleshoot')
+        b.wait_visible('#hosts_connect_server_dialog')
+        b.click('#hosts_connect_server_dialog button.pf-m-warning')
         b.wait_visible('#hosts_setup_server_dialog')
         b.set_input_text("#login-custom-password", "foobar")
         b.click('#hosts_setup_server_dialog button:contains("Log in")')

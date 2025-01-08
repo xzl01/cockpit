@@ -19,11 +19,11 @@
 
 import cockpit from "cockpit";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from "react-dom/client";
 
 import { WithDialogs } from "dialogs.jsx";
-import { useInit, useEvent, useLoggedInUser } from "hooks";
+import { useInit, useEvent, useOn, useLoggedInUser } from "hooks";
 
 import { TopNav } from "./topnav.jsx";
 import { SidebarToggle, PageNav } from "./nav.jsx";
@@ -57,20 +57,19 @@ const SkipLink = ({ focus_id, children }) => {
 
 const Shell = () => {
     const current_user = useLoggedInUser()?.name || "";
-    const state = useInit(() => ShellState());
-    const idle_state = useInit(() => IdleTimeoutState());
+    const state = useInit(() => new ShellState());
+    const idle_state = useInit(() => new IdleTimeoutState());
     const host_modal_state = useInit(() => HostModalState());
 
-    useEvent(state, "update");
-    useEvent(idle_state, "update");
+    useOn(state, "update");
+    useOn(idle_state, "update");
     useEvent(host_modal_state, "changed");
 
-    useEvent(state, "connect", () => {
-        // We could launch some dialogs here, but the traditional
-        // behavior is to just connect the loader and open the dialogs
-        // from the troubleshoot button.
-        state.loader.connect(state.current_machine.address);
-    });
+    useEffect(() => {
+        return state.on("connect", () => {
+            connect_host(host_modal_state, state, state.current_machine);
+        });
+    }, [host_modal_state, state]);
 
     const {
         ready, problem,
@@ -129,7 +128,7 @@ const Shell = () => {
                 </nav>
             </div>
 
-            <nav id="hosts-sel" className="navbar navbar-default navbar-pf navbar-pf-vertical" tabIndex="-1">
+            <nav id="hosts-sel" className="navbar navbar-default navbar-pf navbar-pf-vertical" tabIndex={-1}>
                 { config.host_switcher_enabled
                     ? <CockpitHosts state={state} host_modal_state={host_modal_state} selector="nav-hosts" />
                     : <CockpitCurrentHost current_user={current_user} machine={current_machine} />
@@ -145,7 +144,7 @@ const Shell = () => {
             <Frames hidden={!!failure} state={state} idle_state={idle_state} />
 
             { failure &&
-            <div id="failure-content" className="area-ct-content" role="main" tabIndex="-1">
+            <div id="failure-content" className="area-ct-content" role="main" tabIndex={-1}>
                 { failure }
             </div>
             }

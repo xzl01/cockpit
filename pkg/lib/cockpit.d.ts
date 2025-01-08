@@ -33,6 +33,7 @@ declare module 'cockpit' {
     export const manifests: { [package in string]?: JsonObject };
 
     export let language: string;
+    export let language_direction: string;
 
     interface Transport {
         csrf_token: string;
@@ -98,6 +99,8 @@ declare module 'cockpit' {
         changed(): void;
     }
 
+    function event_target<T, EM extends EventMap>(obj: T): T & EventSource<EM>;
+
     /* === Channel =============================== */
 
     interface ControlMessage extends JsonObject {
@@ -119,7 +122,7 @@ declare module 'cockpit' {
         valid: boolean;
         send(data: T): void;
         control(options: ControlMessage): void;
-        wait(): Promise<void>;
+        wait(callback?: (data: T) => void): Promise<T>;
         close(options?: string | JsonObject): void;
     }
 
@@ -188,13 +191,16 @@ declare module 'cockpit' {
         href: string;
         go(path: Location | string, options?: { [key: string]: string }): void;
         replace(path: Location | string, options?: { [key: string]: string }): void;
+
+        encode(path: string[], options?: { [key: string]: string }, with_root?: boolean): string;
+        decode(string: string, options?: { [key: string]: string }): string[];
     }
 
-    export const location: Location;
+    export let location: Location;
 
     /* === cockpit.jump ========================== */
 
-    function jump(path: string, host?: string): void;
+    function jump(path: string | string[], host?: string): void;
 
     /* === cockpit page visibility =============== */
 
@@ -227,8 +233,9 @@ declare module 'cockpit' {
     interface DBusClient {
         readonly unique_name: string;
         readonly options: DBusOptions;
-        proxy(interface: string, path: string, options?: { watch?: boolean }): DBusProxy;
+        proxy(interface?: string, path?: string, options?: { watch?: boolean }): DBusProxy;
         call(path: string, iface: string, method: string, args?: unknown[] | null, options?: DBusCallOptions): Promise<unknown[]>;
+        watch(path: string): DeferredPromise<void>,
         close(): void;
     }
 

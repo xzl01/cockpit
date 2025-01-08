@@ -15,8 +15,9 @@ import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
 
 import 'polyfills';
 import { CockpitNav, CockpitNavItem } from "./nav.jsx";
-import { build_href, split_connection_string } from "./util.jsx";
-import { add_host, edit_host } from "./hosts_dialog.jsx";
+import { encode_location } from "./util.jsx";
+import { split_connection_string } from "./machines/machines";
+import { add_host, edit_host, connect_host } from "./hosts_dialog.jsx";
 
 const _ = cockpit.gettext;
 
@@ -114,7 +115,7 @@ export class CockpitHosts extends React.Component {
     }
 
     async onAddNewHost() {
-        await add_host(this.props.host_modal_state);
+        await add_host(this.props.host_modal_state, this.props.state);
     }
 
     async onHostEdit(event, machine) {
@@ -122,17 +123,13 @@ export class CockpitHosts extends React.Component {
     }
 
     async onHostSwitch(machine) {
-        const { state } = this.props;
+        const { state, host_modal_state } = this.props;
 
-        // We could launch the connection dialogs here and not jump at
-        // all when the login fails (or is cancelled), but the
-        // traditional behavior is to jump and then try to connect.
-
-        const connection_string = machine.connection_string;
-        const parts = split_connection_string(connection_string);
-        const addr = build_href({ host: parts.address });
-        state.jump(addr);
-        state.ensure_connection();
+        const connection_string = await connect_host(host_modal_state, state, machine);
+        if (connection_string) {
+            const parts = split_connection_string(connection_string);
+            state.jump({ host: parts.address });
+        }
     }
 
     onEditHosts() {
@@ -147,8 +144,7 @@ export class CockpitHosts extends React.Component {
 
         if (current_machine === machine) {
             // Removing machine underneath ourself - jump to localhost
-            const addr = build_href({ host: "localhost" });
-            state.jump(addr);
+            state.jump({ host: "localhost" });
         }
 
         if (state.machines.list.length <= 2)
@@ -189,14 +185,14 @@ export class CockpitHosts extends React.Component {
         const render = (m, term) => <CockpitNavItem
                 term={term}
                 keyword={m.keyword}
-                to={build_href({ host: m.address })}
+                href={encode_location({ host: m.address })}
                 active={m === current_machine}
                 key={m.key}
                 name={m.label}
                 header={(m.user ? m.user : this.state.current_user) + " @"}
                 status={m.state === "failed" ? { type: "error", title: _("Connection error") } : null}
                 className={m.state}
-                jump={() => this.onHostSwitch(m)}
+                onClick={() => this.onHostSwitch(m)}
                 actions={<>
                     <Tooltip content={_("Edit")} position="right">
                         <Button isDisabled={m.address === "localhost"} className="nav-action" hidden={!editing} onClick={e => this.onHostEdit(e, m)} key={m.label + "edit"} variant="secondary"><EditIcon /></Button>

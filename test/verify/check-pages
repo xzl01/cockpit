@@ -127,6 +127,11 @@ OnCalendar=daily
         b.go("/network")
         self.checkDocs(["Managing networking bonds", "Managing networking teams",
                         "Managing networking bridges", "Managing VLANs", "Managing firewall"])
+        b.go("/system")
+        self.checkDocs(["Configuring system settings"])
+        b.go("/network/firewall")
+        self.checkDocs(["Managing networking bonds", "Managing networking teams",
+                        "Managing networking bridges", "Managing VLANs", "Managing firewall"])
         b.go("/system/services")
 
         m.restart_cockpit()
@@ -747,6 +752,12 @@ OnCalendar=daily
         with b.wait_timeout(60):
             b.wait_js_func("ph_plot_data_plateau", "pmcd", mem_avail * 0.85, mem_avail * 1.15, 15, "mem")
 
+        # Internal metrics only has memory used (memory.used) as a metric not available memory.
+        meminfo = read_mem_info(m)
+        mem_avail = meminfo['MemTotal'] - meminfo['MemAvailable']
+        with b.wait_timeout(60):
+            b.wait_js_func("ph_plot_data_plateau", "internal", mem_avail * 0.85, mem_avail * 1.15, 15, "mem")
+
     def testPageStatus(self):
         b = self.browser
 
@@ -761,6 +772,7 @@ OnCalendar=daily
         b.mouse("#development-info", "mouseenter")
         b.wait_in_text(".pf-v5-c-tooltip", "My Little Page Status")
         b.mouse("#development-info", "mouseleave")
+        b.wait_not_present(".pf-v5-c-tooltip")
 
         b.go("/playground/notifications-receiver")
         b.enter_page("/playground/notifications-receiver")

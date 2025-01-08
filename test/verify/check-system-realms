@@ -275,6 +275,10 @@ class CommonTests:
         self.allow_journal_messages(".*No authentication agent found.*")
         # sometimes polling for info and joining a domain creates this noise
         self.allow_journal_messages('.*org.freedesktop.DBus.Error.Spawn.ChildExited.*')
+        # HACK: idling too long on the login page in Negotiate while waiting for FreeIPA to init
+        # times out in ws and kills cockpit-session; this should be fixed properly in ws
+        self.allow_journal_messages('.*session timed out during authentication')
+        self.allow_journal_messages('.*authentication timed out')
 
     def testUnqualifiedUsers(self):
         m = self.machine
@@ -326,14 +330,13 @@ class CommonTests:
         b.wait_popup("shutdown-dialog")
         b.click("#delay")
         b.click("button:contains('No delay')")
-        b.wait_text("#delay .pf-v5-c-select__toggle-text", "No delay")
+        b.wait_text("#delay .pf-v5-c-menu-toggle__text", "No delay")
         b.click("#shutdown-dialog button:contains(Reboot)")
         b.switch_to_top()
         b.wait_in_text(".curtains-ct h1", "Disconnected")
-        m.wait_reboot()
+        self.wait_reboot()
 
         self.allow_journal_messages(".*No authentication agent found.*")
-        self.allow_restart_journal_messages()
         # sometimes polling for info and joining a domain creates this noise
         self.allow_journal_messages('.*org.freedesktop.DBus.Error.Spawn.ChildExited.*')
 
@@ -815,6 +818,8 @@ ipa-advise enable-admins-sudo | sh -ex
         b.wait_visible('#hosts_setup_server_dialog')
         b.click('#hosts_setup_server_dialog button:contains(Add)')
         b.wait_not_present('#hosts_setup_server_dialog')
+        b.wait_visible('#hosts_connect_server_dialog')
+        b.click('#hosts_connect_server_dialog button.pf-m-warning')
 
         # Getting root privs through sudo with kerberos in the remote SSH session does not currently work.
         # ssh -K is supposed to forward the credentials cache, but doesn't; klist in the ssh session is empty
@@ -1049,7 +1054,7 @@ class TestKerberos(testlib.MachineCase):
         self.assertIn("HTTP/1.1 200 OK", output)
         self.assertIn('"csrf-token"', output)
 
-        cookie = re.search("Set-Cookie: cockpit=([^ ;]+)", output).group(1)
+        cookie = re.search(r"Set-Cookie: cockpit=([^ ;]+)", output).group(1)
         b.open("/system/terminal", cookie={"name": "cockpit", "value": cookie, "domain": m.web_address, "path": "/"})
         b.wait_visible('#content')
 
@@ -1074,6 +1079,8 @@ class TestKerberos(testlib.MachineCase):
         b.wait_visible('#hosts_setup_server_dialog')
         b.click('#hosts_setup_server_dialog button:contains(Add)')
         b.wait_not_present('#hosts_setup_server_dialog')
+        b.wait_visible('#hosts_connect_server_dialog')
+        b.click('#hosts_connect_server_dialog button.pf-m-warning')
 
         b.enter_page("/system/terminal", host="x0.cockpit.lan")
         b.wait_visible(".terminal")
